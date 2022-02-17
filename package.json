@@ -1,0 +1,25 @@
+{
+  "name": "mavn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vsblaustein/MAVN.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vsblaustein/MAVN/issues"
+  },
+  "homepage": "https://github.com/vsblaustein/MAVN#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  },
+  "proxy": "http://localhost:3001"
+}
