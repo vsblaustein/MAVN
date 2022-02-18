@@ -1,9 +1,17 @@
 import './App.css';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+
 
 function App() {
   return (
-    <ResponsiveAppBar />
+    <Router>
+      <ResponsiveAppBar />
+    </Router>
   );
 }
 
