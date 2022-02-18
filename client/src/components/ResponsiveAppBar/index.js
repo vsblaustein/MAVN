@@ -12,10 +12,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
-const pages = ['Join Room', 'Create a Room', 'Delete'];
+const pages = ['Join Room', 'Create a Room'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
+
 const ResponsiveAppBar = () => {
+
+  
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -29,6 +32,11 @@ const ResponsiveAppBar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
+  const handleMenuClick = (page) => {
+    console.log("u clicked a button: " + page);
+
+  }
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -95,7 +103,7 @@ const ResponsiveAppBar = () => {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => {handleMenuClick(page)}}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
