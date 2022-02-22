@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 
 
-const pages = ['Join Room', 'Create a Room'];
+const pages = ['Home', 'Join', 'Create'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 
@@ -62,7 +62,6 @@ const ResponsiveAppBar = () => {
           >
             MOVIE MASTER
           </Typography>
-
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -107,31 +106,18 @@ const ResponsiveAppBar = () => {
           >
             MOVIE MASTER
           </Typography>
+          {/* dynamic buttons for const pages routing here */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Link to="/" style={{ textDecoration: 'none' }}>
-              <Button
-                onClick={() => {handleMenuClick("Home")}}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {"Home"}
-              </Button>
-            </Link>
-            <Link to="/join" style={{ textDecoration: 'none' }}>
-              <Button
-                onClick={() => {handleMenuClick("Join")}}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {"Join Room"}
-              </Button>
-            </Link>
-            <Link to="/create" style={{ textDecoration: 'none' }}>
-              <Button
-                onClick={() => {handleMenuClick("Create")}}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {"Create Room"}
-              </Button>
-            </Link>
+            {pages.map((page) => (
+              <Link key={page} to={`/${page.toLowerCase()}`} style={{ textDecoration: 'none' }}>
+                <Button
+                  onClick={() => {handleMenuClick(page)}}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page}
+                </Button>
+              </Link>   
+                ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -156,6 +142,7 @@ const ResponsiveAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+            {/* dynamic buttons for const settings links here */}
               {settings.map((setting) => (
                 <Link key={setting} to ={`/${setting.toLowerCase()}`} style={{ textDecoration: 'none' }}>
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
