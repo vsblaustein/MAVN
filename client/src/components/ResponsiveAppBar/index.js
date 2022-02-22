@@ -28,6 +28,7 @@ const ResponsiveAppBar = () => {
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
+    console.log(event.currentTarget);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -39,7 +40,10 @@ const ResponsiveAppBar = () => {
 
   const handleMenuClick = (page) => {
     console.log("u clicked a button: " + page);
+  }
 
+  const handleSettingsClick = (setting) => {
+    console.log("u clicked a setting button: " + setting);
   }
 
   const handleCloseUserMenu = () => {
@@ -104,6 +108,14 @@ const ResponsiveAppBar = () => {
             MOVIE MASTER
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <Button
+                onClick={() => {handleMenuClick("Home")}}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {"Home"}
+              </Button>
+            </Link>
             <Link to="/join" style={{ textDecoration: 'none' }}>
               <Button
                 onClick={() => {handleMenuClick("Join")}}
@@ -145,9 +157,11 @@ const ResponsiveAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
+                <Link key={setting} to ={`/${setting.toLowerCase()}`} style={{ textDecoration: 'none' }}>
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
