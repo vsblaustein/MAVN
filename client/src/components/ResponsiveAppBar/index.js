@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 
 
-const pages = ['Home', 'Join', 'Create'];
+const pages = ['Home', 'Join', 'Create', 'Preferences'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 
