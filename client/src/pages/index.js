@@ -1,5 +1,5 @@
 import React from 'react';
-import ResponsiveAppBar from './components/ResponsiveAppBar';
+import ResponsiveAppBar from '../components/ResponsiveAppBar';
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,14 +8,13 @@ import {
   
 function Home() {
   return (
-    <React.Fragment>
-      <Router>
-        <ResponsiveAppBar />
-        <Routes>
-          
-        </Routes>
-      </Router>
-    </React.Fragment>
+  <React.Fragment>
+    <ResponsiveAppBar />
+    <Routes>
+      
+    </Routes>
+  </React.Fragment>
+    
   );
 };
   

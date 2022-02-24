@@ -5,11 +5,18 @@ import {
   Route
 } from "react-router-dom";
 import SignIn from './components/SignInPage';
+import Home from './pages';
 
 
 function App() {
   return (
-    <SignIn />
+    <Router>
+      <Routes>
+        <Route exact path='/' exact element={<SignIn />} />
+        <Route path="/home/*" element={<Home />} />
+      </Routes>
+    </Router>
+    
   );
 }
 
