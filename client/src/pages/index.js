@@ -1,10 +1,21 @@
 import React from 'react';
+import ResponsiveAppBar from './components/ResponsiveAppBar';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom";
   
-const Home = () => {
+function Home() {
   return (
-    <div>
-      <h1>Welcome !</h1>
-    </div>
+    <React.Fragment>
+      <Router>
+        <ResponsiveAppBar />
+        <Routes>
+          
+        </Routes>
+      </Router>
+    </React.Fragment>
   );
 };
   
