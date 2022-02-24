@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 
 function Copyright(props) {
@@ -31,6 +32,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  let navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -39,6 +41,8 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     });
+    //route to home
+    navigate("/home", { replace: true });
   };
 
   return (
@@ -100,16 +104,14 @@ export default function SignIn() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               /> 
-                <RouterLink to="/home" style={{ textDecoration: 'none' }}>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Sign in
-                  </Button>
-                </RouterLink>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign in
+              </Button>
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2">
