@@ -3,6 +3,8 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import { ImageListItemBar } from '@mui/material';
 
+// this document will generate the charts from the db and display them
+
 export default function PreferencesStats() {
   return (
     <ImageList sx={{ width: '100%', height:'100%', padding:0}} cols={5} rowHeight={270}>
