@@ -10,13 +10,26 @@ html {
   background-color: rgba(0, 0, 0, 0.25);
 }
 
-.modal_content {
+.pq-modal_content {
   background-color: white;
   position: absolute;
-  top: 10%;
+  top: 5%;
   left: 20%;
   width: 60%;
-  height: 40%;
+  height: 60%;
+  padding: 20px;
+  border-radius: 5px;
+  border: 2px solid black;
+  overflow-y:auto;
+}
+
+.mr-modal_content {
+  background-color: white;
+  position: absolute;
+  top: 2%;
+  left: 30%;
+  width: 40%;
+  height: 65%;
   padding: 20px;
   border-radius: 5px;
   border: 2px solid black;
@@ -67,4 +80,15 @@ input[type=range]::-webkit-slider-thumb {
 input[type='range'] {
   grid-column: 1;
   grid-row: 2;
+}
+
+.center-screen {
+  position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    max-width: 50%;
+    max-height: 50%;
 }

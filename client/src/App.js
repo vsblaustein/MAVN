@@ -18,7 +18,8 @@ function App() {
         <Route exact path='/' exact element={<SignIn />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/home/*" element={<Home />} />
-        <Route path="/preferences" element={<Preferences />} />
+        <Route path="/my%20preferences" element={<Preferences />} />
+        <Route path='/logout' element={<SignIn />} />
       </Routes>
     </Router>
   );
