@@ -7,7 +7,6 @@ import {
 import SignIn from './components/SignInPage';
 import Home from './pages';
 import Preferences from './components/PreferencesPage';
-import SignIn from './components/SignInPage';
 import SignUpPage from './components/SignUpPage';
 import BrowseMoviesPage from './components/BrowseMoviesPage';
 import MovieRoomPage from './components/MovieRoomPage';
@@ -19,10 +18,10 @@ function App() {
         <Route exact path='/' exact element={<SignIn />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/home/*" element={<Home />} />
-        <Route path="/my%20preferences" element={<Preferences />} />
-        <Route path="browse%20movies" element ={<BrowseMoviesPage/>}/>
+        <Route path="/home/my%20preferences" element={<Preferences />} />
+        <Route path="/home/browse%20movies" element ={<BrowseMoviesPage/>}/>
         <Route path='/logout' element={<SignIn />} />
-        <Route path="/movie%20room" element={<MovieRoomPage/>}/>
+        <Route path="/home/movie%20room" element={<MovieRoomPage/>}/>
       </Routes>
     </Router>
     
