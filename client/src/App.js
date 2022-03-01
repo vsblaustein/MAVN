@@ -18,10 +18,10 @@ function App() {
         <Route exact path='/' exact element={<SignIn />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/home/*" element={<Home />} />
-        <Route path="/home/my%20preferences" element={<Preferences />} />
-        <Route path="/home/browse%20movies" element ={<BrowseMoviesPage/>}/>
+        <Route path="/my%20preferences" element={<Preferences />} />
+        <Route path="/browse%20movies" element ={<BrowseMoviesPage/>}/>
         <Route path='/logout' element={<SignIn />} />
-        <Route path="/home/movie%20room" element={<MovieRoomPage/>}/>
+        <Route path="/movie%20room" element={<MovieRoomPage/>}/>
       </Routes>
     </Router>
     

@@ -108,7 +108,7 @@ const ResponsiveAppBar = () => {
           {/* dynamic buttons for const pages routing here */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link key={page} to={`${page.toLowerCase()}`} style={{ textDecoration: 'none' }} replace="True">
+              <Link key={page} to={`/${page.toLowerCase()}`} style={{ textDecoration: 'none' }} replace="True">
                 <Button
                   onClick={() => {handleMenuClick(page)}}
                   sx={{ my: 2, color: 'white', display: 'block' }}
@@ -143,7 +143,7 @@ const ResponsiveAppBar = () => {
             >
             {/* dynamic buttons for const settings links here */}
               {settings.map((setting) => (
-                <Link key={setting} to ={`${setting.toLowerCase()}`} style={{ textDecoration: 'none' }} replace="True">
+                <Link key={setting} to ={setting.toLowerCase() === 'logout' ? '/' : `/${setting.toLowerCase()}`} style={{ textDecoration: 'none' }} replace="True">
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
