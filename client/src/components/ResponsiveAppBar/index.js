@@ -14,11 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 
 
-const pages = ['Join', 'Create'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
-
-
+const pages = ['Join', 'Create', 'Movie Room'];
+const settings = ['Profile', 'Account', 'Browse Movies', 'My Preferences', 'Logout'];
 
 const ResponsiveAppBar = () => {
 
