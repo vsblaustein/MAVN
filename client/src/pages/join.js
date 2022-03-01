@@ -1,10 +1,10 @@
 import React from 'react';
-import SignIn from '../components/SignInPage';
+import JoinPage from '../components/JoinPage';
   
-const Login = () => {
+const Join = () => {
   return (
-    <SignIn />
+    <JoinPage />
   );
 };
-  
-export default Login;
+
+export default Join;
