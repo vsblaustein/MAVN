@@ -1,0 +1,35 @@
+.App {
+    text-align: center;
+ }
+ form {
+   padding: 10px;
+ }
+ img{
+    max-width: 150%;  
+    height: auto; 
+   height: 120px;
+   margin-left: 70px;
+   margin-bottom: 10px;
+   display: block;
+   border:1px solid black;
+   border-radius: 50%;
+ }
+
+ .App-header {
+   background-color: white;
+   min-height: 50vh;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   font-size: calc(10px + 2vmin);
+   color: black;
+ }
+ 
+
+ .centered {
+    margin: auto;
+    width: 25%;
+
+    padding: 5px;
+  }

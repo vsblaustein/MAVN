@@ -19,7 +19,7 @@ const settings = ['Profile', 'Account', 'Browse Movies', 'My Preferences', 'Logo
 
 const ResponsiveAppBar = () => {
 
-  
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 

@@ -8,14 +8,20 @@ export default class PopUp extends React.Component {
   handleClick = () => {
    this.props.toggle();
   };
+
+  handleExit = () => {
+    this.props.toggle();
+};
+
 render() {
   return (
     <>
     <form>
-        <Box className="modal">
+        <Box className="modal" class = "centered">
             <Box className="mr-modal_content">
                 <Typography
-                    variant="h6"
+                class = "centered"
+                    variant="h5"
                     noWrap
                     component="div"
                     sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
@@ -37,7 +43,7 @@ render() {
                     </Button>
                 </span>
 
-                           </Box>
+                           </Box >
         </Box>
     </form>
 </>

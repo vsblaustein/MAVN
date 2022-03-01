@@ -38,3 +38,30 @@
     font-size: 20px;
   }
   
+
+  .centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    max-height: 200px;
+  }
+
+
+  .close {
+    color: Black;
+    float: right;
+  }
+  .close:hover {
+    color: cyan;
+    cursor: pointer;
+  }
+
+  #big-btn {
+    width: 500px;
+    height: 100px;
+    font-size: 50px;
+}

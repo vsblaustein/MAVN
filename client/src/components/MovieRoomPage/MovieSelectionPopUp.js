@@ -16,7 +16,7 @@ export default class MovieSelectionPopUp extends React.Component {
             <>
                 <form>
                     <Box className="modal">
-                        <Box className="mr-modal_content">
+                        <Box className="mr-modal_content" centered>
                             <Typography
                                 variant="h6"
                                 noWrap

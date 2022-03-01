@@ -1,6 +1,7 @@
 import React from 'react';
 import ResponsiveAppBar from '../ResponsiveAppBar/index'
 import Typography from '@mui/material/Typography';
+import CreateForm from './CreateForm';
 
 import {
   BrowserRouter as Router,
@@ -22,14 +23,8 @@ render() {
    <div>
        <ResponsiveAppBar />
 
-       <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Create Page
-          </Typography>
+          
+          <CreateForm></CreateForm>
    </div>
   );
  }
