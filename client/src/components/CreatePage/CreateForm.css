@@ -1,0 +1,25 @@
+.App {
+  text-align: center;
+}
+form {
+ padding: 10px;
+}
+
+.App-header {
+ background-color: white;
+ min-height: 50vh;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ font-size: calc(10px + 2vmin);
+ color: black;
+}
+
+
+.centered {
+  margin: auto;
+  width: 25%;
+
+  padding: 5px;
+}
