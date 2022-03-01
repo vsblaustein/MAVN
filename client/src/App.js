@@ -1,11 +1,10 @@
 import './App.css';
-import ResponsiveAppBar from './components/ResponsiveAppBar';
 import {
   BrowserRouter as Router,
   Routes,
   Route
 } from "react-router-dom";
-
+import SignIn from './components/SignInPage';
 import Home from './pages';
 import Preferences from './components/PreferencesPage';
 import SignIn from './components/SignInPage';
@@ -26,6 +25,7 @@ function App() {
         <Route path="/movie%20room" element={<MovieRoomPage/>}/>
       </Routes>
     </Router>
+    
   );
 }
 
