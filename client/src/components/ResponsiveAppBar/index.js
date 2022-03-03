@@ -14,11 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 
 
-const pages = ['Home', 'Join', 'Create'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
-
-
+const pages = ['Join', 'Create', 'Movie Room'];
+const settings = ['Profile', 'Browse Movies', 'My Preferences', 'Logout'];
 
 const ResponsiveAppBar = () => {
 
@@ -60,7 +57,9 @@ const ResponsiveAppBar = () => {
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
+          <Link to="/home" style={{ textDecoration: 'none' }}>
             MOVIE MASTER
+          </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -109,7 +108,7 @@ const ResponsiveAppBar = () => {
           {/* dynamic buttons for const pages routing here */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link key={page} to={`/${page.toLowerCase()}`} style={{ textDecoration: 'none' }}>
+              <Link key={page} to={`/${page.toLowerCase()}`} style={{ textDecoration: 'none' }} replace="True">
                 <Button
                   onClick={() => {handleMenuClick(page)}}
                   sx={{ my: 2, color: 'white', display: 'block' }}
@@ -144,7 +143,7 @@ const ResponsiveAppBar = () => {
             >
             {/* dynamic buttons for const settings links here */}
               {settings.map((setting) => (
-                <Link key={setting} to ={`/${setting.toLowerCase()}`} style={{ textDecoration: 'none' }}>
+                <Link key={setting} to ={setting.toLowerCase() === 'logout' ? '/' : `/${setting.toLowerCase()}`} style={{ textDecoration: 'none' }} replace="True">
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
