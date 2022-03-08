@@ -7,8 +7,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import InputBase from '@mui/material/InputBase';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
 const ITEM_HEIGHT = 20;
@@ -22,6 +20,7 @@ const MenuProps = {
     },
 };
 
+// GENRES NEED TO COME FROM DB
 const names = [
     'Action', 'Horror', 
     'Comedy', 'Romance', 
@@ -40,21 +39,26 @@ function getStyles(name, personName, theme) {
 
 export default function MultipleSelectChip() {
     const theme = useTheme();
-    const [personName, setPersonName] = React.useState([]);
+    const [genres, setGenres] = React.useState([]);
 
     const handleChange = (event) => {
         const {
             target: { value },
         } = event;
-        setPersonName(
+        setGenres(
             // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
     };
 
-    const handleAddOther = () => {
-        console.log("add this to actors list");
-    };
+    // clears the actors list
+    const handleClearGenre = (event) => {
+        console.log("clear genre selections");
+        setGenres(
+            []
+        );
+      }
+
 
     return (
         <>
@@ -64,7 +68,7 @@ export default function MultipleSelectChip() {
                     labelId="demo-multiple-chip-label"
                     id="demo-multiple-chip"
                     multiple
-                    value={personName}
+                    value={genres}
                     onChange={handleChange}
                     input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                     renderValue={(selected) => (
@@ -80,12 +84,13 @@ export default function MultipleSelectChip() {
                         <MenuItem
                             key={name}
                             value={name}
-                            style={getStyles(name, personName, theme)}
+                            style={getStyles(name, genres, theme)}
                         >
                             {name}
                         </MenuItem>
                     ))}
                 </Select>
+                <Button onClick={handleClearGenre}>Clear Genres</Button>
             </FormControl>
         </>
     );
