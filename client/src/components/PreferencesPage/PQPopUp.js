@@ -16,10 +16,13 @@ function valuetext(value) {
 }
 
 export default class PQPopUp extends React.Component {
-
-  state = {
-    sliderVal: 3
+  constructor(props) {
+    super(props);
+    this.state = {
+      sliderVal: 3,
+      actors:''};
   }
+
 
   handleExit = () => {
     this.props.toggle();
@@ -40,18 +43,6 @@ export default class PQPopUp extends React.Component {
     console.log(this.state.sliderVal)
   }
 
-
-  handleAddActors = () => {
-    console.log("add all actors");
-  }
-
-  handleClearActors = () => {
-    console.log("clear actor selections");
-  }
-
-  handleAddGenres = () => {
-    console.log("add all genres");
-  }
 
   handleClearGenres = () => {
     console.log("clear genre selections");
@@ -84,8 +75,6 @@ export default class PQPopUp extends React.Component {
                 <label> What genres are you feeling? </label><br />
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }} >
                   <MultipleGenreSelect />
-                  <Button onClick={this.handleAddGenres}>Add Genres</Button>
-                  <Button onClick={this.handleClearGenres}>Clear Genres</Button>
                 </Box>
                 <br />
 
@@ -107,13 +96,10 @@ export default class PQPopUp extends React.Component {
                   />
                 </Box>
                 <br />
-                {/* it would be cool to take these from their current preferences, add other box with write in */}
                 {/* actors */}
                 <Box>
                   <label> Popular actors you'd like to see? </label><br />
                   <MultipleSelect id='actor select' />
-                  <Button onClick={this.handleAddActors}>Add Actors</Button>
-                  <Button onClick={this.handleClearActors}>Clear Actors</Button>
                 </Box><br />
 
                 <label> How vintage are you feeling today? </label><br />

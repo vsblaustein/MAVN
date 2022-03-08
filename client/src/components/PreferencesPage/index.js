@@ -6,7 +6,7 @@ import PQPopUp from './PQPopUp';
 import * as React from 'react';
 import MovieReview from './MovieReview';
 import PreferencesStats from './PreferenceStat';
-
+import useState from 'react';
 
 // styling for horizontal list
 const flexContainer = {
@@ -17,11 +17,15 @@ const flexContainer = {
 
 // display current preferences at the bottom of the page
 export default class Preferences extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      qSeen: false,
+      mrSeen: false};
+  }
   // determines if either state has been seen
-  state = {
-    pqSeen: false,
-    mrSeen: false
-  };
+  // may need to add user to the state    
 
   // methods to toggle pop ups
   togglePQ = () => {
@@ -36,6 +40,11 @@ export default class Preferences extends React.Component {
       mrSeen: !this.state.mrSeen
     });
   };
+
+  // insert query to clear preferences by user ID
+  clearPreferences = () =>{
+    console.log("clear preferences");
+  }
 
 
   render() {
@@ -72,6 +81,9 @@ export default class Preferences extends React.Component {
           </Typography>
 
           <PreferencesStats style={flexContainer} class='center-screen'/>
+          <Button onClick={this.clearPreferences}>
+            Clear Preferences
+          </Button>
 
         </Box>
 
