@@ -19,15 +19,16 @@ export default class PQPopUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sliderVal: 3,
-      actors:''};
+      sliderVal: 3};
   }
 
 
+  // makes the pop up disappear
   handleExit = () => {
     this.props.toggle();
   };
 
+  // submits the form to the DB
   handleSubmit = () => {
     console.log("submit quiz");
     // write info to the database and continue
@@ -42,12 +43,6 @@ export default class PQPopUp extends React.Component {
     })
     console.log(this.state.sliderVal)
   }
-
-
-  handleClearGenres = () => {
-    console.log("clear genre selections");
-  }
-
 
   // add a "are you sure you want to leave?"
   render() {
@@ -68,10 +63,10 @@ export default class PQPopUp extends React.Component {
                 component="div"
                 sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
               >
-                Rapid Preferences Quiz
+                Rapid Preferences Quiz 
               </Typography>
               {/* movie genre */}
-              <Box >
+              <Box mt='10px'>
                 <label> What genres are you feeling? </label><br />
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }} >
                   <MultipleGenreSelect />
@@ -102,7 +97,7 @@ export default class PQPopUp extends React.Component {
                   <MultipleSelect id='actor select' />
                 </Box><br />
 
-                <label> How vintage are you feeling today? </label><br />
+                <label> Movie Release Date? </label><br />
                 <Box width='80%' ml='30px'>
                   <RangeSlider />
                 </Box>
@@ -113,7 +108,7 @@ export default class PQPopUp extends React.Component {
               <Button onClick={this.handleSubmit}>
                 Submit
               </Button>
-            </form>
+            </form >
           </Box>
         </Box>
       </>

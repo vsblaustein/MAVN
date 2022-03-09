@@ -81,7 +81,7 @@ export default class Preferences extends React.Component {
           </Typography>
 
           <PreferencesStats style={flexContainer} class='center-screen'/>
-          <Button onClick={this.clearPreferences}>
+          <Button onClick={this.clearPreferences}  sx={{ right: 10, mt: "10px", position: 'absolute' }}>
             Clear Preferences
           </Button>
 
