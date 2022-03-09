@@ -23,6 +23,19 @@ html {
   overflow-y:auto;
 }
 
+.mini_slide_pref_modal {
+  background-color: white;
+  position: absolute;
+  top: 5%;
+  left: 30%;
+  width: 40%;
+  height: 35%;
+  padding: 20px;
+  border-radius: 5px;
+  border: 2px solid black;
+  overflow-y:auto;
+}
+
 .pq-modal_content {
   background-color: white;
   position: absolute;

@@ -4,6 +4,8 @@ import ImageListItem from '@mui/material/ImageListItem';
 import { ImageListItemBar } from '@mui/material';
 import Button from '@mui/material/Button';
 import Genre from './genre';
+import Actors from './actors';
+import Length from './length';
 
 // this document will generate the charts from the db and display them
 
@@ -19,26 +21,21 @@ export default class PreferencesStats extends React.Component{
     };
   }
 
-  // const[genre, setGenre] = React.useState(false);
-  // const[length, setLength] = React.useState(false);
-  // const[year, setYear] = React.useState(false);
-  // const[actors, setActors] = React.useState(false);
-  // const[rating,setRating] = React.useState(false);
-
   handleClick = (title) => {
     if(title === "Genre"){
       console.log("genre");
       this.toggleGenre();
-
     }
     else if(title === "Length"){
       console.log("length");
+      this.toggleLength();
     }
     else if(title === "Release Year"){
       console.log("year");
     }
     else if (title === "Actors"){
       console.log("actors");
+      this.toggleActors();
     }
     else {
       console.log("rating");
@@ -53,15 +50,13 @@ export default class PreferencesStats extends React.Component{
     this.setState({
       genre: !this.state.genre
     });
-
   };
 
-  // toggleLength = () => {
-  //   this.setState({
-  //     length: !this.state.length
-  //   });
-
-  // };
+  toggleLength = () => {
+    this.setState({
+      length: !this.state.length
+    });
+  };
 
   // toggleYear = () => {
   //   this.setState({
@@ -70,12 +65,11 @@ export default class PreferencesStats extends React.Component{
 
   // };
 
-  // toggleActors = () => {
-  //   this.setState({
-  //     actors: !this.state.actors
-  //   });
-
-  // };
+  toggleActors = () => {
+    this.setState({
+      actors: !this.state.actors
+    });
+  };
 
   // toggleRating = () => {
   //   this.setState({
@@ -105,6 +99,8 @@ export default class PreferencesStats extends React.Component{
         </ImageListItem>
       ))}
       {this.state.genre ? <Genre toggle={this.toggleGenre} /> : null}
+      {this.state.actors ? <Actors toggle={this.toggleActors} /> : null}
+      {this.state.length ? <Length toggle={this.toggleLength} /> : null}
     </ImageList>
      
   );

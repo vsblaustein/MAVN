@@ -1,17 +1,17 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import MultipleGenreSelect from './MultipleGenreSelect';
+import MultipleActorSelect from './MultipleActorSelect';
 import Button from '@mui/material/Button';
 import './PQPopUp.css';
 
 // pop up for individual genre preferences
 
-export default class Genre extends React.Component  {
+export default class Actors extends React.Component  {
     constructor(props) {
         super(props);
         this.state = {
-          genre:false};
+          actors:false};
       }
 
     handleExit = () => {
@@ -42,12 +42,12 @@ export default class Genre extends React.Component  {
                 component="div"
                 sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
               >
-                Add Genre Preferences
+                Add Actor Preferences
               </Typography>
               <Box mt='10px'>
-                <label> What genres are you feeling? </label><br />
+                <label> Who should you see on the big screen? </label><br />
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }} >
-                  <MultipleGenreSelect />
+                  <MultipleActorSelect />
                 </Box> 
               </Box>
 
