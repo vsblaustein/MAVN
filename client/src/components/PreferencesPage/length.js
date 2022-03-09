@@ -67,7 +67,7 @@ export default class Length extends React.Component  {
                     max={180}
                   // onChangeCommitted to get value?
                   />
-                </Box> <br/>
+                </Box>
               </Box>
 
               <Button onClick={() => this.handleSubmit()}>

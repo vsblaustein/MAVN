@@ -97,7 +97,7 @@ export default class PQPopUp extends React.Component {
                   <MultipleSelect id='actor select' />
                 </Box><br />
 
-                <label> Movie Release Date? </label><br />
+                <label> Movie Release Year? </label><br />
                 <Box width='80%' ml='30px'>
                   <RangeSlider />
                 </Box>

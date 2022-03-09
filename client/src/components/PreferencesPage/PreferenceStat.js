@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import Genre from './genre';
 import Actors from './actors';
 import Length from './length';
+import ReleaseYear from './release_year';
+import Rating from './rating';
 
 // this document will generate the charts from the db and display them
 
@@ -32,6 +34,7 @@ export default class PreferencesStats extends React.Component{
     }
     else if(title === "Release Year"){
       console.log("year");
+      this.toggleYear();
     }
     else if (title === "Actors"){
       console.log("actors");
@@ -39,6 +42,7 @@ export default class PreferencesStats extends React.Component{
     }
     else {
       console.log("rating");
+      this.toggleRating();
     }
   }
 
@@ -58,12 +62,11 @@ export default class PreferencesStats extends React.Component{
     });
   };
 
-  // toggleYear = () => {
-  //   this.setState({
-  //     year: !this.state.year
-  //   });
-
-  // };
+  toggleYear = () => {
+    this.setState({
+      year: !this.state.year
+    });
+  };
 
   toggleActors = () => {
     this.setState({
@@ -71,12 +74,11 @@ export default class PreferencesStats extends React.Component{
     });
   };
 
-  // toggleRating = () => {
-  //   this.setState({
-  //     rating: !this.state.rating
-  //   });
-
-  // };
+  toggleRating = () => {
+    this.setState({
+      rating: !this.state.rating
+    });
+  };
 
   render() {
   return (
@@ -101,6 +103,8 @@ export default class PreferencesStats extends React.Component{
       {this.state.genre ? <Genre toggle={this.toggleGenre} /> : null}
       {this.state.actors ? <Actors toggle={this.toggleActors} /> : null}
       {this.state.length ? <Length toggle={this.toggleLength} /> : null}
+      {this.state.year ? <ReleaseYear toggle={this.toggleYear} /> : null}
+      {this.state.rating ? <Rating toggle={this.toggleRating} /> : null}
     </ImageList>
      
   );
