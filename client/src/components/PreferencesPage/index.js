@@ -6,7 +6,7 @@ import PQPopUp from './PQPopUp';
 import * as React from 'react';
 import MovieReview from './MovieReview';
 import PreferencesStats from './PreferenceStat';
-import useState from 'react';
+import ClearConfirm from './clearConfirm';
 
 // styling for horizontal list
 const flexContainer = {
@@ -22,7 +22,8 @@ export default class Preferences extends React.Component {
     super(props);
     this.state = {
       qSeen: false,
-      mrSeen: false};
+      mrSeen: false,
+    };
   }
   // determines if either state has been seen
   // may need to add user to the state    
@@ -81,10 +82,8 @@ export default class Preferences extends React.Component {
           </Typography>
 
           <PreferencesStats style={flexContainer} class='center-screen'/>
-          <Button onClick={this.clearPreferences}  sx={{ right: 10, mt: "10px", position: 'absolute' }}>
-            Clear Preferences
-          </Button>
-
+          {/* if agree should wipe if not just exit */}
+          <ClearConfirm />
         </Box>
 
       </>
