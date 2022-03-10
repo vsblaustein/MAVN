@@ -14,6 +14,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { DatePicker } from '@mui/lab';
 
 function Copyright(props) {
   return (
@@ -32,6 +35,12 @@ const theme = createTheme();
 
 export default function SignUpPage() {
   let navigate = useNavigate();
+  const [value, setValue] = React.useState(null);
+  const handleChange = (newValue) => {
+    console.log({
+      value: newValue
+    });
+  }
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -40,6 +49,7 @@ export default function SignUpPage() {
       name: data.get('firstName') + ' ' + data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
+      dob: value
     });
     //route to sign in page
     navigate("/", { replace: true });
@@ -97,6 +107,22 @@ export default function SignUpPage() {
                 />
               </Grid>
               <Grid item xs={12}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label="Date of Birth"
+                    name="dob"
+                    id="dob"
+                    autoComplete="dob"
+                    value={value}
+                    onChange={(newValue) => {
+                      setValue(newValue);
+                      handleChange(newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+              </Grid>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -107,12 +133,14 @@ export default function SignUpPage() {
                   autoComplete="new-password"
                 />
               </Grid>
+              {/*
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
                   label="I want to receive inspiration, marketing promotions and updates via email."
                 />
               </Grid>
+              */}
             </Grid>
               <Button
                 type="submit"
