@@ -1,42 +1,46 @@
 import * as React from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-import { ImageListItemBar } from '@mui/material';
+import { ImageListItemBar, ListItem } from '@mui/material';
 import Button from '@mui/material/Button';
 import Genre from './genre';
 import Actors from './actors';
 import Length from './length';
 import ReleaseYear from './release_year';
 import Rating from './rating';
+import StatChart from './chart';
+import List from '@mui/material/List';
+import Stack from '@mui/material/Stack';
+import { ListItemText } from '@mui/material';
 
 // this document will generate the charts from the db and display them
 
-export default class PreferencesStats extends React.Component{
+export default class PreferencesStats extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       genre: false,
       length: false,
       year: false,
-      actors:false,
-      rating:false,
+      actors: false,
+      rating: false,
     };
   }
 
   handleClick = (title) => {
-    if(title === "Genre"){
+    if (title === "Genre") {
       console.log("genre");
       this.toggleGenre();
     }
-    else if(title === "Length"){
+    else if (title === "Length") {
       console.log("length");
       this.toggleLength();
     }
-    else if(title === "Release Year"){
+    else if (title === "Release Year") {
       console.log("year");
       this.toggleYear();
     }
-    else if (title === "Actors"){
+    else if (title === "Actors") {
       console.log("actors");
       this.toggleActors();
     }
@@ -81,34 +85,37 @@ export default class PreferencesStats extends React.Component{
   };
 
   render() {
-  return (
-    <ImageList sx={{ width: '100%', height:'100%', padding:0}} cols={5} rowHeight={270}>
-      {itemData.map((item) => (
-        <ImageListItem key={item.img} sx={{width:'150px', height:'100%', left:40, m:'10px',objectFit:'cover'}}>
-          <img
-            src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-            srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-            alt={item.title}
-            loading="lazy"
-          />
-          <ImageListItemBar
-            title={item.title}
-            align='center'
-            position="below"
-            fontWeight='bold'
-          />
-          <Button id={item.title + '_button'} onClick={() => this.handleClick(item.title)}>Edit</Button>
-        </ImageListItem>
-      ))}
-      {this.state.genre ? <Genre toggle={this.toggleGenre} /> : null}
-      {this.state.actors ? <Actors toggle={this.toggleActors} /> : null}
-      {this.state.length ? <Length toggle={this.toggleLength} /> : null}
-      {this.state.year ? <ReleaseYear toggle={this.toggleYear} /> : null}
-      {this.state.rating ? <Rating toggle={this.toggleRating} /> : null}
-    </ImageList>
-     
-  );
-}
+    return (
+      <>
+      <ImageList sx={{ width: '100%', height:'100%', padding:0}} cols={5} rowHeight={270}>
+        {itemData.map((item) => (
+          <ImageListItem key={item.img} sx={{width:'150px', height:'100%', left:40, m:'10px',objectFit:'cover'}}>
+            {/* <img
+              src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+              srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+              alt={item.title}
+              loading="lazy"
+            /> */}
+            {/* pass in result as prop? */}
+            <StatChart/>
+            <ImageListItemBar
+              title={item.title}
+              align='center'
+              position="below"
+              fontWeight='bold'
+            />
+            <Button id={item.title + '_button'} onClick={() => this.handleClick(item.title)}>Edit</Button>
+          </ImageListItem>
+        ))}
+        {this.state.genre ? <Genre toggle={this.toggleGenre} /> : null}
+        {this.state.actors ? <Actors toggle={this.toggleActors} /> : null}
+        {this.state.length ? <Length toggle={this.toggleLength} /> : null}
+        {this.state.year ? <ReleaseYear toggle={this.toggleYear} /> : null}
+        {this.state.rating ? <Rating toggle={this.toggleRating} /> : null}
+      </ImageList>
+       </>
+    );
+  }
 }
 
 const itemData = [

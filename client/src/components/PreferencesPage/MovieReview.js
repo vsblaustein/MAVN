@@ -9,6 +9,7 @@ export default class MovieSearch extends React.Component {
 
     handleExit = () => {
         this.props.toggle();
+        
     };
 
     // add a "are you sure you want to leave?"
