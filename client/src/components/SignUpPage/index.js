@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { DatePicker } from '@mui/lab';
+import Axios from 'axios';
 
 function Copyright(props) {
   return (
@@ -34,6 +35,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUpPage() {
+
   let navigate = useNavigate();
   const [value, setValue] = React.useState(new Date());
   const handleChange = (newValue) => {
@@ -44,7 +46,7 @@ export default function SignUpPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const date = value.toJSON().slice(0,10);
+    const dob = value.toJSON().slice(0,10);
     const username = data.get('username');
     const name = data.get('firstName') + ' ' + data.get('lastName');
     const email = data.get('email');
@@ -55,9 +57,20 @@ export default function SignUpPage() {
       password: password,
       name: name,
       email: email,
-      dob: date
+      dob: dob
     });
     //route to sign in page
+
+    Axios.post('http://localhost:3001/register', {
+      username: username,
+      password: password,
+      full_name: name,
+      email: email,
+      dob: dob
+    }).then((response)=> {
+      console.log(response);
+    });
+
     navigate("/", { replace: true });
   };
 
