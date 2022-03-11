@@ -35,21 +35,27 @@ const theme = createTheme();
 
 export default function SignUpPage() {
   let navigate = useNavigate();
-  const [value, setValue] = React.useState(null);
+  const [value, setValue] = React.useState(new Date());
   const handleChange = (newValue) => {
     console.log({
-      value: newValue
+      value: newValue.toJSON().slice(0,10)
     });
   }
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
+    const date = value.toJSON().slice(0,10);
+    const username = data.get('username');
+    const name = data.get('firstName') + ' ' + data.get('lastName');
+    const email = data.get('email');
+    const password =  data.get('password');
+
     console.log({
-      name: data.get('firstName') + ' ' + data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-      dob: value
+      username: username,
+      password: password,
+      name: name,
+      email: email,
+      dob: date
     });
     //route to sign in page
     navigate("/", { replace: true });
@@ -75,6 +81,27 @@ export default function SignUpPage() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                />
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
@@ -122,17 +149,7 @@ export default function SignUpPage() {
                   />
                 </LocalizationProvider>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
+              
               {/*
               <Grid item xs={12}>
                 <FormControlLabel
