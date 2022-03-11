@@ -43,7 +43,7 @@ export default function SignUpPage() {
       value: newValue.toJSON().slice(0,10)
     });
   }
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const dob = value.toJSON().slice(0,10);
@@ -51,16 +51,6 @@ export default function SignUpPage() {
     const name = data.get('firstName') + ' ' + data.get('lastName');
     const email = data.get('email');
     const password =  data.get('password');
-
-    console.log({
-      username: username,
-      password: password,
-      name: name,
-      email: email,
-      dob: dob
-    });
-    //route to sign in page
-
     Axios.post('http://localhost:3001/register', {
       username: username,
       password: password,
@@ -69,9 +59,12 @@ export default function SignUpPage() {
       dob: dob
     }).then((response)=> {
       console.log(response);
+      navigate("/", { replace: true });
+    }).catch(err => {
+      console.log(err);
     });
 
-    navigate("/", { replace: true });
+    
   };
 
   return (
