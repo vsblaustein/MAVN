@@ -7,35 +7,41 @@ import './PQPopUp.css';
 
 // pop up for individual rating preferences
 function valuetext(value) {
-    console.log(value);
-    return value;
+  console.log(value);
+  return value;
+}
+
+const rating = [{ value: 0, label: '0%' }, { value: 20, label: '20%' },
+{ value: 40, label: '40%' }, { value: 60, label: '60%' },
+{ value: 80, label: '80%' }, { value: 100, label: '100%' }];
+
+
+export default class Rating extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 75
+    };
   }
 
-  const rating = [{ value: 0, label: '0%' }, { value: 20, label: '20%' }, 
-  { value: 40, label: '40%' }, { value: 60, label: '60%' }, 
-  { value: 80, label: '80%' }, { value: 100, label: '100%' }];
+  handleExit = () => {
+    this.props.toggle();
 
+  };
 
-export default class Rating extends React.Component  {
-    constructor(props) {
-        super(props);
-        this.state = {
-          genre:false};
-      }
+  handleSubmit = () => {
+    // write this.state.value to the database
+    console.log('submit rating: ' + this.state.value);
+    this.handleExit();
+  };
 
-    handleExit = () => {
-        this.props.toggle();
-        
-      };
-    
-    handleSubmit = () => {
-        console.log("submit quiz");
-        // write info to the database and continue
-      }
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
 
-    render () {
+  render() {
     return (
-        <>
+      <>
         <Box className="modal">
           <Box className="mini_slide_pref_modal">
             <span className="close" onClick={() => this.handleExit()}>
@@ -54,19 +60,19 @@ export default class Rating extends React.Component  {
                 Add Rating Preferences
               </Typography>
               <Box mt='10px'>
-                <label> Minimum overall rating? </label><br /> <br/>
+                <label> Minimum overall rating? </label><br /> <br />
                 <Box width='80%' ml='30px'>
                   <Slider
-                    id='length'
-                    aria-label="Length"
+                    id='rating'
+                    aria-label="Rating"
                     defaultValue={75}
                     valueLabelDisplay="auto"
                     // this changes every time hover, want when stops
-                    getAriaValueText={valuetext}
                     step={5}
                     marks={rating}
                     min={0}
                     max={100}
+                    onChange={this.handleChange}
                   />
                 </Box>
               </Box>
@@ -77,7 +83,7 @@ export default class Rating extends React.Component  {
             </form >
           </Box>
         </Box>
-        </>
+      </>
     );
-    }
+  }
 }

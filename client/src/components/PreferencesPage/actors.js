@@ -11,29 +11,38 @@ export default class Actors extends React.Component  {
     constructor(props) {
         super(props);
         this.state = {
-          actors:false};
+          actors:''};
       }
 
     handleExit = () => {
         this.props.toggle();
-        
       };
+
+    setValues = (a) => {
+      this.setState({
+        actors:a,
+      });
+    };
     
-    handleSubmit = () => {
+      handleSubmit = () => {
         console.log("submit quiz");
-        // write info to the database and continue
+        // write info to the database and continue, actors is array
+        console.log("actors: " + this.state.actors);
+        this.handleExit();
       }
+    
 
     render () {
     return (
         <>
         <Box className="modal">
-          <Box className="mini_pref_modal">
+          <Box className="mini_pref_modal" component="form" onSubmit={this.handleSubmit}>
             <span className="close" onClick={() => this.handleExit()}>
               <Button>
                 Exit
               </Button>
             </span>
+            
             {/* may need to define an action */}
             <form>
               <Typography
@@ -47,13 +56,11 @@ export default class Actors extends React.Component  {
               <Box mt='10px'>
                 <label> Who should you see on the big screen? </label><br />
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }} >
-                  <MultipleActorSelect />
+                  <MultipleActorSelect action={this.setValues} toggle={this.handleExit}/>
+                  <Button onClick={() => this.handleSubmit()}> Submit </Button>
                 </Box> 
               </Box>
 
-              <Button onClick={() => this.handleSubmit()}>
-                Submit
-              </Button>
             </form >
           </Box>
         </Box>

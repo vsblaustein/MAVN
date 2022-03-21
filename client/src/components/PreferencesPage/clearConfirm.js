@@ -14,14 +14,17 @@ export default function AlertDialog() {
     setOpen(true);
   };
 
+  // passes in value of clear or not clear
   const handleClose = () => {
     setOpen(false);
   };
 
+  // query to clear the database, need the user id
   const handleConfirm = () => {
-      console.log('clear the db');
-      handleClose();
+    console.log("clear the database here");
+    handleClose();
   }
+
 
   return (
     <Box sx={{ right: '43%', mt: "10px", position: 'absolute' }}>

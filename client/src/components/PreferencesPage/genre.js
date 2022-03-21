@@ -7,26 +7,36 @@ import './PQPopUp.css';
 
 // pop up for individual genre preferences
 
-export default class Genre extends React.Component  {
-    constructor(props) {
-        super(props);
-        this.state = {
-          genre:false};
-      }
+export default class Genre extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      genre: ''
+    };
+  }
 
-    handleExit = () => {
-        this.props.toggle();
-        
-      };
-    
-    handleSubmit = () => {
-        console.log("submit quiz");
-        // write info to the database and continue
-      }
+  handleExit = () => {
+    this.props.toggle();
 
-    render () {
+  };
+
+  setValue = (g) => {
+    this.setState({
+      genre: g,
+    });
+  };
+
+  handleSubmit = () => {
+    console.log("submit quiz");
+    // write info to the database and continue
+    console.log("genre: " + this.state.genre);
+    this.handleExit();
+
+  }
+
+  render() {
     return (
-        <>
+      <>
         <Box className="modal">
           <Box className="mini_pref_modal">
             <span className="close" onClick={() => this.handleExit()}>
@@ -47,17 +57,14 @@ export default class Genre extends React.Component  {
               <Box mt='10px'>
                 <label> What genres are you feeling? </label><br />
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }} >
-                  <MultipleGenreSelect />
-                </Box> 
+                  <MultipleGenreSelect action={this.setValue} toggle={() => this.handleExit()} />
+                  <Button onClick={() => this.handleSubmit()}> Submit </Button>
+                </Box>
               </Box>
-
-              <Button onClick={() => this.handleSubmit()}>
-                Submit
-              </Button>
             </form >
           </Box>
         </Box>
-        </>
+      </>
     );
-    }
+  }
 }

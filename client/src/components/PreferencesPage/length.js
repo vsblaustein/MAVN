@@ -7,33 +7,34 @@ import './PQPopUp.css';
 
 // pop up for individual length preferences
 
-function valuetext(value) {
-    console.log(value);
-    return value;
+const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, { value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
+
+
+export default class Length extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 120
+    };
   }
 
-  const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, { value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
+  handleExit = () => {
+    this.props.toggle();
+  };
 
+  handleSubmit = () => {
+    // write info to the database and continue
+    console.log('submit length: ' + this.state.value);
+    this.handleExit();
+  }
 
-export default class Length extends React.Component  {
-    constructor(props) {
-        super(props);
-        this.state = {
-          genre:false};
-      }
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
 
-    handleExit = () => {
-        this.props.toggle(); 
-      };
-    
-    handleSubmit = () => {
-        console.log("submit quiz");
-        // write info to the database and continue
-      }
-
-    render () {
+  render() {
     return (
-        <>
+      <>
         <Box className="modal">
           <Box className="mini_slide_pref_modal">
             <span className="close" onClick={() => this.handleExit()}>
@@ -52,20 +53,18 @@ export default class Length extends React.Component  {
                 Add Length Preferences
               </Typography>
               <Box mt='10px'>
-                <label> How much time do you have to watch? </label><br /> <br/>
+                <label> How much time do you have to watch? </label><br /> <br />
                 <Box width='80%' ml='30px'>
                   <Slider
                     id='length'
                     aria-label="Length"
                     defaultValue={120}
                     valueLabelDisplay="auto"
-                    // this changes every time hover, want when stops
-                    getAriaValueText={valuetext}
                     step={10}
                     marks={lengthMarks}
                     min={0}
                     max={180}
-                  // onChangeCommitted to get value?
+                    onChange={this.handleChange}
                   />
                 </Box>
               </Box>
@@ -76,7 +75,7 @@ export default class Length extends React.Component  {
             </form >
           </Box>
         </Box>
-        </>
+      </>
     );
-    }
+  }
 }

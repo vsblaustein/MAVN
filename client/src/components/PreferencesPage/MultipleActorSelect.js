@@ -38,7 +38,7 @@ function getStyles(name, personName, theme) {
     };
 }
 
-export default function MultipleSelectChip() {
+export default function MultipleSelectChip(props) {
     const theme = useTheme();
     // current value and function that lets us update this value
     const [actors, setActors] = React.useState([]);
@@ -52,7 +52,7 @@ export default function MultipleSelectChip() {
             typeof value === 'string' ? value.split(',') : value,
         );
         // looks at the state variable actors
-        console.log('actors' + actors);
+        props.action(value);
     };
 
     // clears the actors list
@@ -61,7 +61,9 @@ export default function MultipleSelectChip() {
         setActors(
             []
         );
+        props.action([]);
       }
+
 
     return (
         <>
@@ -94,8 +96,8 @@ export default function MultipleSelectChip() {
                     ))}
                 </Select>
                 <Button onClick={handleClearActors}>Clear Actors</Button>
-
             </FormControl>
+
         </>
     );
 }

@@ -11,18 +11,30 @@ export default class ReleaseYear extends React.Component  {
     constructor(props) {
         super(props);
         this.state = {
-          genre:false};
+          s_year:'',
+          e_year:'',};
       }
 
     handleExit = () => {
         this.props.toggle();
-        
       };
     
     handleSubmit = () => {
         console.log("submit quiz");
+        console.log("passing to db: " + this.state.s_year + " : " + this.state.e_year);
+        this.handleExit();
         // write info to the database and continue
-      }
+      };
+
+    setValues = (start, end) => {
+      console.log(start);
+      console.log(end);
+      this.setState({
+        s_year: start,
+        e_year: end,
+      });
+      console.log(this.state.s_year + " : " + this.state.e_year);
+    };
 
     render () {
     return (
@@ -47,7 +59,7 @@ export default class ReleaseYear extends React.Component  {
               <Box mt='10px'>
                 <label> Preferred Movie Release Year </label><br /><br/>
                 <Box width='80%' ml='30px'>
-                  <RangeSlider />
+                  <RangeSlider action={this.setValues} />
                 </Box> 
               </Box>
 

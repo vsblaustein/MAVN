@@ -15,6 +15,7 @@ const flexContainer = {
   padding: 0,
 };
 
+
 // display current preferences at the bottom of the page
 export default class Preferences extends React.Component {
 
@@ -45,12 +46,7 @@ export default class Preferences extends React.Component {
     });
   };
 
-  // insert query to clear preferences by user ID
-  clearPreferences = () =>{
-    console.log("clear preferences");
-  }
-
-
+ 
   render() {
     return (
       <>
@@ -88,7 +84,7 @@ export default class Preferences extends React.Component {
           
 
           {/* if agree should wipe if not just exit */}
-          <ClearConfirm class='center-screen'/>
+          <ClearConfirm class='center-screen' clear={this.clear}/>
           
         </Box>
 
