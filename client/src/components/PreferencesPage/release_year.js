@@ -11,8 +11,8 @@ export default class ReleaseYear extends React.Component  {
     constructor(props) {
         super(props);
         this.state = {
-          s_year:'',
-          e_year:'',};
+          s_year:1960,
+          e_year:2000,};
       }
 
     handleExit = () => {

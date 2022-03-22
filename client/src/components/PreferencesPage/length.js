@@ -42,7 +42,6 @@ export default class Length extends React.Component {
                 Exit
               </Button>
             </span>
-            {/* may need to define an action */}
             <form>
               <Typography
                 variant="h6"
@@ -60,7 +59,7 @@ export default class Length extends React.Component {
                     aria-label="Length"
                     defaultValue={120}
                     valueLabelDisplay="auto"
-                    step={10}
+                    step={5}
                     marks={lengthMarks}
                     min={0}
                     max={180}

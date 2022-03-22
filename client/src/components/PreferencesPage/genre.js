@@ -17,7 +17,6 @@ export default class Genre extends React.Component {
 
   handleExit = () => {
     this.props.toggle();
-
   };
 
   setValue = (g) => {
