@@ -14,6 +14,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import Axios from 'axios';
+
 
 
 function Copyright(props) {
@@ -32,17 +34,48 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  const [loginStatus, setLoginStatus] = React.useState("");
   let navigate = useNavigate();
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
+    /*setUsername(data.get('username'));
+    setPassword(data.get('password'));
     console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+      changed_username: username,
+      changed_password: password
+    });*/
+
+    console.log("beginning axios.get")
+    const user = data.get('username');
+    const pass = data.get('password');
+
+    console.log("user: " + user + " pass: " + pass);
+
+    
+    Axios.post('http://localhost:3001/login', {
+      username: user,
+      password: pass
+    }).then((response)=> {
+      if (response.data.message){
+        //wrong combination- invalid login
+        console.log(response.data);
+        setLoginStatus(response.data.message);
+      } else {
+        //valid login!
+        console.log("Login successful")
+        //route to home
+        navigate("/home", { replace: true });
+      }
+    }).catch(err => {
+      console.log(err);
     });
-    //route to home
-    navigate("/home", { replace: true });
+
+
+
   };
 
   return (
@@ -84,10 +117,10 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
                 autoFocus
               />
               <TextField
@@ -100,6 +133,14 @@ export default function SignIn() {
                 id="password"
                 autoComplete="current-password"
               />
+              <Grid container>
+                <Grid item>
+                  <Typography variant="caption" sx={{color: "#FF0000"}}>
+                    {loginStatus}
+                  </Typography>
+                </Grid>
+              </Grid>
+              
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"

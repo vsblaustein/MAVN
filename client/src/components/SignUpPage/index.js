@@ -14,6 +14,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { DatePicker } from '@mui/lab';
+import Axios from 'axios';
 
 function Copyright(props) {
   return (
@@ -31,18 +35,36 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUpPage() {
+
   let navigate = useNavigate();
-  const handleSubmit = (event) => {
+  const [value, setValue] = React.useState(new Date());
+  const handleChange = (newValue) => {
+    console.log({
+      value: newValue.toJSON().slice(0,10)
+    });
+  }
+  const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      name: data.get('firstName') + ' ' + data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
+    const dob = value.toJSON().slice(0,10);
+    const username = data.get('username');
+    const name = data.get('firstName') + ' ' + data.get('lastName');
+    const email = data.get('email');
+    const password =  data.get('password');
+    Axios.post('http://localhost:3001/register', {
+      username: username,
+      password: password,
+      full_name: name,
+      email: email,
+      dob: dob
+    }).then((response)=> {
+      console.log(response);
+      navigate("/", { replace: true });
+    }).catch(err => {
+      console.log(err);
     });
-    //route to sign in page
-    navigate("/", { replace: true });
+
+    
   };
 
   return (
@@ -65,6 +87,27 @@ export default function SignUpPage() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                />
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
@@ -97,22 +140,30 @@ export default function SignUpPage() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label="Date of Birth"
+                    name="dob"
+                    id="dob"
+                    autoComplete="dob"
+                    value={value}
+                    onChange={(newValue) => {
+                      setValue(newValue);
+                      handleChange(newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
               </Grid>
+              
+              {/*
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
                   label="I want to receive inspiration, marketing promotions and updates via email."
                 />
               </Grid>
+              */}
             </Grid>
               <Button
                 type="submit"
