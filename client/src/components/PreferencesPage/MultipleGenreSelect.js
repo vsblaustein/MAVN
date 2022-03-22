@@ -37,7 +37,7 @@ function getStyles(name, personName, theme) {
     };
 }
 
-export default function MultipleSelectChip() {
+export default function MultipleSelectChip(props){
     const theme = useTheme();
     const [genres, setGenres] = React.useState([]);
 
@@ -49,6 +49,7 @@ export default function MultipleSelectChip() {
             // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
+        props.action(value);
     };
 
     // clears the actors list
@@ -57,16 +58,16 @@ export default function MultipleSelectChip() {
         setGenres(
             []
         );
+        props.action([]);
       }
-
 
     return (
         <>
             <FormControl sx={{ m: 1, width: 200 }}>
-                <InputLabel id="demo-multiple-chip-label">Genre</InputLabel>
+                <InputLabel id="genre-select-label">Genre</InputLabel>
                 <Select
-                    labelId="demo-multiple-chip-label"
-                    id="demo-multiple-chip"
+                    labelId="genre-select-label"
+                    id="genre-select"
                     multiple
                     value={genres}
                     onChange={handleChange}
@@ -91,6 +92,7 @@ export default function MultipleSelectChip() {
                     ))}
                 </Select>
                 <Button onClick={handleClearGenre}>Clear Genres</Button>
+
             </FormControl>
         </>
     );

@@ -5,32 +5,37 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Slider } from '@mui/material';
 import RangeSlider from './RangeSlider';
-import MultipleSelect from './MultipleActorSelect';
+import MultipleActorSelect from './MultipleActorSelect';
 import MultipleGenreSelect from './MultipleGenreSelect';
+import Length from './length';
 
 const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, { value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
-
-function valuetext(value) {
-  console.log(value);
-  return value;
-}
 
 export default class PQPopUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       sliderVal: 3,
-      actors:''};
+      genres:[],
+      rating:'',
+      length:120,
+      actors:[],
+      s_year:1960,
+      e_year:2000};
   }
 
 
+  // makes the pop up disappear
   handleExit = () => {
     this.props.toggle();
   };
 
+  // submits the form to the DB
   handleSubmit = () => {
     console.log("submit quiz");
     // write info to the database and continue
+    console.log("submitting: (actors, " + this.state.actors + ") (genres, " + this.state.genres
+    + "(release years, " + this.state.s_year + " " + this.state.e_year + ") (length, " + this.state.length + ")");
   }
 
   // setting state vs passing variables?
@@ -43,11 +48,33 @@ export default class PQPopUp extends React.Component {
     console.log(this.state.sliderVal)
   }
 
+  // set the values
+  setGenres = (g) => {
+    this.setState({
+      genres: g,
+    });
+  };
 
-  handleClearGenres = () => {
-    console.log("clear genre selections");
-  }
+  setActors = (a) => {
+    this.setState({
+      actors: a,
+    });
+  };
 
+  setReleaseYear = (start, end) => {
+    console.log(start);
+    console.log(end);
+    this.setState({
+      s_year: start,
+      e_year: end,
+    });
+  };
+
+  setLength = (event, value) => {
+    this.setState({ 
+      length:value,
+     });
+  };
 
   // add a "are you sure you want to leave?"
   render() {
@@ -68,13 +95,13 @@ export default class PQPopUp extends React.Component {
                 component="div"
                 sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
               >
-                Rapid Preferences Quiz
+                Rapid Preferences Quiz 
               </Typography>
               {/* movie genre */}
-              <Box >
+              <Box mt='10px'>
                 <label> What genres are you feeling? </label><br />
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }} >
-                  <MultipleGenreSelect />
+                  <MultipleGenreSelect action={this.setGenres}/>
                 </Box>
                 <br />
 
@@ -87,33 +114,30 @@ export default class PQPopUp extends React.Component {
                     defaultValue={120}
                     valueLabelDisplay="auto"
                     // this changes every time hover, want when stops
-                    getAriaValueText={valuetext}
-                    step={10}
+                    step={5}
                     marks={lengthMarks}
                     min={0}
                     max={180}
-                  // onChangeCommitted to get value?
+                    onChange={this.setLength}
                   />
                 </Box>
                 <br />
                 {/* actors */}
                 <Box>
                   <label> Popular actors you'd like to see? </label><br />
-                  <MultipleSelect id='actor select' />
+                  <MultipleActorSelect action={this.setActors} id='actor select' />
                 </Box><br />
 
-                <label> How vintage are you feeling today? </label><br />
+                <label> Movie Release Year? </label><br />
                 <Box width='80%' ml='30px'>
-                  <RangeSlider />
+                  <RangeSlider action={this.setReleaseYear}/>
                 </Box>
 
               </Box><br />
-
-
               <Button onClick={this.handleSubmit}>
                 Submit
               </Button>
-            </form>
+            </form >
           </Box>
         </Box>
       </>
