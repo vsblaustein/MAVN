@@ -72,6 +72,20 @@ app.post('/ratingPref', async (req, res) => {
   }
 });
 
+//adds to rating_pref table
+app.post('/lengthPref', async (req, res) => {
+  const username = req.body.username;
+  const length = req.body.length;
+  try {
+    const result = await db.query(
+      "INSERT INTO length_pref (username, length) VALUES (?, ?)", 
+      [username, length]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
 app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
   });

@@ -15,17 +15,10 @@ const rating = [{ value: 0, label: '0%' }, { value: 20, label: '20%' },
 
 
 export default function Rating(props) {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     value: 75
-  //   };
-  // }
   const [value, setValue] = React.useState(75);
 
   const handleExit = () => {
     props.toggle();
-
   };
 
   let navigate = useNavigate();
@@ -77,7 +70,6 @@ export default function Rating(props) {
                   aria-label="Rating"
                   defaultValue={75}
                   valueLabelDisplay="auto"
-                  // this changes every time hover, want when stops
                   step={5}
                   marks={rating}
                   min={0}
