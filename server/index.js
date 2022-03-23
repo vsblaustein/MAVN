@@ -100,6 +100,20 @@ app.post('/genrePref', async (req, res) => {
   }
 });
 
+//adds to actorr_pref table
+app.post('/actorPref', async (req, res) => {
+  const username = req.body.username;
+  const actor = req.body.actors;
+  try {
+    const result = await db.query(
+      "INSERT INTO actor_pref (username, actor) VALUES (?, ?)", 
+      [username, actor]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
 app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
   });

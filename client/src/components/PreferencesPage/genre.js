@@ -25,21 +25,21 @@ export default function Genre(props) {
     setGenre(g);
   };
 
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     console.log("submit genre pref for " + currentUser);
     event.preventDefault();
     // write info to the database and continue
-    for(const g in genre){
+    for (const g in genre) {
       console.log("current genre: " + genre[g]);
       Axios.post('http://localhost:3001/genrePref', {
-      username: currentUser,
-      genre: genre[g],
-    }).then((response) => {
-      console.log(response);
-      navigate("/my%20preferences", { replace: true });
-    }).catch(err => {
-      console.log(err);
-    });
+        username: currentUser,
+        genre: genre[g],
+      }).then((response) => {
+        console.log(response);
+        navigate("/my%20preferences", { replace: true });
+      }).catch(err => {
+        console.log(err);
+      });
     }
     handleExit();
 
