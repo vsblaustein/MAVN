@@ -58,6 +58,20 @@ app.post('/login', async (req, res) => {
   }
 });
 
+//adds to rating_pref table
+app.post('/ratingPref', async (req, res) => {
+  const username = req.body.username;
+  const rating = req.body.rating;
+  try {
+    const result = await db.query(
+      "INSERT INTO rating_pref (username, rating) VALUES (?, ?)", 
+      [username, rating]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
 app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
   });

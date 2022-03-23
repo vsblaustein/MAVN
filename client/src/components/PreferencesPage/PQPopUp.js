@@ -35,7 +35,8 @@ export default class PQPopUp extends React.Component {
     console.log("submit quiz");
     // write info to the database and continue
     console.log("submitting: (actors, " + this.state.actors + ") (genres, " + this.state.genres
-    + "(release years, " + this.state.s_year + " " + this.state.e_year + ") (length, " + this.state.length + ")");
+    + ") (release years, " + this.state.s_year + " " + this.state.e_year + ") (length, " + this.state.length + ")");
+    this.handleExit();
   }
 
   // setting state vs passing variables?
@@ -45,7 +46,6 @@ export default class PQPopUp extends React.Component {
     this.setState({
       sliderVal: curr
     })
-    console.log(this.state.sliderVal)
   }
 
   // set the values
@@ -62,8 +62,6 @@ export default class PQPopUp extends React.Component {
   };
 
   setReleaseYear = (start, end) => {
-    console.log(start);
-    console.log(end);
     this.setState({
       s_year: start,
       e_year: end,
@@ -110,7 +108,6 @@ export default class PQPopUp extends React.Component {
                 <Box width='80%' ml='30px'>
                   <Slider
                     id='length'
-                    aria-label="Length"
                     defaultValue={120}
                     valueLabelDisplay="auto"
                     // this changes every time hover, want when stops

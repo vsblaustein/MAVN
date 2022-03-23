@@ -89,7 +89,7 @@ export default function SignUpPage() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  required
+                  required                                                                        
                   fullWidth
                   id="username"
                   label="Username"

@@ -20,15 +20,12 @@ export default class ReleaseYear extends React.Component  {
       };
     
     handleSubmit = () => {
-        console.log("submit quiz");
         console.log("passing to db: " + this.state.s_year + " : " + this.state.e_year);
         this.handleExit();
         // write info to the database and continue
       };
 
     setValues = (start, end) => {
-      console.log(start);
-      console.log(end);
       this.setState({
         s_year: start,
         e_year: end,
