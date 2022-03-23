@@ -43,7 +43,7 @@ export default function AlertDialog() {
   return (
     <Box sx={{ right: '43%', mt: "10px", position: 'absolute' }}>
       <Button onClick={handleClickOpen}>
-        Clear Preferences
+        Clear All Preferences
       </Button>
       <Dialog
         open={open}
