@@ -20,12 +20,12 @@ export default function ReleaseYear(props) {
   const handleExit = () => {
     props.toggle();
   };
-
+  
+  // submits query to database with information from form
   const handleSubmit = async (event) => {
-    console.log("passing to db: " + s_year + " : " + e_year);
+    console.log("submit release year pref for " + currentUser);
     event.preventDefault();
     // write this.state.value to the database
-    console.log('submit rating pref for ' + currentUser);
     Axios.post('http://localhost:3001/releaseYearPref', {
       username: currentUser,
       s_year: s_year,
@@ -37,13 +37,12 @@ export default function ReleaseYear(props) {
       console.log(err);
     });
     handleExit();
-    // write info to the database and continue
   };
 
   const setValues = (start, end) => {
     setSYear(start);
     setEYear(end);
-    console.log(s_year + " : " + e_year);
+    // console.log(s_year + " : " + e_year);
   };
 
   return (
@@ -55,7 +54,6 @@ export default function ReleaseYear(props) {
               Exit
             </Button>
           </span>
-          {/* may need to define an action */}
           <Box component="form" noValidate onSubmit={handleSubmit}>
             <Typography
               variant="h6"

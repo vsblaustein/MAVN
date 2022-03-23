@@ -25,10 +25,10 @@ export default function Genre(props) {
     setGenre(g);
   };
 
+  // submits query to database with information from form
   const handleSubmit = async (event) => {
     console.log("submit genre pref for " + currentUser);
     event.preventDefault();
-    // write info to the database and continue
     for (const g in genre) {
       console.log("current genre: " + genre[g]);
       Axios.post('http://localhost:3001/genrePref', {
@@ -42,7 +42,6 @@ export default function Genre(props) {
       });
     }
     handleExit();
-
   }
 
   return (
@@ -54,7 +53,6 @@ export default function Genre(props) {
               Exit
             </Button>
           </span>
-          {/* may need to define an action */}
           <Box component="form" noValidate onSubmit={handleSubmit}>
             <Typography
               variant="h6"

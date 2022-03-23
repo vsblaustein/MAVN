@@ -8,12 +8,12 @@ app.use(express.json());
 app.use(cors());
 const mariadb = require('mariadb');
 var db = mariadb.createPool({
-     host: '172.16.122.22',
-     port: 3306,
-     user: 'nate2',
-     password: 'nate2',
-     database: 'moviemaster'
-    
+  host: '172.16.122.22',
+  port: 3306,
+  user: 'nate2',
+  password: 'nate2',
+  database: 'moviemaster'
+
 });
 
 module.exports = Object.freeze({
@@ -30,7 +30,7 @@ app.post('/register', async (req, res) => {
   const dob = req.body.dob;
   try {
     const result = await db.query(
-      "INSERT INTO users (username, name, password, email, dob, image_path) VALUES (?, ?, ?, ?, ?, NULL)", 
+      "INSERT INTO users (username, name, password, email, dob, image_path) VALUES (?, ?, ?, ?, ?, NULL)",
       [username, full_name, password, email, dob]);
     res.send(req.body);
   } catch (err) {
@@ -46,25 +46,25 @@ app.post('/login', async (req, res) => {
   console.log("check for user " + username + " password " + password);
   try {
     const result = await db.query(
-      "SELECT * FROM users WHERE username = ? AND password = ?", 
+      "SELECT * FROM users WHERE username = ? AND password = ?",
       [username, password]);
     if (result.length > 0) {
       res.send(result);
     } else {
-      res.send({message: "Wrong username/password combination"});
+      res.send({ message: "Wrong username/password combination" });
     }
   } catch (err) {
     throw err;
   }
 });
 
-//adds to rating_pref table
+//POST: adds to rating_pref table
 app.post('/ratingPref', async (req, res) => {
   const username = req.body.username;
   const rating = req.body.rating;
   try {
     const result = await db.query(
-      "INSERT INTO rating_pref (username, rating) VALUES (?, ?)", 
+      "INSERT INTO rating_pref (username, rating) VALUES (?, ?)",
       [username, rating]);
     res.send(req.body);
   } catch (err) {
@@ -72,13 +72,13 @@ app.post('/ratingPref', async (req, res) => {
   }
 });
 
-//adds to length_pref table
+// POST: adds to length_pref table
 app.post('/lengthPref', async (req, res) => {
   const username = req.body.username;
   const length = req.body.length;
   try {
     const result = await db.query(
-      "INSERT INTO length_pref (username, length) VALUES (?, ?)", 
+      "INSERT INTO length_pref (username, length) VALUES (?, ?)",
       [username, length]);
     res.send(req.body);
   } catch (err) {
@@ -86,13 +86,13 @@ app.post('/lengthPref', async (req, res) => {
   }
 });
 
-//adds to genre_pref table
+// POST:adds to genre_pref table
 app.post('/genrePref', async (req, res) => {
   const username = req.body.username;
   const genre = req.body.genre;
   try {
     const result = await db.query(
-      "INSERT INTO genre_pref (username, genre) VALUES (?, ?)", 
+      "INSERT INTO genre_pref (username, genre) VALUES (?, ?)",
       [username, genre]);
     res.send(req.body);
   } catch (err) {
@@ -100,13 +100,13 @@ app.post('/genrePref', async (req, res) => {
   }
 });
 
-//adds to actor_pref table
+//POST: adds to actor_pref table
 app.post('/actorPref', async (req, res) => {
   const username = req.body.username;
   const actor = req.body.actors;
   try {
     const result = await db.query(
-      "INSERT INTO actor_pref (username, actor) VALUES (?, ?)", 
+      "INSERT INTO actor_pref (username, actor) VALUES (?, ?)",
       [username, actor]);
     res.send(req.body);
   } catch (err) {
@@ -114,17 +114,17 @@ app.post('/actorPref', async (req, res) => {
   }
 });
 
-//adds to release_year_pref table
+//POST: adds to release_year_pref table
 app.post('/releaseYearPref', async (req, res) => {
   const username = req.body.username;
   const s_year = req.body.s_year;
   const e_year = req.body.e_year;
   try {
     const result = await db.query(
-      "INSERT INTO start_year_pref (username, start_year) VALUES (?, ?)", 
+      "INSERT INTO start_year_pref (username, start_year) VALUES (?, ?)",
       [username, s_year]);
     const result2 = await db.query(
-      "INSERT INTO end_year_pref (username, end_year) VALUES (?, ?)", 
+      "INSERT INTO end_year_pref (username, end_year) VALUES (?, ?)",
       [username, e_year]);
     res.send(req.body);
   } catch (err) {
@@ -132,10 +132,39 @@ app.post('/releaseYearPref', async (req, res) => {
   }
 });
 
+//POST: clear preferences
+app.post('/clearPref', async (req, res) => {
+  const username = req.body.username;
+  try {
+    const result = await db.query(
+      "DELETE FROM actor_pref WHERE username = ?",
+      [username]);
+    const result1 = await db.query(
+      "DELETE FROM genre_pref WHERE username = ?",
+      [username]);
+    const result2 = await db.query(
+      "DELETE FROM start_year_pref WHERE username = ?",
+      [username]);
+    const result3 = await db.query(
+      "DELETE FROM end_year_pref WHERE username = ?",
+      [username]);
+    const result4 = await db.query(
+      "DELETE FROM rating_pref WHERE username = ?",
+      [username]);
+    const result5 = await db.query(
+      "DELETE FROM length_pref WHERE username = ?",
+      [username]);
+
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
 app.get("/api", (req, res) => {
-    res.json({ message: "Hello from server!" });
-  });
-  
+  res.json({ message: "Hello from server!" });
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });

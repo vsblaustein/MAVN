@@ -24,9 +24,9 @@ export default function Rating(props) {
   let navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem('user'));
 
+  // submits query to database with information from form
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // write this.state.value to the database
     console.log('submit rating pref for ' + currentUser);
     Axios.post('http://localhost:3001/ratingPref', {
       username: currentUser,
@@ -53,7 +53,6 @@ export default function Rating(props) {
               Exit
             </Button>
           </span>
-          {/* may need to define an action */}
           <Box component="form" noValidate onSubmit={handleSubmit}>
             <Typography
               variant="h6"
