@@ -20,14 +20,14 @@ export default function Length(props) {
   };
 
   let navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   const handleSubmit = async (event) => {
-    console.log('submit length: ' + value);
+    console.log('submit length pref for ' + currentUser);
     event.preventDefault();
     // write this.state.value to the database
-    console.log('submit length: ' + value);
     Axios.post('http://localhost:3001/lengthPref', {
-      username: 'smolnate',
+      username: currentUser,
       length: value,
     }).then((response) => {
       console.log(response);

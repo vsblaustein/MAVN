@@ -14,6 +14,8 @@ export default function Genre(props) {
   const [genre, setGenre] = React.useState([]);
 
   let navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+
 
   const handleExit = () => {
     props.toggle();
@@ -24,13 +26,13 @@ export default function Genre(props) {
   };
 
   const handleSubmit = async(event) => {
-    console.log("submit quiz");
+    console.log("submit genre pref for " + currentUser);
     event.preventDefault();
     // write info to the database and continue
     for(const g in genre){
       console.log("current genre: " + genre[g]);
       Axios.post('http://localhost:3001/genrePref', {
-      username: 'smolnate',
+      username: currentUser,
       genre: genre[g],
     }).then((response) => {
       console.log(response);

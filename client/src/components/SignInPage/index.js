@@ -37,7 +37,6 @@ export default function SignIn() {
   const [loginStatus, setLoginStatus] = React.useState("");
   let navigate = useNavigate();
 
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -67,6 +66,8 @@ export default function SignIn() {
       } else {
         //valid login!
         console.log("Login successful")
+        // stores the current user in local storage
+        localStorage.setItem('user', JSON.stringify(user))
         //route to home
         navigate("/home", { replace: true });
       }

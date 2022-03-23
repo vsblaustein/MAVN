@@ -22,13 +22,14 @@ export default function Rating(props) {
   };
 
   let navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     // write this.state.value to the database
-    console.log('submit rating: ' + value);
+    console.log('submit rating pref for ' + currentUser);
     Axios.post('http://localhost:3001/ratingPref', {
-      username: 'smolnate',
+      username: currentUser,
       rating: value,
     }).then((response) => {
       console.log(response);
