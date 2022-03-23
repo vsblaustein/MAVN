@@ -9,7 +9,6 @@ import MultipleActorSelect from './MultipleActorSelect';
 import MultipleGenreSelect from './MultipleGenreSelect';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import actor from './actors';
 
 const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, { value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
 
@@ -108,7 +107,6 @@ export default function PQPopUp(props) {
 
   const setLengthVal = (event, value) => {
      setLength(value);
-     console.log(length);
   };
 
   // add a "are you sure you want to leave?"
@@ -121,7 +119,6 @@ export default function PQPopUp(props) {
                 Exit
               </Button>
             </span>
-            {/* may need to define an action */}
             <Box component="form" noValidate onSubmit={handleSubmit}>
               <Typography
                 variant="h6"
@@ -146,7 +143,6 @@ export default function PQPopUp(props) {
                     id='length'
                     defaultValue={120}
                     valueLabelDisplay="auto"
-                    // this changes every time hover, want when stops
                     step={5}
                     marks={lengthMarks}
                     min={0}
@@ -155,7 +151,6 @@ export default function PQPopUp(props) {
                   />
                 </Box>
                 <br />
-                {/* actors */}
                 <Box>
                   <label> Popular actors you'd like to see? </label><br />
                   <MultipleActorSelect action={setActorsVal} id='actor select' />

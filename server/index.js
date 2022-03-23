@@ -58,6 +58,17 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get('/getActors', async(req,res) => {
+  try {
+    const result = await db.query(
+      "SELECT DISTINCT full_name FROM actors");
+    console.log("result: " + result);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 //POST: adds to rating_pref table
 app.post('/ratingPref', async (req, res) => {
   const username = req.body.username;
