@@ -20,13 +20,8 @@ const MenuProps = {
     },
 };
 
-// GENRES NEED TO COME FROM DB
-const names = [
-    'Action', 'Horror', 
-    'Comedy', 'Romance', 
-    'Western', 'Sci-fi', 
-    'Drama', 'Adventure', 'Musical'
-];
+// get genres from DB
+const names = localStorage.getItem('genres').split(',');
 
 function getStyles(name, personName, theme) {
     return {

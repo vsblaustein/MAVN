@@ -7,88 +7,119 @@ import { Slider } from '@mui/material';
 import RangeSlider from './RangeSlider';
 import MultipleActorSelect from './MultipleActorSelect';
 import MultipleGenreSelect from './MultipleGenreSelect';
-import Length from './length';
+import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, { value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
 
-export default class PQPopUp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sliderVal: 3,
-      genres:[],
-      rating:'',
-      length:120,
-      actors:[],
-      s_year:1960,
-      e_year:2000};
-  }
+export default function PQPopUp(props) {
+
+  const[genre, setGenre] = React.useState([]);
+  const[length, setLength] = React.useState(120);
+  const[actors, setActors] = React.useState([]);
+  const[s_year, setSYear] = React.useState(1960);
+  const[e_year, setEYear] = React.useState(2000);
+
+  let navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
 
   // makes the pop up disappear
-  handleExit = () => {
-    this.props.toggle();
+  const handleExit = () => {
+    props.toggle();
   };
 
   // submits the form to the DB
-  handleSubmit = () => {
-    console.log("submit quiz");
+  const handleSubmit = async(event) => {
+    console.log("submitting rapid preference quiz for " + currentUser);
     // write info to the database and continue
-    console.log("submitting: (actors, " + this.state.actors + ") (genres, " + this.state.genres
-    + "(release years, " + this.state.s_year + " " + this.state.e_year + ") (length, " + this.state.length + ")");
-  }
+    console.log("submitting: (actors, " + actors + ") (genres, " + genre
+    + ") (release years, " + s_year + " " + e_year + ") (length, " + length + ")");
 
-  // setting state vs passing variables?
-  handleSlider = () => {
-    var input = document.getElementById('length');
-    var curr = input.value;
-    this.setState({
-      sliderVal: curr
-    })
-    console.log(this.state.sliderVal)
+    event.preventDefault();
+    // actors
+    for (const a in actors) {
+      console.log("current actor: " + actors[a]);
+      Axios.post('http://localhost:3001/actorPref', {
+        username: currentUser,
+        actors: actors[a],
+      }).then((response) => {
+        console.log(response);
+        navigate("/my%20preferences", { replace: true });
+      }).catch(err => {
+        console.log(err);
+      });
+    }
+
+    // genre
+    for (const g in genre) {
+      console.log("current genre: " + genre[g]);
+      Axios.post('http://localhost:3001/genrePref', {
+        username: currentUser,
+        genre: genre[g],
+      }).then((response) => {
+        console.log(response);
+        navigate("/my%20preferences", { replace: true });
+      }).catch(err => {
+        console.log(err);
+      });
+    }
+
+    // length
+    Axios.post('http://localhost:3001/lengthPref', {
+      username: currentUser,
+      length: length,
+    }).then((response) => {
+      console.log(response);
+      navigate("/my%20preferences", { replace: true });
+    }).catch(err => {
+      console.log(err);
+    });
+
+    // release year
+    Axios.post('http://localhost:3001/releaseYearPref', {
+      username: currentUser,
+      s_year: s_year,
+      e_year: e_year,
+    }).then((response) => {
+      console.log(response);
+      navigate("/my%20preferences", { replace: true });
+    }).catch(err => {
+      console.log(err);
+    });
+
+    handleExit();
   }
 
   // set the values
-  setGenres = (g) => {
-    this.setState({
-      genres: g,
-    });
+  const setGenresVal = (g) => {
+    setGenre(g);
   };
 
-  setActors = (a) => {
-    this.setState({
-      actors: a,
-    });
+  const setActorsVal = (a) => {
+    setActors(a);
   };
 
-  setReleaseYear = (start, end) => {
-    console.log(start);
-    console.log(end);
-    this.setState({
-      s_year: start,
-      e_year: end,
-    });
+  const setReleaseYearVal = (start, end) => {
+    setSYear(start);
+    setEYear(end);
   };
 
-  setLength = (event, value) => {
-    this.setState({ 
-      length:value,
-     });
+  const setLengthVal = (event, value) => {
+     setLength(value);
   };
 
   // add a "are you sure you want to leave?"
-  render() {
     return (
       <>
         <Box className="modal">
           <Box className="pq-modal_content">
-            <span className="close" onClick={this.handleExit}>
+            <span className="close" onClick={handleExit}>
               <Button>
                 Exit
               </Button>
             </span>
-            {/* may need to define an action */}
-            <form>
+            <Box component="form" noValidate onSubmit={handleSubmit}>
               <Typography
                 variant="h6"
                 noWrap
@@ -101,7 +132,7 @@ export default class PQPopUp extends React.Component {
               <Box mt='10px'>
                 <label> What genres are you feeling? </label><br />
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }} >
-                  <MultipleGenreSelect action={this.setGenres}/>
+                  <MultipleGenreSelect action={setGenresVal}/>
                 </Box>
                 <br />
 
@@ -110,37 +141,33 @@ export default class PQPopUp extends React.Component {
                 <Box width='80%' ml='30px'>
                   <Slider
                     id='length'
-                    aria-label="Length"
                     defaultValue={120}
                     valueLabelDisplay="auto"
-                    // this changes every time hover, want when stops
                     step={5}
                     marks={lengthMarks}
                     min={0}
                     max={180}
-                    onChange={this.setLength}
+                    onChange={setLengthVal}
                   />
                 </Box>
                 <br />
-                {/* actors */}
                 <Box>
                   <label> Popular actors you'd like to see? </label><br />
-                  <MultipleActorSelect action={this.setActors} id='actor select' />
+                  <MultipleActorSelect action={setActorsVal} id='actor select' />
                 </Box><br />
 
                 <label> Movie Release Year? </label><br />
                 <Box width='80%' ml='30px'>
-                  <RangeSlider action={this.setReleaseYear}/>
+                  <RangeSlider action={setReleaseYearVal}/>
                 </Box>
 
               </Box><br />
-              <Button onClick={this.handleSubmit}>
+              <Button type="submit">
                 Submit
               </Button>
-            </form >
+            </Box >
           </Box>
         </Box>
       </>
     );
   }
-}

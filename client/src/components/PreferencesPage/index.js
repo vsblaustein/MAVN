@@ -36,7 +36,6 @@ export default class Preferences extends React.Component {
       pqSeen: !this.state.pqSeen,
       chart: this.state.pqSeen
     });
-
   };
 
   toggleMR = () => {

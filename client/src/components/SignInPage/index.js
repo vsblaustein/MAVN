@@ -37,7 +37,6 @@ export default function SignIn() {
   const [loginStatus, setLoginStatus] = React.useState("");
   let navigate = useNavigate();
 
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -67,12 +66,54 @@ export default function SignIn() {
       } else {
         //valid login!
         console.log("Login successful")
+        // stores the current user in local storage
+        localStorage.setItem('user', JSON.stringify(user))
         //route to home
         navigate("/home", { replace: true });
       }
     }).catch(err => {
       console.log(err);
     });
+
+    // store the list of actors in local storage
+    Axios.get('http://localhost:3001/getActors', {
+    }).then((response)=> {
+        // gives a list of json objects
+        const actors = JSON.stringify(response.data);
+        const arr = []
+        // parse the JSON objects
+        for(const c in JSON.parse(actors)){
+          arr.push(JSON.parse(actors)[c].full_name);
+        }
+        console.log("list of actors: [" + arr + "]");
+        localStorage.setItem('actors', arr);
+        //route to home
+        navigate("/home", { replace: true });
+      
+    }).catch(err => {
+      console.log(err);
+    });
+
+    // store the list of genres in local storage
+    Axios.get('http://localhost:3001/getGenres', {
+    }).then((response)=> {
+        // gives a list of json objects
+        const genres = JSON.stringify(response.data);
+        const arr = []
+        // parse the JSON objects
+        for(const c in JSON.parse(genres)){
+          arr.push(JSON.parse(genres)[c].genre);
+        }
+        console.log("list of genre: [" + arr + "]");
+        localStorage.setItem('genres', arr);
+
+        //route to home
+        navigate("/home", { replace: true });
+      
+    }).catch(err => {
+      console.log(err);
+    });
+
 
 
 

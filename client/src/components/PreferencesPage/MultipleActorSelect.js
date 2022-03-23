@@ -20,14 +20,8 @@ const MenuProps = {
     },
 };
 
-// ACTORS NEED TO COME FROM DB
-const names = [
-    'Ryan Gosling', 'Channing Tatum',
-    'Amanda Seyfried', 'Adam Sandler',
-    'Rachel McAdams', 'Lily James',
-    'Tom Holland', 'Emma Watson',
-    'Emma Stone'
-];
+// get actors from database
+const names = localStorage.getItem('actors').split(',');
 
 function getStyles(name, personName, theme) {
     return {

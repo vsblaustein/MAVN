@@ -5,10 +5,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 
 export default function AlertDialog() {
   const [open, setOpen] = React.useState(false);
+
+  let navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -20,8 +25,17 @@ export default function AlertDialog() {
   };
 
   // query to clear the database, need the user id
-  const handleConfirm = () => {
-    console.log("clear the database here");
+  const handleConfirm = async(event) => {
+    console.log("clear the preference databases for " + currentUser);
+    event.preventDefault();
+    Axios.post('http://localhost:3001/clearPref', {
+      username: currentUser,
+    }).then((response) => {
+      console.log(response);
+      navigate("/my%20preferences", { replace: true });
+    }).catch(err => {
+      console.log(err);
+    });
     handleClose();
   }
 
@@ -29,7 +43,7 @@ export default function AlertDialog() {
   return (
     <Box sx={{ right: '43%', mt: "10px", position: 'absolute' }}>
       <Button onClick={handleClickOpen}>
-        Clear Preferences
+        Clear All Preferences
       </Button>
       <Dialog
         open={open}
