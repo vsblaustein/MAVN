@@ -58,11 +58,22 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// GET: Get actors from DB
 app.get('/getActors', async(req,res) => {
   try {
     const result = await db.query(
       "SELECT DISTINCT full_name FROM actors");
-    console.log("result: " + result);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: Get genres from DB
+app.get('/getGenres', async(req,res) => {
+  try {
+    const result = await db.query(
+      "SELECT DISTINCT genre FROM genres");
     res.send(result);
   } catch (err) {
     throw err;

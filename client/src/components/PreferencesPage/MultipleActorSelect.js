@@ -20,7 +20,7 @@ const MenuProps = {
     },
 };
 
-// ACTORS NEED TO COME FROM DB
+// get actors from database
 const names = localStorage.getItem('actors').split(',');
 
 function getStyles(name, personName, theme) {

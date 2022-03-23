@@ -87,10 +87,25 @@ export default function SignIn() {
         }
         console.log("list of actors: [" + arr + "]");
         localStorage.setItem('actors', arr);
-        console.log(typeof arr);
-        console.log("ret: " + localStorage.getItem('actors'));
+        //route to home
+        navigate("/home", { replace: true });
+      
+    }).catch(err => {
+      console.log(err);
+    });
 
-        console.log(arr.values);
+    // store the list of genres in local storage
+    Axios.get('http://localhost:3001/getGenres', {
+    }).then((response)=> {
+        // gives a list of json objects
+        const genres = JSON.stringify(response.data);
+        const arr = []
+        // parse the JSON objects
+        for(const c in JSON.parse(genres)){
+          arr.push(JSON.parse(genres)[c].genre);
+        }
+        console.log("list of genre: [" + arr + "]");
+        localStorage.setItem('genres', arr);
 
         //route to home
         navigate("/home", { replace: true });
@@ -98,6 +113,7 @@ export default function SignIn() {
     }).catch(err => {
       console.log(err);
     });
+
 
 
 
