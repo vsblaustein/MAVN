@@ -22,7 +22,6 @@ export default function Length(props) {
   let navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    // write info to the database and continue
     console.log('submit length: ' + value);
     event.preventDefault();
     // write this.state.value to the database
@@ -53,37 +52,37 @@ export default function Length(props) {
             </Button>
           </span>
           <Box component="form" noValidate onSubmit={handleSubmit}>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Add Length Preferences
-          </Typography>
-          <Box mt='10px'>
-            <label> How much time do you have to watch? </label><br /> <br />
-            <Box width='80%' ml='30px'>
-              <Slider
-                id='length'
-                aria-label="Length"
-                defaultValue={120}
-                valueLabelDisplay="auto"
-                step={5}
-                marks={lengthMarks}
-                min={0}
-                max={180}
-                onChange={handleChange}
-              />
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
+            >
+              Add Length Preferences
+            </Typography>
+            <Box mt='10px'>
+              <label> How much time do you have to watch? </label><br /> <br />
+              <Box width='80%' ml='30px'>
+                <Slider
+                  id='length'
+                  aria-label="Length"
+                  defaultValue={120}
+                  valueLabelDisplay="auto"
+                  step={5}
+                  marks={lengthMarks}
+                  min={0}
+                  max={180}
+                  onChange={handleChange}
+                />
+              </Box>
             </Box>
-          </Box>
 
-          <Button type="submit">
-            Submit
-          </Button>
-        </Box >
+            <Button type="submit">
+              Submit
+            </Button>
+          </Box >
+        </Box>
       </Box>
-      </Box>
-      </>
-    );
+    </>
+  );
 }

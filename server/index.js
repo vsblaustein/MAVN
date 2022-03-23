@@ -72,7 +72,7 @@ app.post('/ratingPref', async (req, res) => {
   }
 });
 
-//adds to rating_pref table
+//adds to length_pref table
 app.post('/lengthPref', async (req, res) => {
   const username = req.body.username;
   const length = req.body.length;
@@ -80,6 +80,20 @@ app.post('/lengthPref', async (req, res) => {
     const result = await db.query(
       "INSERT INTO length_pref (username, length) VALUES (?, ?)", 
       [username, length]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//adds to genre_pref table
+app.post('/genrePref', async (req, res) => {
+  const username = req.body.username;
+  const genre = req.body.genre;
+  try {
+    const result = await db.query(
+      "INSERT INTO genre_pref (username, genre) VALUES (?, ?)", 
+      [username, genre]);
     res.send(req.body);
   } catch (err) {
     throw err;
