@@ -100,7 +100,7 @@ app.post('/genrePref', async (req, res) => {
   }
 });
 
-//adds to actorr_pref table
+//adds to actor_pref table
 app.post('/actorPref', async (req, res) => {
   const username = req.body.username;
   const actor = req.body.actors;
@@ -108,6 +108,24 @@ app.post('/actorPref', async (req, res) => {
     const result = await db.query(
       "INSERT INTO actor_pref (username, actor) VALUES (?, ?)", 
       [username, actor]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//adds to release_year_pref table
+app.post('/releaseYearPref', async (req, res) => {
+  const username = req.body.username;
+  const s_year = req.body.s_year;
+  const e_year = req.body.e_year;
+  try {
+    const result = await db.query(
+      "INSERT INTO start_year_pref (username, start_year) VALUES (?, ?)", 
+      [username, s_year]);
+    const result2 = await db.query(
+      "INSERT INTO end_year_pref (username, end_year) VALUES (?, ?)", 
+      [username, e_year]);
     res.send(req.body);
   } catch (err) {
     throw err;
