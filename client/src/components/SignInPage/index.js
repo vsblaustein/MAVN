@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import { Link as RouterLink } from 'react-router-dom' ;
+import { Link as RouterLink } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -54,20 +54,57 @@ export default function SignIn() {
 
     console.log("user: " + user + " pass: " + pass);
 
-    
+
     Axios.post('http://localhost:3001/login', {
       username: user,
       password: pass
-    }).then((response)=> {
-      if (response.data.message){
+    }).then((response) => {
+      if (response.data.message) {
         //wrong combination- invalid login
         console.log(response.data);
+        console.log("yer");
         setLoginStatus(response.data.message);
       } else {
         //valid login!
         console.log("Login successful")
         // stores the current user in local storage
         localStorage.setItem('user', JSON.stringify(user))
+
+        // store the list of actors in local storage
+        Axios.get('http://localhost:3001/getActors', {
+        }).then((response) => {
+          // gives a list of json objects
+          const actors = JSON.stringify(response.data);
+          const arr = []
+          // parse the JSON objects
+          for (const c in JSON.parse(actors)) {
+            arr.push(JSON.parse(actors)[c].full_name);
+          }
+          console.log("list of actors: [" + arr + "]");
+          localStorage.setItem('actors', arr);
+
+
+        }).catch(err => {
+          console.log(err);
+        });
+
+        // store the list of genres in local storage
+        Axios.get('http://localhost:3001/getGenres', {
+        }).then((response) => {
+          // gives a list of json objects
+          const genres = JSON.stringify(response.data);
+          const arr = []
+          // parse the JSON objects
+          for (const c in JSON.parse(genres)) {
+            arr.push(JSON.parse(genres)[c].genre);
+          }
+          console.log("list of genre: [" + arr + "]");
+          localStorage.setItem('genres', arr);
+
+        }).catch(err => {
+          console.log(err);
+        });
+
         //route to home
         navigate("/home", { replace: true });
       }
@@ -75,44 +112,7 @@ export default function SignIn() {
       console.log(err);
     });
 
-    // store the list of actors in local storage
-    Axios.get('http://localhost:3001/getActors', {
-    }).then((response)=> {
-        // gives a list of json objects
-        const actors = JSON.stringify(response.data);
-        const arr = []
-        // parse the JSON objects
-        for(const c in JSON.parse(actors)){
-          arr.push(JSON.parse(actors)[c].full_name);
-        }
-        console.log("list of actors: [" + arr + "]");
-        localStorage.setItem('actors', arr);
-        //route to home
-        navigate("/home", { replace: true });
-      
-    }).catch(err => {
-      console.log(err);
-    });
 
-    // store the list of genres in local storage
-    Axios.get('http://localhost:3001/getGenres', {
-    }).then((response)=> {
-        // gives a list of json objects
-        const genres = JSON.stringify(response.data);
-        const arr = []
-        // parse the JSON objects
-        for(const c in JSON.parse(genres)){
-          arr.push(JSON.parse(genres)[c].genre);
-        }
-        console.log("list of genre: [" + arr + "]");
-        localStorage.setItem('genres', arr);
-
-        //route to home
-        navigate("/home", { replace: true });
-      
-    }).catch(err => {
-      console.log(err);
-    });
 
 
 
@@ -176,16 +176,16 @@ export default function SignIn() {
               />
               <Grid container>
                 <Grid item>
-                  <Typography variant="caption" sx={{color: "#FF0000"}}>
+                  <Typography variant="caption" sx={{ color: "#FF0000" }}>
                     {loginStatus}
                   </Typography>
                 </Grid>
               </Grid>
-              
+
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              /> 
+              />
               <Button
                 type="submit"
                 fullWidth
@@ -202,7 +202,7 @@ export default function SignIn() {
                 </Grid>
                 <RouterLink to="/signup" style={{ textDecoration: 'none' }}>
                   <Grid item>
-                      {"Don't have an account? Sign Up"}
+                    {"Don't have an account? Sign Up"}
                   </Grid>
                 </RouterLink>
               </Grid>
