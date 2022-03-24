@@ -1,6 +1,7 @@
 /* Popup style */
 .popup-box {
     position: fixed;
+    background: #00000050;
     width: 50%;
     height: 50vh;
     top: 0;
@@ -15,7 +16,7 @@
     max-height: 70vh;
     margin-top: calc(100vh - 85vh - 20px);
     background: #fff;
-    border-radius: 0px;
+    border-radius: 4px;
     padding: 20px;
     border: 1px solid #999;
     overflow: auto;
