@@ -1,7 +1,11 @@
 import React from 'react';
-import ResponsiveAppBar from '../ResponsiveAppBar/index'
 import Typography from '@mui/material/Typography';
 import CreateForm from './CreateForm';
+import CreatePopUp from './CreatePopUp';
+import './CreatePopUp.css';
+import Button from '@mui/material/Button';
+
+
 
 import {
   BrowserRouter as Router,
@@ -21,10 +25,17 @@ export default class create extends React.Component {
 render() {
   return (
    <div>
-       <ResponsiveAppBar />
+       
+       <div class="centered">
+              <div className="btn" onClick={this.togglePop} >
+                  <Button  id= "big-btn">Create Room</Button >
+              </div>
+            {this.state.seen ? <CreatePopUp toggle={this.togglePop} position="right center"/> : null }
+
+            
+        </div>
 
           
-          <CreateForm></CreateForm>
    </div>
   );
  }

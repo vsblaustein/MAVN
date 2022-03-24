@@ -1,11 +1,9 @@
 import React from 'react';
-import ResponsiveAppBar from '../ResponsiveAppBar/index'
-import PopUp from './PopUp'; 
+import JoinPopUp from './JoinPopUp'; 
 import './PopUp.css';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import OldRoomPopUp from './OldRoomPopUp'
 import {
   BrowserRouter as Router,
   Routes,
@@ -43,25 +41,18 @@ export default class joinPopUp extends React.Component {
   render() {
     return (
      <div>
-         <ResponsiveAppBar />
+        
          <div class="centered">
-            <div className="btn" onClick={this.togglePop} >
-                <Button  id= "big-btn">Join New Room</Button >
-          </div>
-            {this.state.seen ? <PopUp toggle={this.togglePop} position="right center"/> : null }
-            
-                
+              <div className="btn" onClick={this.togglePop} >
+                  <Button  id= "big-btn">Join New Room</Button >
+              </div>
+            {this.state.seen ? <JoinPopUp toggle={this.togglePop} position="right center"/> : null }
+
+
         </div>
 
 
-        <div class="centered">
-            <div className="btn" onClick={this.togglePop2} >
-                <Button id= "big-btn">Join Old Room</Button >
-          </div>
-            {this.state.seen2 ? <OldRoomPopUp toggle={this.togglePop2} position="right center"/> : null }
-            
-                
-        </div>
+       
      </div>
      
     );

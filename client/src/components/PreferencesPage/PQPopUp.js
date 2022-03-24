@@ -5,87 +5,134 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Slider } from '@mui/material';
 import RangeSlider from './RangeSlider';
-import MultipleSelect from './MultipleActorSelect';
+import MultipleActorSelect from './MultipleActorSelect';
 import MultipleGenreSelect from './MultipleGenreSelect';
+import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, { value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
 
-function valuetext(value) {
-  console.log(value);
-  return value;
-}
+export default function PQPopUp(props) {
 
-export default class PQPopUp extends React.Component {
+  const[genre, setGenre] = React.useState([]);
+  const[length, setLength] = React.useState(120);
+  const[actors, setActors] = React.useState([]);
+  const[s_year, setSYear] = React.useState(1960);
+  const[e_year, setEYear] = React.useState(2000);
 
-  state = {
-    sliderVal: 3
-  }
+  let navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
-  handleExit = () => {
-    this.props.toggle();
+
+  // makes the pop up disappear
+  const handleExit = () => {
+    props.toggle();
   };
 
-  handleSubmit = () => {
-    console.log("submit quiz");
+  // submits the form to the DB
+  const handleSubmit = async(event) => {
+    console.log("submitting rapid preference quiz for " + currentUser);
     // write info to the database and continue
+    console.log("submitting: (actors, " + actors + ") (genres, " + genre
+    + ") (release years, " + s_year + " " + e_year + ") (length, " + length + ")");
+
+    event.preventDefault();
+    // actors
+    for (const a in actors) {
+      console.log("current actor: " + actors[a]);
+      Axios.post('http://localhost:3001/actorPref', {
+        username: currentUser,
+        actors: actors[a],
+      }).then((response) => {
+        console.log(response);
+        navigate("/my%20preferences", { replace: true });
+      }).catch(err => {
+        console.log(err);
+      });
+    }
+
+    // genre
+    for (const g in genre) {
+      console.log("current genre: " + genre[g]);
+      Axios.post('http://localhost:3001/genrePref', {
+        username: currentUser,
+        genre: genre[g],
+      }).then((response) => {
+        console.log(response);
+        navigate("/my%20preferences", { replace: true });
+      }).catch(err => {
+        console.log(err);
+      });
+    }
+
+    // length
+    Axios.post('http://localhost:3001/lengthPref', {
+      username: currentUser,
+      length: length,
+    }).then((response) => {
+      console.log(response);
+      navigate("/my%20preferences", { replace: true });
+    }).catch(err => {
+      console.log(err);
+    });
+
+    // release year
+    Axios.post('http://localhost:3001/releaseYearPref', {
+      username: currentUser,
+      s_year: s_year,
+      e_year: e_year,
+    }).then((response) => {
+      console.log(response);
+      navigate("/my%20preferences", { replace: true });
+    }).catch(err => {
+      console.log(err);
+    });
+
+    handleExit();
   }
 
-  // setting state vs passing variables?
-  handleSlider = () => {
-    var input = document.getElementById('length');
-    var curr = input.value;
-    this.setState({
-      sliderVal: curr
-    })
-    console.log(this.state.sliderVal)
-  }
+  // set the values
+  const setGenresVal = (g) => {
+    setGenre(g);
+  };
 
+  const setActorsVal = (a) => {
+    setActors(a);
+  };
 
-  handleAddActors = () => {
-    console.log("add all actors");
-  }
+  const setReleaseYearVal = (start, end) => {
+    setSYear(start);
+    setEYear(end);
+  };
 
-  handleClearActors = () => {
-    console.log("clear actor selections");
-  }
-
-  handleAddGenres = () => {
-    console.log("add all genres");
-  }
-
-  handleClearGenres = () => {
-    console.log("clear genre selections");
-  }
-
+  const setLengthVal = (event, value) => {
+     setLength(value);
+  };
 
   // add a "are you sure you want to leave?"
-  render() {
     return (
       <>
         <Box className="modal">
           <Box className="pq-modal_content">
-            <span className="close" onClick={this.handleExit}>
+            <span className="close" onClick={handleExit}>
               <Button>
                 Exit
               </Button>
             </span>
-            {/* may need to define an action */}
-            <form>
+            <Box component="form" noValidate onSubmit={handleSubmit}>
               <Typography
                 variant="h6"
                 noWrap
                 component="div"
                 sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
               >
-                Rapid Preferences Quiz
+                Rapid Preferences Quiz 
               </Typography>
               {/* movie genre */}
-              <Box >
+              <Box mt='10px'>
                 <label> What genres are you feeling? </label><br />
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }} >
-                  <MultipleGenreSelect />
-                  <Button onClick={this.handleAddGenres}>Add Genres</Button>
-                  <Button onClick={this.handleClearGenres}>Clear Genres</Button>
+                  <MultipleGenreSelect action={setGenresVal}/>
                 </Box>
                 <br />
 
@@ -94,43 +141,33 @@ export default class PQPopUp extends React.Component {
                 <Box width='80%' ml='30px'>
                   <Slider
                     id='length'
-                    aria-label="Length"
                     defaultValue={120}
                     valueLabelDisplay="auto"
-                    // this changes every time hover, want when stops
-                    getAriaValueText={valuetext}
-                    step={10}
+                    step={5}
                     marks={lengthMarks}
                     min={0}
                     max={180}
-                  // onChangeCommitted to get value?
+                    onChange={setLengthVal}
                   />
                 </Box>
                 <br />
-                {/* it would be cool to take these from their current preferences, add other box with write in */}
-                {/* actors */}
                 <Box>
                   <label> Popular actors you'd like to see? </label><br />
-                  <MultipleSelect id='actor select' />
-                  <Button onClick={this.handleAddActors}>Add Actors</Button>
-                  <Button onClick={this.handleClearActors}>Clear Actors</Button>
+                  <MultipleActorSelect action={setActorsVal} id='actor select' />
                 </Box><br />
 
-                <label> How vintage are you feeling today? </label><br />
+                <label> Movie Release Year? </label><br />
                 <Box width='80%' ml='30px'>
-                  <RangeSlider />
+                  <RangeSlider action={setReleaseYearVal}/>
                 </Box>
 
               </Box><br />
-
-
-              <Button onClick={this.handleSubmit}>
+              <Button type="submit">
                 Submit
               </Button>
-            </form>
+            </Box >
           </Box>
         </Box>
       </>
     );
   }
-}
