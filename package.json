@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/vsblaustein/MAVN#readme",
   "dependencies": {
+    "axios": "^0.26.1",
     "express": "^4.17.2"
   },
   "proxy": "http://localhost:3001"
