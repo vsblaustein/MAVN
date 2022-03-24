@@ -44,46 +44,27 @@ const TooltipContent = (props) => {
     );
 };
 
-export default class PieChart extends React.Component {
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            prefData,
-            hover: null,
-            tooltipTarget: null,
-            tooltipEnabled: true
-        };
+export default function PieChart(props) {
 
-        this.changeHover = hover => this.setState({ hover });
-        this.changeTooltip = targetItem => this.setState({ tooltipTarget: targetItem });
-        this.toggleTooltip = () => this.setState(({ tooltipEnabled }) => ({
-            tooltipEnabled: !tooltipEnabled,
-            tooltipTarget: null,
-        }));
-    }
+    // may need to set lists as a state if they change frequently
+    const [hover, setHover] = React.useState(null);
 
-    render() {
-        const {
-            hover, tooltipTarget, tooltipEnabled,
-        } = this.state;
-        return (
-            <>
-                <Chart data={prefData}>
+    return (
+        <>
+            {/* get this data from storage, map function to map which storage variable */}
+            <Chart data={prefData}>
 
-                    <PieSeries name="pie" valueField="ratio" argumentField="tag" />
-                    {/* keep title here and fill in with list?? */}
-                    {/* <Title text="Votes for Favorite State" /> */}
-                    <Animation />
-                    <EventTracker onClick={this.click} />
-                    <HoverState hover={hover} onHoverChange={this.changeHover} />
-                    <Tooltip
-                        targetItem={tooltipEnabled && tooltipTarget}
-                        onTargetItemChange={this.changeTooltip}
-                        contentComponent={TooltipContent}
-                    />
-                </Chart>
-            </>
-        );
-    }
+                <PieSeries name="pie" valueField="ratio" argumentField="tag" />
+                {/* keep title here and fill in with list?? */}
+                <Animation />
+                <EventTracker />
+                {/* on hover change shades */}
+                <HoverState onHoverChange={setHover} />
+                <Tooltip
+                    contentComponent={TooltipContent}
+                />
+            </Chart>
+        </>
+    );
 }

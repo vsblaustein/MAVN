@@ -58,6 +58,8 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// QUERIES TO LOAD INFO FROM DATABASE
+
 // GET: Get actors from DB
 app.get('/getActors', async(req,res) => {
   try {
@@ -80,13 +82,15 @@ app.get('/getGenres', async(req,res) => {
   }
 });
 
+// START OF QUERIES TO ADD TO PREFERENCES
+
 //POST: adds to rating_pref table
 app.post('/ratingPref', async (req, res) => {
   const username = req.body.username;
   const rating = req.body.rating;
   try {
     const result = await db.query(
-      "INSERT INTO rating_pref (username, rating) VALUES (?, ?)",
+      "INSERT INTO rating_pref (username, value) VALUES (?, ?)",
       [username, rating]);
     res.send(req.body);
   } catch (err) {
@@ -100,7 +104,7 @@ app.post('/lengthPref', async (req, res) => {
   const length = req.body.length;
   try {
     const result = await db.query(
-      "INSERT INTO length_pref (username, length) VALUES (?, ?)",
+      "INSERT INTO length_pref (username, value) VALUES (?, ?)",
       [username, length]);
     res.send(req.body);
   } catch (err) {
@@ -114,7 +118,7 @@ app.post('/genrePref', async (req, res) => {
   const genre = req.body.genre;
   try {
     const result = await db.query(
-      "INSERT INTO genre_pref (username, genre) VALUES (?, ?)",
+      "INSERT INTO genre_pref (username, value) VALUES (?, ?)",
       [username, genre]);
     res.send(req.body);
   } catch (err) {
@@ -128,7 +132,7 @@ app.post('/actorPref', async (req, res) => {
   const actor = req.body.actors;
   try {
     const result = await db.query(
-      "INSERT INTO actor_pref (username, actor) VALUES (?, ?)",
+      "INSERT INTO actor_pref (username, value) VALUES (?, ?)",
       [username, actor]);
     res.send(req.body);
   } catch (err) {
@@ -143,10 +147,10 @@ app.post('/releaseYearPref', async (req, res) => {
   const e_year = req.body.e_year;
   try {
     const result = await db.query(
-      "INSERT INTO start_year_pref (username, start_year) VALUES (?, ?)",
+      "INSERT INTO start_year_pref (username, value) VALUES (?, ?)",
       [username, s_year]);
     const result2 = await db.query(
-      "INSERT INTO end_year_pref (username, end_year) VALUES (?, ?)",
+      "INSERT INTO end_year_pref (username, value) VALUES (?, ?)",
       [username, e_year]);
     res.send(req.body);
   } catch (err) {
@@ -178,6 +182,36 @@ app.post('/clearPref', async (req, res) => {
       [username]);
 
     res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// QUERIES TO GENERATE PREFERENCES CHARTS
+
+// GET: actor preferences for current user
+app.get('/actorPrefChart', async (req, res) => {
+  const username = req.query.username;
+  // allows for serializing of a BigInt (for ratio)
+  BigInt.prototype.toJSON = function() { return this.toString() }
+
+  console.log("fetching actor pref for " + username);
+  try {
+    const result = await db.query(
+      "SELECT n.username, n.value, n.numerator, n.numerator / d.denominator AS ratio \
+        from  ( \
+              SELECT username, value, COUNT(value) AS numerator \
+              FROM actor_pref \
+              WHERE username LIKE ? \
+              GROUP BY value, username ) n \
+          INNER JOIN ( \
+              SELECT username, COUNT(value) AS denominator \
+              FROM actor_pref \
+              WHERE username LIKE ? \
+              GROUP BY username \
+          ) d ON d.username = n.username \
+            ORDER BY n.value; ", [username, username]);
+    res.send(result);
   } catch (err) {
     throw err;
   }
