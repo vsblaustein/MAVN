@@ -192,22 +192,24 @@ app.post('/clearPref', async (req, res) => {
 // GET: actor preferences for current user
 app.get('/actorPrefChart', async (req, res) => {
   const username = req.query.username;
+  const table = req.query.table;
   // allows for serializing of a BigInt (for ratio)
   BigInt.prototype.toJSON = function() { return this.toString() }
 
-  console.log("fetching actor pref for " + username);
+  console.log("fetching " + table + " for " + username);
+
   try {
     const result = await db.query(
       "SELECT n.username, n.value, n.numerator, n.numerator / d.denominator AS ratio \
-        from  ( \
+        FROM( \
               SELECT username, value, COUNT(value) AS numerator \
-              FROM actor_pref \
-              WHERE username LIKE ? \
+              FROM " + table + 
+              " WHERE username LIKE ? \
               GROUP BY value, username ) n \
           INNER JOIN ( \
               SELECT username, COUNT(value) AS denominator \
-              FROM actor_pref \
-              WHERE username LIKE ? \
+              FROM " + table + 
+              " WHERE username LIKE ? \
               GROUP BY username \
           ) d ON d.username = n.username \
             ORDER BY n.value; ", [username, username]);

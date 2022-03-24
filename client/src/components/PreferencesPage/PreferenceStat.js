@@ -22,7 +22,11 @@ export default class PreferencesStats extends React.Component {
       year: false,
       actors: false,
       rating: false,
-      actorPref: [],
+      actor_pref: [],
+      genre_pref: [],
+      length_pref: [],
+      rating_pref: [],
+      release_year_pref: [],
     };
   }
 
@@ -80,29 +84,78 @@ export default class PreferencesStats extends React.Component {
     });
   };
 
+
+  setChart = (chart, data) => {
+    if(chart === 'actor_pref'){
+      this.setState({actor_pref:data});
+    }
+    else if(chart === 'genre_pref'){
+      this.setState({genre_pref:data});
+    }
+    else if(chart === 'length_pref'){
+      this.setState({length_pref:data});
+    }
+    else if(chart === 'rating_pref'){
+      this.setState({rating_pref:data});
+    }
+    else{
+      this.setState({release_year_pref:data});
+    }
+  };
+
+  // return the chart data to render
+  getChart = (index) => {
+    const c = chart[index];
+    if(c === 'actor_pref'){
+      return this.state.actor_pref;
+    }
+    else if(c === 'genre_pref'){
+      return this.state.genre_pref;
+    }
+    else if(c === 'length_pref'){
+      return this.state.length_pref;
+    }
+    else if(c === 'rating_pref'){
+      return this.state.rating_pref;
+    }
+    else{
+      return this.state.release_year;
+    }
+
+  }
+
   // put axios in here?
   componentDidMount() {
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    console.log("sending " + currentUser);
-    Axios.get('http://localhost:3001/actorPrefChart', { params: { username: currentUser } }).then((response) => {
-      console.log("pref stat response: " + response);
-      this.setState({actorPref:response.data});
-      console.log(this.state.actorPref);
-      // actorPref is array of json objects
-    }).catch(err => {
-      console.log(err);
-    });
-
+    
+    // for each chart get the stats from the query
+    for (const c in chart) {
+      console.log("preferred chart: " + chart[c]);
+      Axios.get('http://localhost:3001/actorPrefChart',
+        {
+          params: { username: currentUser, table: chart[c] }
+        }).then((response) => {
+          
+          const currChart = chart[c];
+          this.setChart(currChart, response.data);
+          this.setState({ currChart: response.data });
+          // console.log(response.data);
+          console.log(currChart + " " + JSON.stringify(this.state.currChart));
+        }).catch(err => {
+          console.log(err);
+        });
+    }
+    console.log("after: " + this.state.actor_pref);
   }
 
   render() {
     return (
       <>
         <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={5} rowHeight={270}>
-          {preferences.map((preference) => (
+          {preferences.map((preference, index) => (
             <ImageListItem sx={{ width: '150px', height: '100%', left: 40, m: '10px', objectFit: 'cover' }}>
               {/* pass in result as prop? */}
-              <StatChart actorPref={this.state.actorPref}/>
+              <StatChart chartRes={this.getChart(index)} />
               <ImageListItemBar
                 title={preference.title}
                 align='center'
@@ -127,9 +180,9 @@ export default class PreferencesStats extends React.Component {
 }
 
 const preferences = [
-  { title: 'Genre' }, { title: 'Length' }, { title: 'Release Year' }, { title: 'Actors' }, { title: 'Rating' }
+  { title: 'Genre' }, { title: 'Length' }, { title: 'Actors' }, { title: 'Rating' }//, { title: 'Release Year' },
 ];
-
+const chart = ['genre_pref', 'length_pref', 'actor_pref', 'rating_pref'];
 
 // import * as React from 'react';
 // import ImageList from '@mui/material/ImageList';
