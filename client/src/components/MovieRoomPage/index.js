@@ -7,7 +7,6 @@ import * as React from 'react';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 
-
 // styling for horizontal list
 const flexContainer = {
   display: 'flex',
@@ -37,6 +36,16 @@ export default class MovieRoom extends React.Component {
     });
   };
 
+  copyToClipboard = () => {
+    var inputc = document.body.appendChild(document.createElement("input"))
+    inputc.value = window.location.href
+    inputc.setAttribute('readonly', '')
+    inputc.select()
+    document.execCommand('copy')
+    document.body.removeChild(inputc)
+
+  }
+
 
   render() {
     return (
@@ -44,10 +53,19 @@ export default class MovieRoom extends React.Component {
         <ResponsiveAppBar />
 
         <Box position="static">
+        {/* generate copy link button */}
+        <Button
+            onClick={this.copyToClipboard}
+            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+          >
+            Copy Link
+          </Button>
+          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
+
           {/* generate selection button */}
           <Button
             onClick={this.togglePQ}
-            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
           >
             Generate Movie Selection
           </Button>

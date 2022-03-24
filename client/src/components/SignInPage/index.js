@@ -14,6 +14,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import Axios from 'axios';
+
 
 
 function Copyright(props) {
@@ -32,17 +34,89 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  const [loginStatus, setLoginStatus] = React.useState("");
   let navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
+    /*setUsername(data.get('username'));
+    setPassword(data.get('password'));
     console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+      changed_username: username,
+      changed_password: password
+    });*/
+
+    console.log("beginning axios.get")
+    const user = data.get('username');
+    const pass = data.get('password');
+
+    console.log("user: " + user + " pass: " + pass);
+
+    
+    Axios.post('http://localhost:3001/login', {
+      username: user,
+      password: pass
+    }).then((response)=> {
+      if (response.data.message){
+        //wrong combination- invalid login
+        console.log(response.data);
+        setLoginStatus(response.data.message);
+      } else {
+        //valid login!
+        console.log("Login successful")
+        // stores the current user in local storage
+        localStorage.setItem('user', JSON.stringify(user))
+        //route to home
+        navigate("/home", { replace: true });
+      }
+    }).catch(err => {
+      console.log(err);
     });
-    //route to home
-    navigate("/home", { replace: true });
+
+    // store the list of actors in local storage
+    Axios.get('http://localhost:3001/getActors', {
+    }).then((response)=> {
+        // gives a list of json objects
+        const actors = JSON.stringify(response.data);
+        const arr = []
+        // parse the JSON objects
+        for(const c in JSON.parse(actors)){
+          arr.push(JSON.parse(actors)[c].full_name);
+        }
+        console.log("list of actors: [" + arr + "]");
+        localStorage.setItem('actors', arr);
+        //route to home
+        navigate("/home", { replace: true });
+      
+    }).catch(err => {
+      console.log(err);
+    });
+
+    // store the list of genres in local storage
+    Axios.get('http://localhost:3001/getGenres', {
+    }).then((response)=> {
+        // gives a list of json objects
+        const genres = JSON.stringify(response.data);
+        const arr = []
+        // parse the JSON objects
+        for(const c in JSON.parse(genres)){
+          arr.push(JSON.parse(genres)[c].genre);
+        }
+        console.log("list of genre: [" + arr + "]");
+        localStorage.setItem('genres', arr);
+
+        //route to home
+        navigate("/home", { replace: true });
+      
+    }).catch(err => {
+      console.log(err);
+    });
+
+
+
+
   };
 
   return (
@@ -84,10 +158,10 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
                 autoFocus
               />
               <TextField
@@ -100,6 +174,14 @@ export default function SignIn() {
                 id="password"
                 autoComplete="current-password"
               />
+              <Grid container>
+                <Grid item>
+                  <Typography variant="caption" sx={{color: "#FF0000"}}>
+                    {loginStatus}
+                  </Typography>
+                </Grid>
+              </Grid>
+              
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
