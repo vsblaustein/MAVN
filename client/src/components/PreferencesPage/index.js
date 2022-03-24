@@ -6,7 +6,7 @@ import PQPopUp from './PQPopUp';
 import * as React from 'react';
 import MovieReview from './MovieReview';
 import PreferencesStats from './PreferenceStat';
-
+import ClearConfirm from './clearConfirm';
 
 // styling for horizontal list
 const flexContainer = {
@@ -15,29 +15,37 @@ const flexContainer = {
   padding: 0,
 };
 
+
 // display current preferences at the bottom of the page
 export default class Preferences extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      qSeen: false,
+      mrSeen: false,
+      chart: true,
+    };
+  }
   // determines if either state has been seen
-  state = {
-    pqSeen: false,
-    mrSeen: false
-  };
+  // may need to add user to the state    
 
   // methods to toggle pop ups
   togglePQ = () => {
     this.setState({
-      pqSeen: !this.state.pqSeen
+      pqSeen: !this.state.pqSeen,
+      chart: this.state.pqSeen
     });
-
   };
 
   toggleMR = () => {
     this.setState({
-      mrSeen: !this.state.mrSeen
+      mrSeen: !this.state.mrSeen,
+      chart: this.state.mrSeen
     });
   };
 
-
+ 
   render() {
     return (
       <>
@@ -50,7 +58,7 @@ export default class Preferences extends React.Component {
           >
             Take Preferences Quiz
           </Button>
-          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
+          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ}/> : null}
 
           {/* movie search button */}
           <Button
@@ -70,9 +78,13 @@ export default class Preferences extends React.Component {
           >
             My Current Preferences
           </Typography>
+          
+          {this.state.chart ? <PreferencesStats style={flexContainer} class='center-screen'/> : null}
+          
 
-          <PreferencesStats style={flexContainer} class='center-screen'/>
-
+          {/* if agree should wipe if not just exit */}
+          <ClearConfirm class='center-screen' clear={this.clear}/>
+          
         </Box>
 
       </>
