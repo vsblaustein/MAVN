@@ -85,6 +85,7 @@ export default class PreferencesStats extends React.Component {
     });
   };
 
+  // set the state for the chart with the given data from query
   setChart = (chart, data) => {
     if(chart === 'actor_pref'){
       this.setState({actor_pref:data});
@@ -130,7 +131,7 @@ export default class PreferencesStats extends React.Component {
 
   }
 
-  // put axios in here?
+  // do this on componenet render
   componentDidMount() {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     
@@ -145,7 +146,6 @@ export default class PreferencesStats extends React.Component {
           const currChart = chart[c];
           this.setChart(currChart, response.data);
           this.setState({ currChart: response.data });
-          // console.log(response.data);
           console.log(currChart + " " + JSON.stringify(this.state.currChart));
         }).catch(err => {
           console.log(err);
@@ -156,7 +156,8 @@ export default class PreferencesStats extends React.Component {
   render() {
     return (
       <>
-        <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={5} rowHeight={270}>
+        <ImageList sx={{ width: '100%', height: '100%', padding: 0,
+        alignItems:"center",justifyContent:"center", justify:'center'}} cols={6} rowHeight={270}>
           {preferences.map((preference, index) => (
             <ImageListItem sx={{ width: '150px', height: '100%', left: 40, m: '10px', objectFit: 'cover' }}>
               {/* pass in result as prop? */}
