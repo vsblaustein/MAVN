@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 
 
-const pages = [ 'Movie Room'];
+const pages = [ 'Search Movies'];
 const settings = ['Profile', 'Browse Movies', 'My Preferences', 'Logout'];
 
 const ResponsiveAppBar = () => {
