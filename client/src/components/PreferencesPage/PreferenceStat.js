@@ -26,7 +26,8 @@ export default class PreferencesStats extends React.Component {
       genre_pref: [],
       length_pref: [],
       rating_pref: [],
-      release_year_pref: [],
+      released_after_pref: [],
+      released_before_pref:[],
     };
   }
 
@@ -84,7 +85,6 @@ export default class PreferencesStats extends React.Component {
     });
   };
 
-
   setChart = (chart, data) => {
     if(chart === 'actor_pref'){
       this.setState({actor_pref:data});
@@ -98,8 +98,11 @@ export default class PreferencesStats extends React.Component {
     else if(chart === 'rating_pref'){
       this.setState({rating_pref:data});
     }
-    else{
-      this.setState({release_year_pref:data});
+    else if(chart === 'start_year_pref'){
+      this.setState({released_after_pref:data});
+    }
+    else if(chart === 'end_year_pref'){
+      this.setState({released_before_pref:data});
     }
   };
 
@@ -118,8 +121,11 @@ export default class PreferencesStats extends React.Component {
     else if(c === 'rating_pref'){
       return this.state.rating_pref;
     }
-    else{
-      return this.state.release_year;
+    else if(c === 'start_year_pref'){
+      return this.state.released_after_pref;
+    }
+    else {
+      return this.state.released_before_pref;
     }
 
   }
@@ -145,7 +151,6 @@ export default class PreferencesStats extends React.Component {
           console.log(err);
         });
     }
-    console.log("after: " + this.state.actor_pref);
   }
 
   render() {
@@ -180,123 +185,8 @@ export default class PreferencesStats extends React.Component {
 }
 
 const preferences = [
-  { title: 'Genre' }, { title: 'Length' }, { title: 'Actors' }, { title: 'Rating' }//, { title: 'Release Year' },
+  { title: 'Genre' }, { title: 'Length' }, { title: 'Actors' }, 
+  { title: 'Rating' }, { title: 'Released After' },{ title: 'Released Before' },
 ];
-const chart = ['genre_pref', 'length_pref', 'actor_pref', 'rating_pref'];
+const chart = ['genre_pref', 'length_pref', 'actor_pref', 'rating_pref', 'start_year_pref', 'end_year_pref'];
 
-// import * as React from 'react';
-// import ImageList from '@mui/material/ImageList';
-// import ImageListItem from '@mui/material/ImageListItem';
-// import { ImageListItemBar } from '@mui/material';
-// import Button from '@mui/material/Button';
-// import Genre from './genre';
-// import Actors from './actors';
-// import Length from './length';
-// import ReleaseYear from './release_year';
-// import Rating from './rating';
-// import StatChart from './chart';
-// import Axios from 'axios';
-
-// // this document will generate the charts from the db and display them
-
-// export default function PreferencesStats(props) {
-
-//   const [genre, setGenre] = React.useState(false);
-//   const [length, setLength] = React.useState(false);
-//   const [year, setYear] = React.useState(false);
-//   const [actors, setActors] = React.useState(false);
-//   const [rating, setRating] = React.useState(false);
-//   const [actorPref, setActorPref] = React.useState([]);
-
-//   const handleClick = (title) => {
-//     if (title === "Genre") {
-//       console.log("genre");
-//       toggleGenre();
-//     }
-//     else if (title === "Length") {
-//       console.log("length");
-//       toggleLength();
-//     }
-//     else if (title === "Release Year") {
-//       console.log("year");
-//       toggleYear();
-//     }
-//     else if (title === "Actors") {
-//       console.log("actors");
-//       toggleActors();
-//     }
-//     else {
-//       console.log("rating");
-//       toggleRating();
-//     }
-//   }
-
-//   // methods to toggle pop ups
-//   const toggleGenre = () => {
-//     setGenre(!genre);
-//   };
-
-//   const toggleLength = () => {
-//     setLength(!length);
-//   };
-
-//   const toggleYear = () => {
-//     setYear(!year);
-//   };
-
-//   const toggleActors = () => {
-//     setActors(!actors);
-//   };
-
-//   const toggleRating = () => {
-//     setRating(!rating);
-//   };
-
-//   // put axios in here?
-//   const useEffect = async() => {
-//     console.log("here");
-//     const currentUser = JSON.parse(localStorage.getItem('user'));
-//     console.log("sending " + currentUser);
-//     Axios.post('http://localhost:3001/actorPrefChart', {
-//             username: currentUser,
-//         }).then((response) => {
-//             console.log("pref stat response: " + response);
-//             // navigate("/my%20preferences", { replace: true });
-//         }).catch(err => {
-//             console.log(err);
-//         });
-
-//   }
-
-//     return (
-//       <>
-//         <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={5} rowHeight={270}>
-//           {preferences.map((preference) => (
-//             <ImageListItem sx={{ width: '150px', height: '100%', left: 40, m: '10px', objectFit: 'cover' }}>
-//               {/* pass in result as prop? */}
-//               <StatChart />
-//               <ImageListItemBar
-//                 title={preference.title}
-//                 align='center'
-//                 position="below"
-//                 fontWeight='bold'
-//               />
-//               <Button id={preference.title + '_button'}
-//                 onClick={() => handleClick(preference.title)}>
-//                 Edit
-//               </Button>
-//             </ImageListItem>
-//           ))}
-//           {genre ? <Genre toggle={toggleGenre} /> : null}
-//           {actors ? <Actors toggle={toggleActors} /> : null}
-//           {length ? <Length toggle={toggleLength} /> : null}
-//           {year ? <ReleaseYear toggle={toggleYear} /> : null}
-//           {rating ? <Rating toggle={toggleRating} /> : null}
-//         </ImageList>
-//       </>
-//     );
-//   }
-
-// const preferences = [
-//   { title: 'Genre' }, { title: 'Length' }, { title: 'Release Year' }, { title: 'Actors' }, { title: 'Rating' }
-// ];

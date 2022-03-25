@@ -36,6 +36,7 @@ export default function ReleaseYear(props) {
     }).catch(err => {
       console.log(err);
     });
+    document.location.reload();
     handleExit();
   };
 

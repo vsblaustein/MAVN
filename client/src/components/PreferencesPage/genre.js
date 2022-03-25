@@ -41,6 +41,7 @@ export default function Genre(props) {
         console.log(err);
       });
     }
+    document.location.reload();
     handleExit();
   }
 

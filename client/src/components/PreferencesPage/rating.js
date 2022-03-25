@@ -37,6 +37,7 @@ export default function Rating(props) {
     }).catch(err => {
       console.log(err);
     });
+    document.location.reload();
     handleExit();
   };
 
