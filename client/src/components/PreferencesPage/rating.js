@@ -9,9 +9,9 @@ import './PQPopUp.css';
 
 
 // pop up for individual rating preferences
-const rating = [{ value: 0, label: '0%' }, { value: 20, label: '20%' },
-{ value: 40, label: '40%' }, { value: 60, label: '60%' },
-{ value: 80, label: '80%' }, { value: 100, label: '100%' }];
+const rating = [{ value: 0.0, label: '0.0' }, { value: 2.0, label: '2.0' },
+{ value: 4.0, label: '4.0' }, { value: 6.0, label: '6.0' },
+{ value: 8.0, label: '8.0' }, { value: 10.0, label: '10.0' }];
 
 
 export default function Rating(props) {
@@ -64,17 +64,17 @@ export default function Rating(props) {
               Add Rating Preferences
             </Typography>
             <Box mt='10px'>
-              <label> Minimum overall rating? </label><br /> <br />
+              <label> Minimum overall rating (out of 10)? </label><br /> <br />
               <Box width='80%' ml='30px'>
                 <Slider
                   id='rating'
                   aria-label="Rating"
-                  defaultValue={75}
+                  defaultValue={5.0}
                   valueLabelDisplay="auto"
-                  step={5}
+                  step={0.1}
                   marks={rating}
-                  min={0}
-                  max={100}
+                  min={0.0}
+                  max={10.0}
                   onChange={handleChange}
                 />
               </Box>

@@ -82,6 +82,18 @@ app.get('/getGenres', async(req,res) => {
   }
 });
 
+
+// GET: Get movies from DB
+app.get('/getMovies', async(req,res) => {
+  try {
+    const result = await db.query(
+      "SELECT * FROM movies");
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 // START OF QUERIES TO ADD TO PREFERENCES
 
 //POST: adds to rating_pref table

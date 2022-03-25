@@ -83,7 +83,6 @@ export default function SignIn() {
           console.log("list of actors: [" + arr + "]");
           localStorage.setItem('actors', arr);
 
-
         }).catch(err => {
           console.log(err);
         });

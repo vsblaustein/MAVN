@@ -160,7 +160,6 @@ export default class PreferencesStats extends React.Component {
         alignItems:"center",justifyContent:"center", justify:'center'}} cols={6} rowHeight={270}>
           {preferences.map((preference, index) => (
             <ImageListItem sx={{ width: '150px', height: '100%', left: 40, m: '10px', objectFit: 'cover' }}>
-              {/* pass in result as prop? */}
               <StatChart chartRes={this.getChart(index)} />
               <ImageListItemBar
                 title={preference.title}
