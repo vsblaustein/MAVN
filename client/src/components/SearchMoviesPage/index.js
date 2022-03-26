@@ -49,8 +49,8 @@ export default function SearchMoviesPage() {
             const JSON_URL = `https://api.themoviedb.org/3/movie/${id}?api_key=${api_key}&language=en-US&append_to_response=credits`;
             //console.log("URL", JSON_URL);
             //call axios api to get a json
-            var api_result = await axiosCall(JSON_URL);
-            console.log(api_result);
+            var movie_query_result = await axiosCall(JSON_URL);
+            
         }
 
 
