@@ -29,25 +29,54 @@ const api_key = "76e275f04f332f92388a49a0a1ad92ee";
 const theme = createTheme();
 
 export default function SearchMoviesPage() {
+    const [titleSearchResults, setTitleSearchResults] = React.useState(null);
+    var movie_ids = [];
 
-    const [searchResults, setSearchResults] = React.useState(null);
-    const test = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    // this will trigger every time title search results changes- every time search is pressed.
+    //tables being edited: movies, cast_members, movie_genre, actors
+    //movies: title, year, length, image_path, rating, plot
+    //cast_members: title, year, actor, actor_dob
+    //movie_genre: title, year, genre
+    //actors: full_name, first_name, last_name, dob
+    React.useEffect(() => {
+    }, [titleSearchResults]);
 
-    React.useEffect(() => {console.log("searchResults after change: ", searchResults)}, [searchResults]);
+    const getAllMovieData = async (movie_ids) => {
+        //holds (movie title,year) tuples
+        var result_tuples = [];
+        //for each id, we need to query urls
+        for (var id of movie_ids) {
+            const JSON_URL = `https://api.themoviedb.org/3/movie/${id}?api_key=${api_key}&language=en-US&append_to_response=credits`;
+            //console.log("URL", JSON_URL);
+            //call axios api to get a json
+            var api_result = await axiosCall(JSON_URL);
+            console.log(api_result);
+        }
 
-    const fetchMoviesWithTitle = async (url) => {
+
+        return result_tuples;
+    }
+
+    const getMoviesFromIds = (data) => {
+        var ids = [];
+        for (var movie of data) {
+            ids.push(movie.id);
+        }
+        return ids;
+    }
+
+    const axiosCall = async (url) => {
         try {
             const response = await Axios(url);
-            setSearchResults(response.data);
-        } catch(err){
+            return response.data;
+        } catch (err) {
             console.error(err);
         }
     }
 
     const handleTitleSubmit = async (event) => {
-        event.preventDefault();
-
         
+        event.preventDefault();
 
         const data = new FormData(event.currentTarget);
         const title_search = data.get('title_search');
@@ -61,22 +90,29 @@ export default function SearchMoviesPage() {
         4. display resulting movies
         */
 
-
+        //create JSON url for HTTP request
         const JSON_URL = `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${title_search.replace(' ', '+')}`;
-        console.log(JSON_URL);
+        console.log("JSON URL: ", JSON_URL);
+        //call API using axios, get results
+        var title_api_data = await axiosCall(JSON_URL);
+        console.log("title data: ", title_api_data);
+        //get movie ids
+        var movie_ids = getMoviesFromIds(title_api_data.results);
+        console.log(movie_ids);
 
-        fetchMoviesWithTitle(JSON_URL);
-        
-     
+        //iterate over movie ids. for each movie id, we need to query and receive:
+        //title, year, length, image, rating, plot, genre(s), all actors' names, all actor dobs
 
+        var results = [];
+        results = await getAllMovieData(movie_ids);
 
-
+        //after everything, set titleSearchResults to results.
     };
 
     const handleActorSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const actor_search = data.get('actor_search'); 
+        const actor_search = data.get('actor_search');
         console.log("actor button pressed...");
         console.log("actor: ", actor_search);
 
