@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import SlideShow from './slide';
-import Axios from 'axios';
 
 export default class MovieSearch extends React.Component {
 
@@ -20,8 +19,7 @@ export default class MovieSearch extends React.Component {
     handleExit = () => {
         this.props.toggle();
     };
-
-    
+   
 
     // add a "are you sure you want to leave?"
     render() {

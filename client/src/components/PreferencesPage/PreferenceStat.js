@@ -138,7 +138,7 @@ export default class PreferencesStats extends React.Component {
     // for each chart get the stats from the query
     for (const c in chart) {
       console.log("preferred chart: " + chart[c]);
-      Axios.get('http://localhost:3001/actorPrefChart',
+      Axios.get('http://localhost:3001/getPrefChart',
         {
           params: { username: currentUser, table: chart[c] }
         }).then((response) => {
@@ -159,7 +159,7 @@ export default class PreferencesStats extends React.Component {
         <ImageList sx={{ width: '100%', height: '100%', padding: 0,
         alignItems:"center",justifyContent:"center", justify:'center'}} cols={6} rowHeight={270}>
           {preferences.map((preference, index) => (
-            <ImageListItem sx={{ width: '150px', height: '100%', left: 40, m: '10px', objectFit: 'cover' }}>
+            <ImageListItem key={index} sx={{ width: '150px', height: '100%', left: 40, m: '10px', objectFit: 'cover' }}>
               <StatChart chartRes={this.getChart(index)} />
               <ImageListItemBar
                 title={preference.title}

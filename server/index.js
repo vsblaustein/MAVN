@@ -202,7 +202,7 @@ app.post('/clearPref', async (req, res) => {
 // QUERIES TO GENERATE PREFERENCES CHARTS
 
 // GET: actor preferences for current user
-app.get('/actorPrefChart', async (req, res) => {
+app.get('/getPrefChart', async (req, res) => {
   const username = req.query.username;
   const table = req.query.table;
   // allows for serializing of a BigInt (for ratio)
@@ -225,6 +225,49 @@ app.get('/actorPrefChart', async (req, res) => {
               GROUP BY username \
           ) d ON d.username = n.username \
             ORDER BY n.value; ", [username, username]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: add results from movie tinder, SHOULD BE SMALLER WEIGHT?
+
+// GET: information from movies
+app.get('/getMovieMetaData', async (req, res) => {
+  const movie_title = req.query.movie_title;
+  // allows for serializing of a BigInt (for ratio)
+  BigInt.prototype.toJSON = function() { return this.toString() }
+
+  try {
+    const result = await db.query(
+      "SELECT title, year, length, rating FROM movies WHERE title = ?",[movie_title]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: all the genres for a given movie
+app.get('/getMovieGenres', async (req, res) => {
+  const movie_title = req.query.movie_title;
+  try {
+    const result = await db.query(
+      "SELECT genre FROM movie_genre WHERE title = ?",
+      [movie_title]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: all the cast members for a given movie
+app.get('/getMovieCast', async (req, res) => {
+  const movie_title = req.query.movie_title;
+  try {
+    const result = await db.query(
+      "SELECT actor FROM cast_members WHERE title = ?",
+      [movie_title]);
     res.send(result);
   } catch (err) {
     throw err;

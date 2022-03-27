@@ -104,6 +104,29 @@ export default function SignIn() {
           console.log(err);
         });
 
+        // store the list of genres in local storage
+        Axios.get('http://localhost:3001/getMovies', {
+        }).then((response) => {
+          // gives a list of json objects
+          const movies = response.data;
+          const title = []
+          const image = []
+          // parse the JSON objects
+          for (const c in movies) {
+            title.push(movies[c].title);
+            image.push(movies[c].image_path);
+          }
+          console.log("list of title: [" + title + "]");
+          console.log("list of image: [" + image + "]");
+
+          localStorage.setItem('movie_title', JSON.stringify(title));
+          localStorage.setItem('movie_image', JSON.stringify(image));
+
+        }).catch(err => {
+          console.log(err);
+        });
+
+
         //route to home
         navigate("/home", { replace: true });
       }
