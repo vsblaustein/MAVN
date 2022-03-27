@@ -216,14 +216,46 @@ app.get('/getPrefChart', async (req, res) => {
         FROM( \
               SELECT username, value, COUNT(value) AS numerator \
               FROM " + table + 
-              " WHERE username LIKE ? \
+              " WHERE username IN (?) \
               GROUP BY value, username ) n \
           INNER JOIN ( \
               SELECT username, COUNT(value) AS denominator \
               FROM " + table + 
-              " WHERE username LIKE ? \
+              " WHERE username IN (?) \
               GROUP BY username \
           ) d ON d.username = n.username \
+            ORDER BY n.value; ", [username, username]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: group preferences for current user
+app.get('/getGroupPrefChart', async (req, res) => {
+  const username = req.query.username;
+  const table = req.query.table;
+  // allows for serializing of a BigInt (for ratio)
+  BigInt.prototype.toJSON = function() { return this.toString() }
+
+  console.log("fetching " + table + " for " + username);
+
+  try {
+    const result = await db.query(
+      "SELECT DISTINCT n.value, n.numerator, n.numerator / d.denominator AS ratio \
+        FROM( \
+              SELECT p.code, value, COUNT(value) AS numerator  \
+              FROM " + table + " AS t \
+              INNER JOIN part_of p ON p.username = t.username \
+              WHERE t.username IN (?) \
+              GROUP BY value, p.code ) n \
+          INNER JOIN ( \
+              SELECT p.code, COUNT(value) AS denominator \
+              FROM " + table + " AS t \
+              INNER JOIN part_of p ON p.username = t.username \
+              WHERE t.username IN (?) \
+              GROUP BY p.code \
+          ) d ON d.code = n.code \
             ORDER BY n.value; ", [username, username]);
     res.send(result);
   } catch (err) {
