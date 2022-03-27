@@ -185,7 +185,7 @@ export default class PreferencesStats extends React.Component {
 }
 
 const preferences = [
-  { title: 'Genre' }, { title: 'Length' }, { title: 'Actors' }, 
+  { title: 'Genre' }, { title: 'Length (minutes)' }, { title: 'Actors' }, 
   { title: 'Rating' }, { title: 'Released After' },{ title: 'Released Before' },
 ];
 const chart = ['genre_pref', 'length_pref', 'actor_pref', 'rating_pref', 'start_year_pref', 'end_year_pref'];

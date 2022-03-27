@@ -62,7 +62,6 @@ export default function PieChart(props) {
             <Chart data={prefData}>
 
                 <PieSeries name="pie" valueField="ratio" argumentField="value" />
-                {/* keep title here and fill in with list?? */}
                 <Animation />
                 <EventTracker />
                 {/* on hover change shades */}
