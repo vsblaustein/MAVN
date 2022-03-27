@@ -61,73 +61,58 @@ export default class slides extends React.Component {
     // change the image of the movie tinder
     swipeRight() {
         
-        // get all the metadata fields
-        this.loadMetadata();
          // insert into preferences
-         for (const g in genreList) {
-            console.log("current genre: " + genreList[g]);
-            // Axios.post('http://localhost:3001/genrePref', {
-            //   username: currentUser,
-            //   genre: genreList[g],
-            // }).then((response) => {
-            //   console.log(response);
-            // }).catch(err => {
-            //   console.log(err);
-            // });
-        }
+         // get the movie genre(s)
+        Axios.get('http://localhost:3001/getMovieGenres', {
+            params: { movie_title: currentTitle }
+        }).then((response) => {
+            // list of movie genres
+            const data = response.data;
+            console.log("movie genres: " + JSON.stringify(data));
+            // this.setState({ genreList: response.data });
+            genreList = response.data;
+            for (const g in genreList) {
+                console.log("current genre: " + genreList[g].genre + " " + g);
+                Axios.post('http://localhost:3001/genrePref', {
+                  username: currentUser,
+                  genre: genreList[g].genre,
+                }).then((response) => {
+                  console.log(response);
+                }).catch(err => {
+                  console.log(err);
+                });
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+        
 
-        // insert into preferences
-        for (const c in castList) {
-            console.log("current cast list: " + castList[c]);
-            // Axios.post('http://localhost:3001/actorPref', {
-            //   username: currentUser,
-            //   genre: castList[c],
-            // }).then((response) => {
-            //   console.log(response);
-            // }).catch(err => {
-            //   console.log(err);
-            // });
-        }
+        // get the movie cast(s) and insert into db
+        Axios.get('http://localhost:3001/getMovieCast',{
+            params: { movie_title: currentTitle }
+        }).then((response) => {
+            // list of movie genres
+            const data = response.data;
+            console.log("movie cast: " + JSON.stringify(data));
+            // this.setState({ castList: response.data });
+            castList = response.data;
+            // insert into preferences
+            console.log("current cast list : " + castList);
+            for (const c in castList) {
+                console.log("current cast list: " + castList[c].actor);
+                Axios.post('http://localhost:3001/actorPref', {
+                username: currentUser,
+                actors: castList[c].actor,
+                }).then((response) => {
+                console.log(response);
+                }).catch(err => {
+                console.log(err);
+                });
+            }
+        }).catch(err => {
+            console.log(err);
+        });
 
-        // insert into rating
-        // Axios.post('http://localhost:3001/ratingPref', {
-        //     username: currentUser,
-        //     rating: rating,
-        // }).then((response) => {
-        //     console.log(response);
-        // }).catch(err => {
-        //     console.log(err);
-        // });
-
-        // // insert into year
-        // Axios.post('http://localhost:3001/releaseYearPref', {
-        //     username: currentUser,
-        //     s_year: year,
-        //     e_year: year,
-        // }).then((response) => {
-        //     console.log(response);
-        // }).catch(err => {
-        //     console.log(err);
-        // });
-
-
-        // // insert into length
-        // Axios.post('http://localhost:3001/lengthPref', {
-        //     username: currentUser,
-        //     length: length,
-        // }).then((response) => {
-        //     console.log(response);
-        // }).catch(err => {
-        //     console.log(err);
-        // });
-
-        this.nextImage();
-
-
-    }
-
-    loadMetadata() {
-        console.log("loading metadata for " + currentTitle);
         // get the movie metadata (length, release year, rating)
         Axios.get('http://localhost:3001/getMovieMetaData',
             {
@@ -136,45 +121,49 @@ export default class slides extends React.Component {
                 const data = response.data;
                 console.log("movie metadata: " + JSON.stringify(data));
                 // get and set the data for year length and rating to insert in to pref
-                // this.setState({ year: data[0].year });
-                // this.setState({ length: data[0].length });
-                // this.setState({ rating: data[0].rating });
                 year = data[0].year;
                 length = data[0].length;
                 rating = data[0].rating;
-                this.forceUpdate();
-            }).catch(err => {
-                console.log(err);
-            });
+                
+                // make the inserts
+                // insert into rating
+                Axios.post('http://localhost:3001/ratingPref', {
+                    username: currentUser,
+                    rating: rating,
+                }).then((response) => {
+                    console.log(response);
+                }).catch(err => {
+                    console.log(err);
+                });
 
-        // get the movie genre(s)
-        Axios.get('http://localhost:3001/getMovieGenres',
-            {
-                params: { movie_title: currentTitle }
-            }).then((response) => {
-                // list of movie genres
-                const data = response.data;
-                console.log("movie genres: " + JSON.stringify(data));
-                // this.setState({ genreList: response.data });
-                genreList = response.data;
-                this.forceUpdate();
-            }).catch(err => {
-                console.log(err);
-            });
-        // get the movie cast(s)
-        Axios.get('http://localhost:3001/getMovieCast',
-            {
-                params: { movie_title: currentTitle }
-            }).then((response) => {
-                // list of movie genres
-                const data = response.data;
-                console.log("movie cast: " + JSON.stringify(data));
-                // this.setState({ castList: response.data });
-                castList = response.data;
-                this.forceUpdate();
-            }).catch(err => {
-                console.log(err);
-            });
+                // insert into year
+                Axios.post('http://localhost:3001/releaseYearPref', {
+                    username: currentUser,
+                    s_year: year,
+                    e_year: year,
+                }).then((response) => {
+                    console.log(response);
+                }).catch(err => {
+                    console.log(err);
+                });
+
+
+                // insert into length
+                Axios.post('http://localhost:3001/lengthPref', {
+                    username: currentUser,
+                    length: length,
+                }).then((response) => {
+                    console.log(response);
+                }).catch(err => {
+                    console.log(err);
+                });
+                    }).catch(err => {
+                        console.log(err);
+                    });
+        
+        this.nextImage();
+
+
     }
 
     render() {
