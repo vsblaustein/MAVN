@@ -75,6 +75,7 @@ export default class PreferencesStats extends React.Component {
     // for each chart get the stats from the query
     for (const c in chart) {
       console.log("preferred chart: " + chart[c]);
+      // need to get the current list of users from the room
       Axios.get('http://localhost:3001/getGroupPrefChart',
         {
           params: { username: ['nate','smolnate'], table: chart[c] }

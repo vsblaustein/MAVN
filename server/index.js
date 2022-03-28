@@ -306,6 +306,34 @@ app.get('/getMovieCast', async (req, res) => {
   }
 });
 
+// GET: all the members in a given movie room (for preferences)
+app.get('/getMembersList', async (req, res) => {
+  const room_code = req.query.room_code;
+  try {
+    const result = await db.query(
+      "SELECT DISTINCT username FROM part_of WHERE code = ?",
+      [room_code]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: movies by genre
+app.get('/getMovieGenre', async (req, res) => {
+  const m_genre = req.query.m_genre;
+  try {
+    const result = await db.query(
+      "SELECT DISTINCT image_path AS img FROM movies \
+      INNER JOIN movie_genre mg ON mg.title = movies.title \
+      WHERE genre = ?",
+      [m_genre]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
