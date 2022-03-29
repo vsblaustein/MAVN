@@ -28,6 +28,7 @@ function MovieRoomSlider() {
         component="div"
         sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
         fontWeight='bold'
+        key={g}
       >
         {g}
         </Typography>
