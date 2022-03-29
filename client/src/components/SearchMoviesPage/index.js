@@ -181,8 +181,8 @@ export default function SearchMoviesPage() {
             //console.log("actor_id: ", actor_id);
 
             //get all movies actor appears in- store in list of IDs
-            const actor_credits_json_url = 
-            `https://api.themoviedb.org/3/person/${actor_id}?api_key=${api_key}&language=en-US&append_to_response=movie_credits`;
+            const actor_credits_json_url =
+                `https://api.themoviedb.org/3/person/${actor_id}?api_key=${api_key}&language=en-US&append_to_response=movie_credits`;
             var actor_json = await axiosCall(actor_credits_json_url);
             var actor_movies = actor_json.movie_credits.cast;
             //console.log("actor movies: ", actor_movies);
@@ -272,10 +272,10 @@ export default function SearchMoviesPage() {
                     </Box>
                 </Container>
 
-                <Container maxWidth="md">
-                    <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={5} rowHeight={180}>
+                <Container maxWidth="lg">
+                    <ImageList sx={{ width: 1135, height: 450 }} cols={5} rowHeight={164}>
                         {itemData.map((item) => (
-                            <ImageListItem key={item.img} sx={{ width: '100%', height: '100%', left: 40, m: '10px' }}>
+                            <ImageListItem key={item.img}>
                                 <img
                                     src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
                                     srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
