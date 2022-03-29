@@ -29,7 +29,7 @@ const api_key = "76e275f04f332f92388a49a0a1ad92ee";
 const theme = createTheme();
 
 export default function SearchMoviesPage() {
-    const [titleSearchResults, setTitleSearchResults] = React.useState(null);
+    const [searchResults, setSearchResults] = React.useState(null);
 
     //this object will hold relevant metadata required for DB insertion on title search queries
     const movie_data = {
@@ -46,7 +46,7 @@ export default function SearchMoviesPage() {
 
     // this will trigger every time title search results changes for re-rendering
     React.useEffect(() => {
-    }, [titleSearchResults]);
+    }, [searchResults]);
 
     const getAndSetMovieData = async (id) => {
         //query movie data along with credits
@@ -55,7 +55,7 @@ export default function SearchMoviesPage() {
 
         //call axios api to get a json
         var res_json = await axiosCall(JSON_URL);
-        console.log("movie_query_result: ", res_json);
+        //console.log("movie_query_result: ", res_json);
 
         //set movie_data to whatever we can off of this singular query.
         const data = Object.create(movie_data);
@@ -80,7 +80,7 @@ export default function SearchMoviesPage() {
             data.actor_dobs.push(actor_json.birthday);
             //actor_ct += 1;
         }
-        console.log("movie_data: ", data);
+        //console.log("movie_data: ", data);
         //here's where im supposed to create queries to insert into the respective tables.
         //query for movies table
         //query for genres table
@@ -140,7 +140,7 @@ export default function SearchMoviesPage() {
             //console.log("title data: ", title_api_data);
             //get movie ids
             var movie_ids = getMovieIDs(title_api_data.results);
-            console.log(movie_ids);
+            //console.log(movie_ids);
 
             //iterate over movie ids. for each movie id, we need to query and receive:
             //title, year, length, image, rating, plot, genre(s), all actors' names, all actor dobs
@@ -148,41 +148,56 @@ export default function SearchMoviesPage() {
 
             for (var id of movie_ids) {
                 var res = await getAndSetMovieData(id);
-                console.log("res: ", res);
+                //console.log("res: ", res);
                 results.push(res);
             }
         }
         console.log("final movie title/year results: ", results);
 
-        //after everything, set titleSearchResults to results.
-        setTitleSearchResults(results);
+        //after everything, set searchResults to results.
+        setSearchResults(results);
     };
 
     const handleActorSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const actor_search = data.get('actor_search');
-        console.log("actor button pressed...");
-        console.log("actor: ", actor_search);
+        //console.log("actor button pressed...");
+        //console.log("actor: ", actor_search);
         var results = [];
 
         //get actor id
         const actor_id_json_url = `https://api.themoviedb.org/3/search/person?api_key=${api_key}&language=en-US&query=${actor_search.replaceAll(' ', '%20')}`;
-        console.log("actor id json url: ", actor_id_json_url);
+        //console.log("actor id json url: ", actor_id_json_url);
         var actor_id_json = await axiosCall(actor_id_json_url);
-        console.log("actor_id json: ", actor_id_json);
+        //console.log("actor_id json: ", actor_id_json);
         if (actor_id_json.results.length <= 0) {
             //throw an error here? or display nothing?
             console.log("no actor found");
         } else {
+
             //actor found
             var actor_id = actor_id_json.results[0].id;
-            console.log("actor_id: ", actor_id);
+            //console.log("actor_id: ", actor_id);
+
             //get all movies actor appears in- store in list of IDs
+            const actor_credits_json_url = 
+            `https://api.themoviedb.org/3/person/${actor_id}?api_key=${api_key}&language=en-US&append_to_response=movie_credits`;
+            var actor_json = await axiosCall(actor_credits_json_url);
+            var actor_movies = actor_json.movie_credits.cast;
+            //console.log("actor movies: ", actor_movies);
+            var movie_ids = getMovieIDs(actor_movies);
+            //console.log("movie ids: ", movie_ids);
 
             //iterate over IDs and push to results
+            for (var id of movie_ids) {
+                var res = await getAndSetMovieData(id);
+                //console.log("res: ", res);
+                results.push(res);
+            }
         }
-
+        console.log("final results: ", results);
+        setSearchResults(results);
     };
 
     return (
