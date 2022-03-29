@@ -60,7 +60,7 @@ export default function SearchMoviesPage() {
         //set movie_data to whatever we can off of this singular query.
         const data = Object.create(movie_data);
         data.title = res_json.title;
-        data.year = res_json.release_date.substring(0,4);
+        data.year = res_json.release_date.substring(0, 4);
         data.length = res_json.runtime;
         data.image_path += res_json.poster_path;
         data.rating = res_json.vote_average;
@@ -130,19 +130,27 @@ export default function SearchMoviesPage() {
         //console.log("JSON URL: ", JSON_URL);
         //call API using axios, get results
         var title_api_data = await axiosCall(JSON_URL);
-        //console.log("title data: ", title_api_data);
-        //get movie ids
-        var movie_ids = getMovieIDs(title_api_data.results);
-        console.log(movie_ids);
-
-        //iterate over movie ids. for each movie id, we need to query and receive:
-        //title, year, length, image, rating, plot, genre(s), all actors' names, all actor dobs
-        // results will hold the title/year pair of a movie for display purposes
         var results = [];
-        for (var id of movie_ids) {
-            var res = await getAndSetMovieData(id);
-            console.log("res: ", res);
-            results.push(res);
+        //error checking for title results
+        if (title_api_data.results.length <= 0) {
+            //throw error!
+            console.log("oops no movies found");
+        } else {
+
+            //console.log("title data: ", title_api_data);
+            //get movie ids
+            var movie_ids = getMovieIDs(title_api_data.results);
+            console.log(movie_ids);
+
+            //iterate over movie ids. for each movie id, we need to query and receive:
+            //title, year, length, image, rating, plot, genre(s), all actors' names, all actor dobs
+            // results will hold the title/year pair of a movie for display purposes
+
+            for (var id of movie_ids) {
+                var res = await getAndSetMovieData(id);
+                console.log("res: ", res);
+                results.push(res);
+            }
         }
         console.log("final movie title/year results: ", results);
 
@@ -156,7 +164,24 @@ export default function SearchMoviesPage() {
         const actor_search = data.get('actor_search');
         console.log("actor button pressed...");
         console.log("actor: ", actor_search);
+        var results = [];
 
+        //get actor id
+        const actor_id_json_url = `https://api.themoviedb.org/3/search/person?api_key=${api_key}&language=en-US&query=${actor_search.replaceAll(' ', '%20')}`;
+        console.log("actor id json url: ", actor_id_json_url);
+        var actor_id_json = await axiosCall(actor_id_json_url);
+        console.log("actor_id json: ", actor_id_json);
+        if (actor_id_json.results.length <= 0) {
+            //throw an error here? or display nothing?
+            console.log("no actor found");
+        } else {
+            //actor found
+            var actor_id = actor_id_json.results[0].id;
+            console.log("actor_id: ", actor_id);
+            //get all movies actor appears in- store in list of IDs
+
+            //iterate over IDs and push to results
+        }
 
     };
 
