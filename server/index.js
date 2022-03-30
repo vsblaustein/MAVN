@@ -198,7 +198,7 @@ app.post('/clearPref', async (req, res) => {
 // **** END PREFERENCES ****
 
 // **** INSERT INTO TABLES ****
-//POST: adds to actor_pref table
+//POST: adds to movies table
 app.post('/addMovie', async (req, res) => {
   const m_title = req.body.m_title;
   const m_year = req.body.m_year;
@@ -210,6 +210,21 @@ app.post('/addMovie', async (req, res) => {
     const result = await db.query(
       "INSERT INTO movies(title, year, length, image_path, rating, plot) VALUES (?,?,?,?,?,?);",
       [m_title, m_year, m_length, m_image_path, m_rating, m_plot]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: adds to movie_genre table
+app.post('/addMovieGenre', async (req, res) => {
+  const m_title = req.body.m_title;
+  const m_year = req.body.m_year;
+  const m_genre = req.body.m_genre;
+  try {
+    const result = await db.query(
+      "INSERT INTO movie_genre(title, year, genre) VALUES (?,?,?)",
+      [m_title, m_year, m_genre]);
     res.send(req.body);
   } catch (err) {
     throw err;

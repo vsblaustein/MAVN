@@ -31,24 +31,26 @@ const theme = createTheme();
 export default function SearchMoviesPage() {
     const [titleSearchResults, setTitleSearchResults] = React.useState(null);
 
-    //this object will hold relevant metadata required for DB insertion on title search queries
-    const movie_data = {
-        title: "",
-        year: 0,
-        length: 0,
-        image_path: "https://image.tmdb.org/t/p/w500",
-        rating: 0.0,
-        plot: "",
-        genres: [],
-        actors: [],
-        actor_dobs: []
-    };
+
 
     // this will trigger every time title search results changes for re-rendering
     React.useEffect(() => {
     }, [titleSearchResults]);
 
     const getAndSetMovieData = async (id) => {
+
+        //this object will hold relevant metadata required for DB insertion on title search queries
+        const movie_data = {
+            title: "",
+            year: 0,
+            length: 0,
+            image_path: "https://image.tmdb.org/t/p/w500",
+            rating: 0.0,
+            plot: "",
+            genres: [],
+            actors: [],
+            actor_dobs: []
+        };
         //query movie data along with credits
         const JSON_URL = `https://api.themoviedb.org/3/movie/${id}?api_key=${api_key}&language=en-US&append_to_response=credits`;
         //console.log("URL", JSON_URL);
@@ -60,11 +62,13 @@ export default function SearchMoviesPage() {
         //set movie_data to whatever we can off of this singular query.
         const data = Object.create(movie_data);
         data.title = res_json.title;
-        data.year = res_json.release_date.substring(0, 4).length > 0? res_json.release_date.substring(0,4) : '0000';
+        data.year = res_json.release_date.substring(0, 4).length > 0 ? res_json.release_date.substring(0, 4) : '0000';
         data.length = res_json.runtime;
         data.image_path += res_json.poster_path;
         data.rating = res_json.vote_average;
-        data.plot = res_json.overview.substring(0,990) + "...";
+        data.plot = res_json.overview.substring(0, 990) + "...";
+
+        // push the genres on
         for (var id of res_json.genres) {
             data.genres.push(id.name);
         }
@@ -88,25 +92,40 @@ export default function SearchMoviesPage() {
         const currMovies = [];
         // cannot split in case of , in movie titles
         const x = JSON.parse(localStorage.getItem("movie_title"));
-        
-        for(const c in x){
+
+        for (const c in x) {
             currMovies.push(x[c]);
         }
-        console.log(currMovies);
-        console.log(data.title + " is in list = " + currMovies.includes(data.title));
-        if(!currMovies.includes(data.title)){
-            Axios.post('http://localhost:3001/addMovie', {
-                    m_title: data.title,
-                    m_year: data.year,
-                    m_length: data.length,
-                    m_image_path: data.image_path,
-                    m_rating: data.rating,
-                    m_plot: data.plot,
-                }).then((response) => {
-                    console.log(response);
-                }).catch(err => {
-                    console.log(err);
-                });
+        // prints the list of movies stored in the database
+        // console.log(currMovies);
+        if (!currMovies.includes(data.title)) {
+            // add to movies table
+            // Axios.post('http://localhost:3001/addMovie', {
+            //     m_title: data.title,
+            //     m_year: data.year,
+            //     m_length: data.length,
+            //     m_image_path: data.image_path,
+            //     m_rating: data.rating,
+            //     m_plot: data.plot,
+            // }).then((response) => {
+            //     console.log(response);
+            // }).catch(err => {
+            //     console.log(err);
+            // });
+            // add to movie_genres table
+            // for each genre associated, loop this
+            for(const g in data.genres){
+                console.log(data.title, + " : " + data.year + " : " + data.genre[g]);
+                // Axios.post('http://localhost:3001/addMovieGenre', {
+                //     m_title: data.title,
+                //     m_year: data.year,
+                //     m_genre: data.genres[g],
+                // }).then((response) => {
+                //     console.log(response);
+                // }).catch(err => {
+                //     console.log(err);
+                // });
+            }
         }
         else {
             console.log("already inserted " + data.title);
@@ -115,9 +134,6 @@ export default function SearchMoviesPage() {
         //query for movie genres table
         //query for cast_members table
         //query for actors table
-
-
-
         return [data.title, data.year];
     }
 
