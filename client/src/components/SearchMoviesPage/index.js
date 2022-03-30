@@ -31,24 +31,24 @@ const theme = createTheme();
 export default function SearchMoviesPage() {
     const [searchResults, setSearchResults] = React.useState(null);
 
-    //this object will hold relevant metadata required for DB insertion on title search queries
-    const movie_data = {
-        title: "",
-        year: 0,
-        length: 0,
-        image_path: "https://image.tmdb.org/t/p/w500",
-        rating: 0.0,
-        plot: "",
-        genres: [],
-        actors: [],
-        actor_dobs: []
-    };
-
     // this will trigger every time title search results changes for re-rendering
     React.useEffect(() => {
+        console.log("searchResults: ", searchResults);
     }, [searchResults]);
 
     const getAndSetMovieData = async (id) => {
+        //this object will hold relevant metadata required for DB insertion on title search queries
+        const movie_data = {
+            title: "",
+            year: 0,
+            length: 0,
+            image_path: "https://image.tmdb.org/t/p/w500",
+            rating: 0.0,
+            plot: "",
+            genres: [],
+            actors: [],
+            actor_dobs: []
+        };
         //query movie data along with credits
         const JSON_URL = `https://api.themoviedb.org/3/movie/${id}?api_key=${api_key}&language=en-US&append_to_response=credits`;
         //console.log("URL", JSON_URL);
@@ -59,15 +59,18 @@ export default function SearchMoviesPage() {
 
         //set movie_data to whatever we can off of this singular query.
         const data = Object.create(movie_data);
+        //console.log("prototype ", Object.getPrototypeOf(movie_data));
         data.title = res_json.title;
         data.year = res_json.release_date.substring(0, 4);
         data.length = res_json.runtime;
         data.image_path += res_json.poster_path;
         data.rating = res_json.vote_average;
         data.plot = res_json.overview;
+        //console.log("genres: ", res_json.genres);
         for (var id of res_json.genres) {
             data.genres.push(id.name);
         }
+        //console.log("data.genres: ", data.genres);
         const movie_cast = res_json.credits.cast;
         //var actor_ct = 0;
         for (var actor of movie_cast) {
@@ -86,10 +89,10 @@ export default function SearchMoviesPage() {
         //query for genres table
         //query for cast_members table
         //query for actors table
+        console.log("data: ", data);
 
 
-
-        return [data.title, data.year];
+        return [data.title, data.year, data.image_path];
     }
 
     const getMovieIDs = (data) => {
