@@ -25,6 +25,7 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 
 const api_key = "76e275f04f332f92388a49a0a1ad92ee";
+const base_image_url = "https://image.tmdb.org/t/p/w500";
 
 const theme = createTheme();
 
@@ -42,7 +43,7 @@ export default function SearchMoviesPage() {
             title: "",
             year: 0,
             length: 0,
-            image_path: "https://image.tmdb.org/t/p/w500",
+            image_path: "",
             rating: 0.0,
             plot: "",
             genres: [],
@@ -63,7 +64,9 @@ export default function SearchMoviesPage() {
         data.title = res_json.title;
         data.year = res_json.release_date.substring(0, 4);
         data.length = res_json.runtime;
-        data.image_path += res_json.poster_path;
+        if (res_json.poster_path) {
+            data.image_path = base_image_url + res_json.poster_path;
+        }
         data.rating = res_json.vote_average;
         data.plot = res_json.overview;
         //console.log("genres: ", res_json.genres);
@@ -89,10 +92,18 @@ export default function SearchMoviesPage() {
         //query for genres table
         //query for cast_members table
         //query for actors table
-        console.log("data: ", data);
 
-
-        return [data.title, data.year, data.image_path];
+        var result_json = JSON.parse(
+            JSON.stringify(
+                {
+                    title: data.title,
+                    year: data.year,
+                    image_path: data.image_path
+                }
+            )
+        );
+        //console.log("result_json: ", result_json);
+        return result_json;
     }
 
     const getMovieIDs = (data) => {
@@ -276,18 +287,35 @@ export default function SearchMoviesPage() {
                 </Container>
 
                 <Container maxWidth="lg">
-                    <ImageList sx={{ width: 1135, height: 450 }} cols={5} rowHeight={164}>
-                        {itemData.map((item) => (
-                            <ImageListItem key={item.img}>
-                                <img
-                                    src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                                    srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                    alt={item.title}
-                                    loading="lazy"
-                                />
-                            </ImageListItem>
-                        ))}
-                    </ImageList>
+                    {searchResults &&
+                        <ImageList sx={{ width: 1135, height: 450 }} cols={5} rowHeight={'auto'} gap={8}>
+                            {searchResults.map((item, idx) => (
+                                <ImageListItem key={idx} >
+                                    {item.image_path.length > 0 &&
+                                        <img
+                                            src={`${item.image_path}?w=150&h=150&fit=crop&auto=format`}
+                                            srcSet={`${item.image_path}?w=150&h=150&fit=crop&auto=format`}
+                                            alt={item.title}
+                                            loading="lazy"
+                                            height="100%"
+                                        />
+                                    }
+                                    {!item.image_path &&
+                                        <React.Fragment>
+                                            <p>{item.title}</p>
+                                            <img
+                                                src={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                                srcSet={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                                alt={item.title}
+                                                loading="lazy"
+                                            />
+                                        </React.Fragment>
+                                    }
+                                </ImageListItem>
+                            ))}
+
+                        </ImageList>
+                    }
                 </Container>
 
 
