@@ -80,6 +80,18 @@ app.get('/getGenres', async(req,res) => {
   }
 });
 
+// GET: Get movies from DB
+app.get('/getMovies', async(req,res) => {
+  try {
+    const result = await db.query(
+      "SELECT * FROM movies");
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// **** START PREFERENCES ****
 //POST: adds to rating_pref table
 app.post('/ratingPref', async (req, res) => {
   const username = req.body.username;
@@ -177,6 +189,27 @@ app.post('/clearPref', async (req, res) => {
       "DELETE FROM length_pref WHERE username = ?",
       [username]);
 
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// **** END PREFERENCES ****
+
+// **** INSERT INTO TABLES ****
+//POST: adds to actor_pref table
+app.post('/addMovie', async (req, res) => {
+  const m_title = req.body.m_title;
+  const m_year = req.body.m_year;
+  const m_length = req.body.m_length;
+  const m_image_path = req.body.m_image_path;
+  const m_rating = req.body.m_rating;
+  const m_plot = req.body.m_plot;
+  try {
+    const result = await db.query(
+      "INSERT INTO movies(title, year, length, image_path, rating, plot) VALUES (?,?,?,?,?,?);",
+      [m_title, m_year, m_length, m_image_path, m_rating, m_plot]);
     res.send(req.body);
   } catch (err) {
     throw err;

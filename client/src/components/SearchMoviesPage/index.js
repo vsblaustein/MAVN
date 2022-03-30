@@ -60,11 +60,11 @@ export default function SearchMoviesPage() {
         //set movie_data to whatever we can off of this singular query.
         const data = Object.create(movie_data);
         data.title = res_json.title;
-        data.year = res_json.release_date.substring(0,4);
+        data.year = res_json.release_date.substring(0, 4).length > 0? res_json.release_date.substring(0,4) : '0000';
         data.length = res_json.runtime;
         data.image_path += res_json.poster_path;
         data.rating = res_json.vote_average;
-        data.plot = res_json.overview;
+        data.plot = res_json.overview.substring(0,990) + "...";
         for (var id of res_json.genres) {
             data.genres.push(id.name);
         }
@@ -82,8 +82,37 @@ export default function SearchMoviesPage() {
         }
         console.log("movie_data: ", data);
         //here's where im supposed to create queries to insert into the respective tables.
-        //query for movies table
-        //query for genres table
+        //query for movies table using the movie data object
+        console.log("attempting to insert " + data.title + " into movies table.");
+        // get the list of previously added movies
+        const currMovies = [];
+        // cannot split in case of , in movie titles
+        const x = JSON.parse(localStorage.getItem("movie_title"));
+        
+        for(const c in x){
+            currMovies.push(x[c]);
+        }
+        console.log(currMovies);
+        console.log(data.title + " is in list = " + currMovies.includes(data.title));
+        if(!currMovies.includes(data.title)){
+            Axios.post('http://localhost:3001/addMovie', {
+                    m_title: data.title,
+                    m_year: data.year,
+                    m_length: data.length,
+                    m_image_path: data.image_path,
+                    m_rating: data.rating,
+                    m_plot: data.plot,
+                }).then((response) => {
+                    console.log(response);
+                }).catch(err => {
+                    console.log(err);
+                });
+        }
+        else {
+            console.log("already inserted " + data.title);
+        }
+
+        //query for movie genres table
         //query for cast_members table
         //query for actors table
 
