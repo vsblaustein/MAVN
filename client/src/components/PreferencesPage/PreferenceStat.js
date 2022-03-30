@@ -36,11 +36,11 @@ export default class PreferencesStats extends React.Component {
       console.log("genre");
       this.toggleGenre();
     }
-    else if (title === "Length") {
+    else if (title === "Length (minutes)") {
       console.log("length");
       this.toggleLength();
     }
-    else if (title === "Release Year") {
+    else if (title === "Released Before" || title === 'Released After') {
       console.log("year");
       this.toggleYear();
     }

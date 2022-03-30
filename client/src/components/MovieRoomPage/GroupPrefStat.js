@@ -78,7 +78,7 @@ export default class PreferencesStats extends React.Component {
       // need to get the current list of users from the room
       Axios.get('http://localhost:3001/getGroupPrefChart',
         {
-          params: { username: ['nate','smolnate'], table: chart[c] }
+          params: { username: ['nate','test'], table: chart[c] }
         }).then((response) => {
           const currChart = chart[c];
           this.setChart(currChart, response.data);
