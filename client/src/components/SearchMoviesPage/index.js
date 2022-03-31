@@ -30,6 +30,7 @@ const base_image_url = "https://image.tmdb.org/t/p/w500";
 const theme = createTheme();
 
 export default function SearchMoviesPage() {
+
     const [searchResults, setSearchResults] = React.useState(null);
 
     // this will trigger every time title search results changes for re-rendering
@@ -62,14 +63,15 @@ export default function SearchMoviesPage() {
         const data = Object.create(movie_data);
         //console.log("prototype ", Object.getPrototypeOf(movie_data));
         data.title = res_json.title;
-        data.year = res_json.release_date.substring(0, 4);
+        data.year = res_json.release_date.substring(0, 4).length > 0 ? res_json.release_date.substring(0, 4) : '0000';
         data.length = res_json.runtime;
         if (res_json.poster_path) {
             data.image_path = base_image_url + res_json.poster_path;
         }
         data.rating = res_json.vote_average;
-        data.plot = res_json.overview;
-        //console.log("genres: ", res_json.genres);
+        data.plot = res_json.overview.substring(0, 990) + "...";
+
+        // push the genres on
         for (var id of res_json.genres) {
             data.genres.push(id.name);
         }
@@ -86,6 +88,105 @@ export default function SearchMoviesPage() {
             data.actor_dobs.push(actor_json.birthday);
             //actor_ct += 1;
         }
+        console.log("movie_data: ", data);
+
+        // GUARDS FOR DUPLICATE INSERTS
+        // get the list of previously added movies, commas make split
+        const currMovies = [];
+        const x = JSON.parse(localStorage.getItem("movie_title"));
+        for (const c in x) {
+            currMovies.push(x[c]);
+        }
+        // get this from storage
+        const existingActors = [];
+        const ea = JSON.parse(localStorage.getItem('actors'));
+        for(const c in ea){
+            existingActors.push(ea[c]);
+        }
+        
+        // prints the list of movies stored in the database
+        console.log(currMovies);
+        if (!currMovies.includes(data.title)) {
+            // add to movies table
+            Axios.post('http://localhost:3001/addMovie', {
+                m_title: data.title,
+                m_year: data.year,
+                m_length: data.length,
+                m_image_path: data.image_path,
+                m_rating: data.rating,
+                m_plot: data.plot,
+            }).then((response) => {
+                console.log(response);
+                // add to the list so if queried again, will not add
+                currMovies.push(data.title);
+                localStorage.setItem('movie_title', JSON.stringify(currMovies));
+            }).catch(err => {
+                console.log(err);
+            }).finally(() => {
+                // FOREIGN KEY INSERTS MUST WAIT ON THE PREVIOUS
+
+                // add to movie_genres table
+                for (const g in data.genres) {
+                    Axios.post('http://localhost:3001/addMovieGenre', {
+                        m_title: data.title,
+                        m_year: data.year,
+                        m_genre: data.genres[g],
+                    }).then((response) => {
+                        console.log(response);
+                    }).catch(err => {
+                        console.log(err);
+                    });
+                }
+
+                // insert into actors
+                console.log("existing: " + existingActors);
+                for (const a in data.actors) {
+                    const curr = data.actors[a].name;
+                    // check if already added to avoid dup entry error
+                    if (!existingActors.includes(curr)) {
+                        console.log("add " + curr);
+                        Axios.post('http://localhost:3001/addActors', {
+                            fl_name: curr,
+                            f_name: curr.substring(0, curr.indexOf(' ')),
+                            l_name: curr.substring(curr.indexOf(' ') + 1),
+                            a_dob: data.actor_dobs[a] != null ? data.actor_dobs[a] : '0000-00-00',
+                        }).then((response) => {
+                            // add the existing actor to the list
+                            console.log("adding " + curr + " to the list");
+                            existingActors.push(curr); 
+                            localStorage.setItem('actors', JSON.stringify(existingActors));
+
+                            console.log(response);
+                        }).catch(err => {
+                            console.log(err);
+                        }).finally(() => {
+                            //query for cast_members table
+                            Axios.post('http://localhost:3001/addCastMembers', {
+                                m_title: data.title,
+                                m_year: data.year,
+                                m_actor: curr,
+                                m_actor_dob: data.actor_dobs[a] != null ? data.actor_dobs[a] : '0000-00-00',
+                            }).then((response) => {
+                                console.log(response);
+                            }).catch(err => {
+                                console.log(err);
+                            });
+
+
+                        });
+                    }
+                    else {
+                        console.log("already exists: " + curr);
+                    }
+
+                }
+            });
+
+        }
+        else {
+            console.log("already inserted " + data.title);
+        }
+
         //console.log("movie_data: ", data);
         //here's where im supposed to create queries to insert into the respective tables.
         //query for movies table
