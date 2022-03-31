@@ -38,6 +38,36 @@ export default function SearchMoviesPage() {
         console.log("searchResults: ", searchResults);
     }, [searchResults]);
 
+    const getMovieFromDB = async function (title, year) {
+        console.log("checking db for movie: ", title, year);
+        Axios.post('http://localhost:3001/getMovie', {
+            t: title,
+            y: year
+        }).then((response) => {
+            //console.log("response: ", response);
+            if (response.data.length > 0) {
+                //found movie from db, create result_json from storage.
+                console.log("found movie");
+                var result_json = JSON.parse(
+                    JSON.stringify(
+                        {
+                            title: response.data[0].title,
+                            year: response.data[0].year,
+                            image_path: response.data[0].image_path
+                        }
+                    )
+                );
+                console.log("result_json: ", result_json);
+                return result_json;
+            }
+            else {
+                return null;
+            }      
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
     const getAndSetMovieData = async (id) => {
         //this object will hold relevant metadata required for DB insertion on title search queries
         const movie_data = {
@@ -64,6 +94,13 @@ export default function SearchMoviesPage() {
         //console.log("prototype ", Object.getPrototypeOf(movie_data));
         data.title = res_json.title;
         data.year = res_json.release_date.substring(0, 4).length > 0 ? res_json.release_date.substring(0, 4) : '0000';
+        //check db contains title/year
+        var movie_in_db = await getMovieFromDB(data.title, data.year);
+        console.log("movie_in_db", movie_in_db);
+        if (movie_in_db != null) {
+            return movie_in_db;
+        }
+
         data.length = res_json.runtime;
         if (res_json.poster_path) {
             data.image_path = base_image_url + res_json.poster_path;
@@ -100,12 +137,12 @@ export default function SearchMoviesPage() {
         // get this from storage
         const existingActors = [];
         const ea = JSON.parse(localStorage.getItem('actors'));
-        for(const c in ea){
+        for (const c in ea) {
             existingActors.push(ea[c]);
         }
-        
+
         // prints the list of movies stored in the database
-        console.log(currMovies);
+        //console.log(currMovies);
         if (!currMovies.includes(data.title)) {
             // add to movies table
             Axios.post('http://localhost:3001/addMovie', {
@@ -116,7 +153,7 @@ export default function SearchMoviesPage() {
                 m_rating: data.rating,
                 m_plot: data.plot,
             }).then((response) => {
-                console.log(response);
+                //console.log(response);
                 // add to the list so if queried again, will not add
                 currMovies.push(data.title);
                 localStorage.setItem('movie_title', JSON.stringify(currMovies));
@@ -132,19 +169,19 @@ export default function SearchMoviesPage() {
                         m_year: data.year,
                         m_genre: data.genres[g],
                     }).then((response) => {
-                        console.log(response);
+                        //console.log(response);
                     }).catch(err => {
                         console.log(err);
                     });
                 }
 
                 // insert into actors
-                console.log("existing: " + existingActors);
+                //console.log("existing: " + existingActors);
                 for (const a in data.actors) {
                     const curr = data.actors[a].name;
                     // check if already added to avoid dup entry error
                     if (!existingActors.includes(curr)) {
-                        console.log("add " + curr);
+                        //console.log("add " + curr);
                         Axios.post('http://localhost:3001/addActors', {
                             fl_name: curr,
                             f_name: curr.substring(0, curr.indexOf(' ')),
@@ -152,11 +189,11 @@ export default function SearchMoviesPage() {
                             a_dob: data.actor_dobs[a] != null ? data.actor_dobs[a] : '0000-00-00',
                         }).then((response) => {
                             // add the existing actor to the list
-                            console.log("adding " + curr + " to the list");
-                            existingActors.push(curr); 
+                            //console.log("adding " + curr + " to the list");
+                            existingActors.push(curr);
                             localStorage.setItem('actors', JSON.stringify(existingActors));
 
-                            console.log(response);
+                            //console.log(response);
                         }).catch(err => {
                             console.log(err);
                         }).finally(() => {
@@ -167,7 +204,7 @@ export default function SearchMoviesPage() {
                                 m_actor: curr,
                                 m_actor_dob: data.actor_dobs[a] != null ? data.actor_dobs[a] : '0000-00-00',
                             }).then((response) => {
-                                console.log(response);
+                                //console.log(response);
                             }).catch(err => {
                                 console.log(err);
                             });
@@ -176,7 +213,7 @@ export default function SearchMoviesPage() {
                         });
                     }
                     else {
-                        console.log("already exists: " + curr);
+                        //console.log("already exists: " + curr);
                     }
 
                 }
@@ -184,7 +221,7 @@ export default function SearchMoviesPage() {
 
         }
         else {
-            console.log("already inserted " + data.title);
+            //console.log("already inserted " + data.title);
         }
 
         //console.log("movie_data: ", data);

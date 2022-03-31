@@ -91,6 +91,21 @@ app.get('/getMovies', async(req,res) => {
   }
 });
 
+// POST: Get single movie from DB
+app.post('/getMovie', async(req,res) => {
+  const title = req.body.t;
+  const year = req.body.y;
+  console.log("req.body", req.body);
+  try {
+    const result = await db.query(
+      "SELECT * FROM movies WHERE title = ? AND year = ?",
+      [title, year]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 // **** START PREFERENCES ****
 //POST: adds to rating_pref table
 app.post('/ratingPref', async (req, res) => {
