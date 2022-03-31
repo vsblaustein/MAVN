@@ -23,6 +23,9 @@ import Axios from 'axios';
 import SearchResultsGrid from '../SearchResultsGrid/SearchResultsGrid';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
 
 const api_key = "76e275f04f332f92388a49a0a1ad92ee";
 const base_image_url = "https://image.tmdb.org/t/p/w500";
@@ -100,10 +103,10 @@ export default function SearchMoviesPage() {
         // get this from storage
         const existingActors = [];
         const ea = JSON.parse(localStorage.getItem('actors'));
-        for(const c in ea){
+        for (const c in ea) {
             existingActors.push(ea[c]);
         }
-        
+
         // prints the list of movies stored in the database
         console.log(currMovies);
         if (!currMovies.includes(data.title)) {
@@ -153,7 +156,7 @@ export default function SearchMoviesPage() {
                         }).then((response) => {
                             // add the existing actor to the list
                             console.log("adding " + curr + " to the list");
-                            existingActors.push(curr); 
+                            existingActors.push(curr);
                             localStorage.setItem('actors', JSON.stringify(existingActors));
 
                             console.log(response);
@@ -412,6 +415,18 @@ export default function SearchMoviesPage() {
                                             />
                                         </React.Fragment>
                                     }
+                                    <ImageListItemBar
+                                        title={item.title}
+                                        subtitle={item.year}
+                                        actionIcon={
+                                            <IconButton
+                                                sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                                                aria-label={`info about ${item.title}`}
+                                            >
+                                                <InfoIcon />
+                                            </IconButton>
+                                        }
+                                    />
                                 </ImageListItem>
                             ))}
 
