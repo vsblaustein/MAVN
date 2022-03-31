@@ -74,14 +74,14 @@ export default function SignIn() {
         Axios.get('http://localhost:3001/getActors', {
         }).then((response) => {
           // gives a list of json objects
-          const actors = JSON.stringify(response.data);
+          const actors = response.data;
           const arr = []
           // parse the JSON objects
-          for (const c in JSON.parse(actors)) {
-            arr.push(JSON.parse(actors)[c].full_name);
+          for (const c in actors) {
+            arr.push(actors[c].full_name);
           }
           console.log("list of actors: [" + arr + "]");
-          localStorage.setItem('actors', arr);
+          localStorage.setItem('actors', JSON.stringify(arr));
 
         }).catch(err => {
           console.log(err);
