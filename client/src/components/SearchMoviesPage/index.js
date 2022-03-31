@@ -25,26 +25,26 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 
 const api_key = "76e275f04f332f92388a49a0a1ad92ee";
+const base_image_url = "https://image.tmdb.org/t/p/w500";
 
 const theme = createTheme();
 
 export default function SearchMoviesPage() {
-    const [titleSearchResults, setTitleSearchResults] = React.useState(null);
 
-
+    const [searchResults, setSearchResults] = React.useState(null);
 
     // this will trigger every time title search results changes for re-rendering
     React.useEffect(() => {
-    }, [titleSearchResults]);
+        console.log("searchResults: ", searchResults);
+    }, [searchResults]);
 
     const getAndSetMovieData = async (id) => {
-
         //this object will hold relevant metadata required for DB insertion on title search queries
         const movie_data = {
             title: "",
             year: 0,
             length: 0,
-            image_path: "https://image.tmdb.org/t/p/w500",
+            image_path: "",
             rating: 0.0,
             plot: "",
             genres: [],
@@ -57,14 +57,17 @@ export default function SearchMoviesPage() {
 
         //call axios api to get a json
         var res_json = await axiosCall(JSON_URL);
-        console.log("movie_query_result: ", res_json);
+        //console.log("movie_query_result: ", res_json);
 
         //set movie_data to whatever we can off of this singular query.
         const data = Object.create(movie_data);
+        //console.log("prototype ", Object.getPrototypeOf(movie_data));
         data.title = res_json.title;
         data.year = res_json.release_date.substring(0, 4).length > 0 ? res_json.release_date.substring(0, 4) : '0000';
         data.length = res_json.runtime;
-        data.image_path += res_json.poster_path;
+        if (res_json.poster_path) {
+            data.image_path = base_image_url + res_json.poster_path;
+        }
         data.rating = res_json.vote_average;
         data.plot = res_json.overview.substring(0, 990) + "...";
 
@@ -72,6 +75,7 @@ export default function SearchMoviesPage() {
         for (var id of res_json.genres) {
             data.genres.push(id.name);
         }
+        //console.log("data.genres: ", data.genres);
         const movie_cast = res_json.credits.cast;
         //var actor_ct = 0;
         for (var actor of movie_cast) {
@@ -183,7 +187,24 @@ export default function SearchMoviesPage() {
             console.log("already inserted " + data.title);
         }
 
-        return [data.title, data.year];
+        //console.log("movie_data: ", data);
+        //here's where im supposed to create queries to insert into the respective tables.
+        //query for movies table
+        //query for genres table
+        //query for cast_members table
+        //query for actors table
+
+        var result_json = JSON.parse(
+            JSON.stringify(
+                {
+                    title: data.title,
+                    year: data.year,
+                    image_path: data.image_path
+                }
+            )
+        );
+        //console.log("result_json: ", result_json);
+        return result_json;
     }
 
     const getMovieIDs = (data) => {
@@ -224,34 +245,74 @@ export default function SearchMoviesPage() {
         //console.log("JSON URL: ", JSON_URL);
         //call API using axios, get results
         var title_api_data = await axiosCall(JSON_URL);
-        //console.log("title data: ", title_api_data);
-        //get movie ids
-        var movie_ids = getMovieIDs(title_api_data.results);
-        console.log(movie_ids);
-
-        //iterate over movie ids. for each movie id, we need to query and receive:
-        //title, year, length, image, rating, plot, genre(s), all actors' names, all actor dobs
-        // results will hold the title/year pair of a movie for display purposes
         var results = [];
-        for (var id of movie_ids) {
-            var res = await getAndSetMovieData(id);
-            console.log("res: ", res);
-            results.push(res);
+        //error checking for title results
+        if (title_api_data.results.length <= 0) {
+            //throw error!
+            console.log("oops no movies found");
+        } else {
+
+            //console.log("title data: ", title_api_data);
+            //get movie ids
+            var movie_ids = getMovieIDs(title_api_data.results);
+            //console.log(movie_ids);
+
+            //iterate over movie ids. for each movie id, we need to query and receive:
+            //title, year, length, image, rating, plot, genre(s), all actors' names, all actor dobs
+            // results will hold the title/year pair of a movie for display purposes
+
+            for (var id of movie_ids) {
+                var res = await getAndSetMovieData(id);
+                //console.log("res: ", res);
+                results.push(res);
+            }
         }
         console.log("final movie title/year results: ", results);
 
-        //after everything, set titleSearchResults to results.
-        setTitleSearchResults(results);
+        //after everything, set searchResults to results.
+        setSearchResults(results);
     };
 
     const handleActorSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const actor_search = data.get('actor_search');
-        console.log("actor button pressed...");
-        console.log("actor: ", actor_search);
+        //console.log("actor button pressed...");
+        //console.log("actor: ", actor_search);
+        var results = [];
 
+        //get actor id
+        const actor_id_json_url = `https://api.themoviedb.org/3/search/person?api_key=${api_key}&language=en-US&query=${actor_search.replaceAll(' ', '%20')}`;
+        //console.log("actor id json url: ", actor_id_json_url);
+        var actor_id_json = await axiosCall(actor_id_json_url);
+        //console.log("actor_id json: ", actor_id_json);
+        if (actor_id_json.results.length <= 0) {
+            //throw an error here? or display nothing?
+            console.log("no actor found");
+        } else {
 
+            //actor found
+            var actor_id = actor_id_json.results[0].id;
+            //console.log("actor_id: ", actor_id);
+
+            //get all movies actor appears in- store in list of IDs
+            const actor_credits_json_url =
+                `https://api.themoviedb.org/3/person/${actor_id}?api_key=${api_key}&language=en-US&append_to_response=movie_credits`;
+            var actor_json = await axiosCall(actor_credits_json_url);
+            var actor_movies = actor_json.movie_credits.cast;
+            //console.log("actor movies: ", actor_movies);
+            var movie_ids = getMovieIDs(actor_movies);
+            //console.log("movie ids: ", movie_ids);
+
+            //iterate over IDs and push to results
+            for (var id of movie_ids) {
+                var res = await getAndSetMovieData(id);
+                //console.log("res: ", res);
+                results.push(res);
+            }
+        }
+        console.log("final results: ", results);
+        setSearchResults(results);
     };
 
     return (
@@ -326,19 +387,36 @@ export default function SearchMoviesPage() {
                     </Box>
                 </Container>
 
-                <Container maxWidth="md">
-                    <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={5} rowHeight={180}>
-                        {itemData.map((item) => (
-                            <ImageListItem key={item.img} sx={{ width: '100%', height: '100%', left: 40, m: '10px' }}>
-                                <img
-                                    src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                                    srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                    alt={item.title}
-                                    loading="lazy"
-                                />
-                            </ImageListItem>
-                        ))}
-                    </ImageList>
+                <Container maxWidth="lg">
+                    {searchResults &&
+                        <ImageList sx={{ width: 1135, height: 450 }} cols={5} rowHeight={'auto'} gap={8}>
+                            {searchResults.map((item, idx) => (
+                                <ImageListItem key={idx} >
+                                    {item.image_path.length > 0 &&
+                                        <img
+                                            src={`${item.image_path}?w=150&h=150&fit=crop&auto=format`}
+                                            srcSet={`${item.image_path}?w=150&h=150&fit=crop&auto=format`}
+                                            alt={item.title}
+                                            loading="lazy"
+                                            height="100%"
+                                        />
+                                    }
+                                    {!item.image_path &&
+                                        <React.Fragment>
+                                            <p>{item.title}</p>
+                                            <img
+                                                src={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                                srcSet={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                                alt={item.title}
+                                                loading="lazy"
+                                            />
+                                        </React.Fragment>
+                                    }
+                                </ImageListItem>
+                            ))}
+
+                        </ImageList>
+                    }
                 </Container>
 
 
