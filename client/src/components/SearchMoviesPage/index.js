@@ -38,34 +38,18 @@ export default function SearchMoviesPage() {
         console.log("searchResults: ", searchResults);
     }, [searchResults]);
 
-    const getMovieFromDB = async function (title, year) {
+    const getMovieFromDB = async (title, year) => {
         console.log("checking db for movie: ", title, year);
-        Axios.post('http://localhost:3001/getMovie', {
-            t: title,
-            y: year
-        }).then((response) => {
-            //console.log("response: ", response);
-            if (response.data.length > 0) {
-                //found movie from db, create result_json from storage.
-                console.log("found movie");
-                var result_json = JSON.parse(
-                    JSON.stringify(
-                        {
-                            title: response.data[0].title,
-                            year: response.data[0].year,
-                            image_path: response.data[0].image_path
-                        }
-                    )
-                );
-                console.log("result_json: ", result_json);
-                return result_json;
-            }
-            else {
-                return null;
-            }      
-        }).catch(err => {
-            console.log(err);
-        });
+        try {
+            const resp = await Axios.post('http://localhost:3001/getMovie', {
+                t: title,
+                y: year
+            });
+            console.log("data: ", resp.data);
+            return resp.data;
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     const getAndSetMovieData = async (id) => {
@@ -95,11 +79,21 @@ export default function SearchMoviesPage() {
         data.title = res_json.title;
         data.year = res_json.release_date.substring(0, 4).length > 0 ? res_json.release_date.substring(0, 4) : '0000';
         //check db contains title/year
-        var movie_in_db = await getMovieFromDB(data.title, data.year);
-        console.log("movie_in_db", movie_in_db);
-        if (movie_in_db != null) {
-            return movie_in_db;
+        const movie_in_db = await getMovieFromDB(data.title, data.year);
+        if (movie_in_db.length > 0) {
+            console.log("found movie in db");
+            var result_json = JSON.parse(
+                JSON.stringify(
+                    {
+                        title: movie_in_db[0].title,
+                        year: movie_in_db[0].year,
+                        image_path: movie_in_db[0].image_path
+                    }
+                )
+            );
+            return result_json;
         }
+        console.log("retrieving movie data ");
 
         data.length = res_json.runtime;
         if (res_json.poster_path) {
@@ -439,15 +433,16 @@ export default function SearchMoviesPage() {
                                         />
                                     }
                                     {!item.image_path &&
-                                        <React.Fragment>
-                                            <p>{item.title}</p>
+                                        <>
+                                            
                                             <img
                                                 src={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
                                                 srcSet={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
                                                 alt={item.title}
                                                 loading="lazy"
                                             />
-                                        </React.Fragment>
+                                        </>
+
                                     }
                                 </ImageListItem>
                             ))}
