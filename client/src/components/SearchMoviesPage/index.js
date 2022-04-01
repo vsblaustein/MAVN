@@ -433,16 +433,12 @@ export default function SearchMoviesPage() {
                                         />
                                     }
                                     {!item.image_path &&
-                                        <>
-                                            
-                                            <img
-                                                src={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
-                                                srcSet={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
-                                                alt={item.title}
-                                                loading="lazy"
-                                            />
-                                        </>
-
+                                        <img
+                                            src={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                            srcSet={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                            alt={item.title}
+                                            loading="lazy"
+                                        />
                                     }
                                 </ImageListItem>
                             ))}
@@ -457,26 +453,3 @@ export default function SearchMoviesPage() {
         </React.Fragment>
     );
 }
-
-const itemData = [
-    {
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ3XyL74-DQ1iaIm1Gr2D_iAdcmDwPfwvNaA&usqp=CAU',
-        title: 'Genre',
-    },
-    {
-        img: 'https://assets.whatsnewonnetflix.com/external_assets/sggkh+%5B%5Blxx*9*8931*07_8_muochl_mvg%5Bwmn%5Bzkr%5Be3%5BC805vQhtDYWV7zJyzMwnXCTFK*B%5BZZZZYueIXLz6VnhF8WggRmyRYgkovJn1up*JjahceXWugYlIo1pRdG4q77A*C0wiRU5CU%5D1FYFEvZaHkac5%5DDkoK6c9NF5R.jpg',
-        title: 'Length',
-    },
-    {
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbq0uRkdRYZvm7WKOM5HnwFcTzAD5-vPKw7g&usqp=CAU',
-        title: 'Release Year',
-    },
-    {
-        img: 'https://i.pinimg.com/originals/d6/cb/6f/d6cb6f2e6c7e4e4f8d0ae094e8032b60.jpg',
-        title: 'Actors',
-    },
-    {
-        img: 'https://i.ytimg.com/vi/p0BpMFTYFpU/maxresdefault.jpg',
-        title: 'Rating',
-    },
-];
