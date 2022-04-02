@@ -41,6 +41,20 @@ export default function SearchMoviesPage() {
         console.log("searchResults: ", searchResults);
     }, [searchResults]);
 
+    const getMovieFromDB = async (title, year) => {
+        console.log("checking db for movie: ", title, year);
+        try {
+            const resp = await Axios.post('http://localhost:3001/getMovie', {
+                t: title,
+                y: year
+            });
+            console.log("data: ", resp.data);
+            return resp.data;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     const getAndSetMovieData = async (id) => {
         //this object will hold relevant metadata required for DB insertion on title search queries
         const movie_data = {
@@ -67,6 +81,23 @@ export default function SearchMoviesPage() {
         //console.log("prototype ", Object.getPrototypeOf(movie_data));
         data.title = res_json.title;
         data.year = res_json.release_date.substring(0, 4).length > 0 ? res_json.release_date.substring(0, 4) : '0000';
+        //check db contains title/year
+        const movie_in_db = await getMovieFromDB(data.title, data.year);
+        if (movie_in_db.length > 0) {
+            console.log("found movie in db");
+            var result_json = JSON.parse(
+                JSON.stringify(
+                    {
+                        title: movie_in_db[0].title,
+                        year: movie_in_db[0].year,
+                        image_path: movie_in_db[0].image_path
+                    }
+                )
+            );
+            return result_json;
+        }
+        console.log("retrieving movie data ");
+
         data.length = res_json.runtime;
         if (res_json.poster_path) {
             data.image_path = base_image_url + res_json.poster_path;
@@ -108,7 +139,7 @@ export default function SearchMoviesPage() {
         }
 
         // prints the list of movies stored in the database
-        console.log(currMovies);
+        //console.log(currMovies);
         if (!currMovies.includes(data.title)) {
             // add to movies table
             Axios.post('http://localhost:3001/addMovie', {
@@ -119,7 +150,7 @@ export default function SearchMoviesPage() {
                 m_rating: data.rating,
                 m_plot: data.plot,
             }).then((response) => {
-                console.log(response);
+                //console.log(response);
                 // add to the list so if queried again, will not add
                 currMovies.push(data.title);
                 localStorage.setItem('movie_title', JSON.stringify(currMovies));
@@ -135,19 +166,19 @@ export default function SearchMoviesPage() {
                         m_year: data.year,
                         m_genre: data.genres[g],
                     }).then((response) => {
-                        console.log(response);
+                        //console.log(response);
                     }).catch(err => {
                         console.log(err);
                     });
                 }
 
                 // insert into actors
-                console.log("existing: " + existingActors);
+                //console.log("existing: " + existingActors);
                 for (const a in data.actors) {
                     const curr = data.actors[a].name;
                     // check if already added to avoid dup entry error
                     if (!existingActors.includes(curr)) {
-                        console.log("add " + curr);
+                        //console.log("add " + curr);
                         Axios.post('http://localhost:3001/addActors', {
                             fl_name: curr,
                             f_name: curr.substring(0, curr.indexOf(' ')),
@@ -155,11 +186,11 @@ export default function SearchMoviesPage() {
                             a_dob: data.actor_dobs[a] != null ? data.actor_dobs[a] : '0000-00-00',
                         }).then((response) => {
                             // add the existing actor to the list
-                            console.log("adding " + curr + " to the list");
+                            //console.log("adding " + curr + " to the list");
                             existingActors.push(curr);
                             localStorage.setItem('actors', JSON.stringify(existingActors));
 
-                            console.log(response);
+                            //console.log(response);
                         }).catch(err => {
                             console.log(err);
                         }).finally(() => {
@@ -170,7 +201,7 @@ export default function SearchMoviesPage() {
                                 m_actor: curr,
                                 m_actor_dob: data.actor_dobs[a] != null ? data.actor_dobs[a] : '0000-00-00',
                             }).then((response) => {
-                                console.log(response);
+                                //console.log(response);
                             }).catch(err => {
                                 console.log(err);
                             });
@@ -179,7 +210,7 @@ export default function SearchMoviesPage() {
                         });
                     }
                     else {
-                        console.log("already exists: " + curr);
+                        //console.log("already exists: " + curr);
                     }
 
                 }
@@ -187,7 +218,7 @@ export default function SearchMoviesPage() {
 
         }
         else {
-            console.log("already inserted " + data.title);
+            //console.log("already inserted " + data.title);
         }
 
         //console.log("movie_data: ", data);
@@ -405,15 +436,12 @@ export default function SearchMoviesPage() {
                                         />
                                     }
                                     {!item.image_path &&
-                                        <React.Fragment>
-                                            <p>{item.title}</p>
-                                            <img
-                                                src={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
-                                                srcSet={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
-                                                alt={item.title}
-                                                loading="lazy"
-                                            />
-                                        </React.Fragment>
+                                        <img
+                                            src={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                            srcSet={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                            alt={item.title}
+                                            loading="lazy"
+                                        />
                                     }
                                     <ImageListItemBar
                                         title={item.title}
@@ -440,26 +468,3 @@ export default function SearchMoviesPage() {
         </React.Fragment>
     );
 }
-
-const itemData = [
-    {
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ3XyL74-DQ1iaIm1Gr2D_iAdcmDwPfwvNaA&usqp=CAU',
-        title: 'Genre',
-    },
-    {
-        img: 'https://assets.whatsnewonnetflix.com/external_assets/sggkh+%5B%5Blxx*9*8931*07_8_muochl_mvg%5Bwmn%5Bzkr%5Be3%5BC805vQhtDYWV7zJyzMwnXCTFK*B%5BZZZZYueIXLz6VnhF8WggRmyRYgkovJn1up*JjahceXWugYlIo1pRdG4q77A*C0wiRU5CU%5D1FYFEvZaHkac5%5DDkoK6c9NF5R.jpg',
-        title: 'Length',
-    },
-    {
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbq0uRkdRYZvm7WKOM5HnwFcTzAD5-vPKw7g&usqp=CAU',
-        title: 'Release Year',
-    },
-    {
-        img: 'https://i.pinimg.com/originals/d6/cb/6f/d6cb6f2e6c7e4e4f8d0ae094e8032b60.jpg',
-        title: 'Actors',
-    },
-    {
-        img: 'https://i.ytimg.com/vi/p0BpMFTYFpU/maxresdefault.jpg',
-        title: 'Rating',
-    },
-];

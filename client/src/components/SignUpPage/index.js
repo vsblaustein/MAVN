@@ -58,7 +58,7 @@ export default function SignUpPage() {
       email: email,
       dob: dob
     }).then((response)=> {
-      console.log(response);
+      //console.log(response);
       navigate("/", { replace: true });
     }).catch(err => {
       console.log(err);
