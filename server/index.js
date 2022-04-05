@@ -289,6 +289,10 @@ app.get('/getMovieMetaData', async (req, res) => {
     const result = await db.query(
       "SELECT title, year, length, rating FROM movies WHERE title = ?",[movie_title]);
     res.send(result);
+  } catch(err){
+    throw err;
+  }
+  });
 // **** END PREFERENCES ****
 
 // **** INSERT INTO TABLES ****
@@ -318,6 +322,10 @@ app.get('/getMovieGenres', async (req, res) => {
       "SELECT genre FROM movie_genre WHERE title = ?",
       [movie_title]);
     res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
 //POST: adds to movie_genre table
 app.post('/addMovieGenre', async (req, res) => {
   const m_title = req.body.m_title;
@@ -341,6 +349,10 @@ app.get('/getMovieCast', async (req, res) => {
       "SELECT actor FROM cast_members WHERE title = ?",
       [movie_title]);
     res.send(result);
+  } catch (err) {
+    throw err;
+  }
+  });
 
 //POST: adds to actors table
 app.post('/addActors', async (req, res) => {
@@ -367,6 +379,10 @@ app.get('/getMembersList', async (req, res) => {
       "SELECT DISTINCT username FROM part_of WHERE code = ?",
       [room_code]);
     res.send(result);
+  } catch (err) {
+    throw err;
+  }
+  });
 
 //POST: adds to cast_members table
 app.post('/addCastMembers', async (req, res) => {
