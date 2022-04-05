@@ -21,7 +21,8 @@ const MenuProps = {
 };
 
 // get actors from database
-const names = localStorage.getItem('actors').split(',');
+const names = [];
+//const names = localStorage.getItem('actors').split(',');
 
 function getStyles(name, personName, theme) {
     return {

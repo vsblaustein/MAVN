@@ -13,6 +13,7 @@ import MovieRoomPage from './components/MovieRoomPage';
 import JoinPage from './components/JoinPage';
 import ProfilePage from './components/ProfilePage';
 import CreatePage from './components/CreatePage';
+import SearchMoviesPage from './components/SearchMoviesPage';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage/>}/>
         <Route path="/create" element={<CreatePage/>}/>
         <Route path="/join" element={<JoinPage/>}/>
+        <Route path="/search%20movies" element ={<SearchMoviesPage/>}/>
       </Routes>
     </Router>
     
