@@ -26,21 +26,35 @@ import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
+import './SearchMoviesPage.css';
+import GenreDropdown from './GenreDropdown';
+import { genres } from './GenreDropdown';
 
 const api_key = "76e275f04f332f92388a49a0a1ad92ee";
 const base_image_url = "https://image.tmdb.org/t/p/w500";
 
 const theme = createTheme();
 
+
+
 export default function SearchMoviesPage() {
 
     const [searchResults, setSearchResults] = React.useState(null);
     const [filteredResults, setFilteredResults] = React.useState(null);
+    const [genres, setGenres] = React.useState(null);
+    
+    const setValue = (g) => {
+        setGenres(g);
+    }
 
     // this will trigger every time title search results changes for re-rendering
     React.useEffect(() => {
         console.log("searchResults: ", searchResults);
     }, [searchResults]);
+
+    React.useEffect(() => {
+        console.log("genres: ", genres);
+    }, [genres]);
 
     React.useEffect(() => {
         console.log("filteredResults: ", filteredResults);
@@ -95,7 +109,8 @@ export default function SearchMoviesPage() {
                     {
                         title: movie_in_db[0].title,
                         year: movie_in_db[0].year,
-                        image_path: movie_in_db[0].image_path
+                        image_path: movie_in_db[0].image_path,
+                        genre: movie_in_db[0].genre
                     }
                 )
             );
@@ -425,6 +440,24 @@ export default function SearchMoviesPage() {
                         </Grid>
                     </Box>
                 </Container>
+
+                <div class="box">
+                    <div>
+                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                            <SearchIcon />
+                        </Avatar>
+                    </div>
+                    <div>
+                        <Typography component="h1" variant="h5">
+                            Filter Results
+                        </Typography>
+                    </div>
+                    <div>
+                        <GenreDropdown action={setValue}/>
+                    </div>
+                </div>
+
+
 
                 <Container maxWidth="lg">
                     {searchResults &&

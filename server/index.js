@@ -116,6 +116,7 @@ app.post('/getMovie', async (req, res) => {
     const result = await db.query(
       "SELECT * FROM movies WHERE title = ? AND year = ?",
       [title, year]);
+    res.send(result);
   }
   catch (err) {
     throw err;
