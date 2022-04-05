@@ -21,6 +21,7 @@ const MenuProps = {
 };
 
 // get genres from DB
+//const names = [];
 const names = localStorage.getItem('genres').split(',');
 
 function getStyles(name, personName, theme) {

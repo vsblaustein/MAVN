@@ -3,6 +3,8 @@ import ResponsiveAppBar from '../ResponsiveAppBar/index'
 import Typography from '@mui/material/Typography';
 import ProfileIcon from './ProfileIcon';
 import './ProfilePage.css';
+import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import {
   BrowserRouter as Router,
@@ -19,6 +21,7 @@ const flexContainer = {
 
 
 
+  
 export default class profile extends React.Component {
   state = {
    seen: false
@@ -27,6 +30,26 @@ export default class profile extends React.Component {
    this.setState({
     seen: !this.state.seen
    });
+
+        // store the user in local storage
+        Axios.get('http://localhost:3001/getUser', {
+        }).then((response)=> {
+            // gives a list of json objects
+            const genres = JSON.stringify(response.data);
+            const arr = []
+            // parse the JSON objects
+            for(const c in JSON.parse(genres)){
+              arr.push(JSON.parse(genres)[c].genre);
+            }
+            console.log("list of genre: [" + arr + "]");
+            localStorage.setItem('genres', arr);
+
+            
+          
+        }).catch(err => {
+          console.log(err);
+        });
+
   };
 render() {
   return (
@@ -48,7 +71,7 @@ render() {
             component="div"
             sx={{ ml: "10px", mt: "15px", display: { xs: 'none', md: 'flex' } }}
           >
-            Email: mehdikamal@gmail.com
+            Email: 
           </Typography>
           <Typography 
             variant="h5"
@@ -56,16 +79,9 @@ render() {
             component="div"
             sx={{ ml: "10px", mt: "15px", display: { xs: 'none', md: 'flex' } }}
           >
-            Birthday: November 17th
+            Birthday: 
           </Typography>
-          <Typography 
-            variant="h5"
-            noWrap
-            component="div"
-            sx={{ ml: "10px", mt: "15px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Gender: Male
-          </Typography>
+        
           </div>
    </div>
   );

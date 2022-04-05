@@ -3,9 +3,35 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
+import Axios from 'axios';
+import MetaDataPopUp from './MetaDataPopUp';
 // this document will generate the charts from the db and display them
 
 export default function Movies() {
+ 
+
+  const handleClick = (movieTitle) => {
+    
+    movieTitle = "Abby Singer";
+
+    console.log(movieTitle);
+    //retrieve a movie's meta data
+    Axios.get('http://localhost:3001/getMetadata', {
+      title: movieTitle
+    }).then((response)=> {
+        // gives a list of json objects
+        const movieData = JSON.stringify(response.data);
+        console.log(movieData);
+      
+    }).catch(err => {
+      console.log(err);
+    });
+
+  };
+
+
+ 
+
   return (
         <>
       <Box>
@@ -23,14 +49,19 @@ export default function Movies() {
 
         <ImageList sx={{ width: '100%', height:'100%', padding:0}} cols={itemData.length} rowHeight={180}>
         {itemData.map((item) => (
-          <ImageListItem key={item.img} sx={{width:'100%', height:'100%', left:40, m:'10px'}}>
-            <img
-              src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-              srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-              alt={item.title}
-              loading="lazy"
-            /> 
-          </ImageListItem>
+              <ImageListItem key={item.img} sx={{width:'100%', height:'100%', left:40, m:'10px'}}>
+                <img
+                  src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+                  srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                  alt={item.title}
+                  loading="lazy"
+                  required onClick={(e) => {handleClick(item.title)}}
+                >
+                </img>
+              </ImageListItem>
+
+             
+         
         ))}
       </ImageList>
       </>
