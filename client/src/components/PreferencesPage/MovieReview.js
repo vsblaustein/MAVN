@@ -7,10 +7,19 @@ import SlideShow from './slide';
 
 export default class MovieSearch extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            movie_title: [],
+            movie_image: [],
+            movies: [],
+        };
+    };
+
     handleExit = () => {
         this.props.toggle();
-        
     };
+   
 
     // add a "are you sure you want to leave?"
     render() {
@@ -32,7 +41,8 @@ export default class MovieSearch extends React.Component {
                                     Finish
                                 </Button>
                             </span>
-                            <SlideShow/>
+                            <SlideShow movieTitles={this.state.movie_title} 
+                            movieImages={this.state.movie_image}/>
                         </Box>
                     </Box>
                 </form>

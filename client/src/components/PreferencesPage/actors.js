@@ -40,6 +40,7 @@ export default function Actors(props) {
         console.log(err);
       });
     }
+    document.location.reload();
     handleExit();
   }
 

@@ -28,13 +28,14 @@ function MovieRoomSlider() {
         component="div"
         sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
         fontWeight='bold'
+        key={g}
       >
         {g}
         </Typography>
 
         <ImageList sx={{ width: '100%', height:'100%', padding:0}} cols={itemData.length} rowHeight={180}>
-        {itemData.map((item) => (
-          <ImageListItem key={item.img} sx={{width:'100%', height:'100%', left:40, m:'10px'}}>
+        {itemData.map((item,index) => (
+          <ImageListItem key={index} sx={{width:'100%', height:'100%', left:40, m:'10px'}}>
             <img
               src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
               srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}

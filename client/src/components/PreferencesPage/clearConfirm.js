@@ -36,6 +36,7 @@ export default function AlertDialog() {
     }).catch(err => {
       console.log(err);
     });
+    document.location.reload();
     handleClose();
   }
 

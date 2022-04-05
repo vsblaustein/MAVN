@@ -35,6 +35,7 @@ export default function Length(props) {
     }).catch(err => {
       console.log(err);
     });
+    document.location.reload();
     handleExit();
   }
 
