@@ -35,6 +35,7 @@ export default class MovieRoom extends React.Component {
     gpSeen: false,
     movieMaster: "",
     roomCode: "123456",
+    chart: true,
   };
 
   componentDidMount(){
@@ -52,14 +53,16 @@ export default class MovieRoom extends React.Component {
   // methods to toggle pop ups
   togglePQ = () => {
     this.setState({
-      pqSeen: !this.state.pqSeen
+      pqSeen: !this.state.pqSeen,
+      chart: this.state.pqSeen
     });
 
   };
 
   toggleGP = () => {
     this.setState({
-      gpSeen: !this.state.gpSeen
+      gpSeen: !this.state.gpSeen,
+      chart: this.state.gpSeen
     });
   };
 
@@ -138,7 +141,7 @@ export default class MovieRoom extends React.Component {
             Group Preferences
           </Typography>
 
-          <PreferencesStats style={flexContainer} class='center-screen'/>
+          {this.state.chart ? <PreferencesStats style={flexContainer} class='center-screen'/> : null}
 
         </Box>
 

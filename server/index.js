@@ -116,7 +116,10 @@ app.post('/getMovie', async(req,res) => {
     const result = await db.query(
       "SELECT * FROM movies WHERE title = ? AND year = ?",
       [title, year]);
-
+    } catch(err){
+      throw err;
+    }
+  });
 // GET: user information
 app.get('/getProfile', async(req,res) => {
   const name = req.body.name;
