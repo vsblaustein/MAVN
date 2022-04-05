@@ -3,9 +3,12 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import PQPopUp from './MovieSelectionPopUp';
+import GPPopUp from './GroupPrefPopUp';
 import * as React from 'react';
+import {componentDidMount} from 'react';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
+import Axios from 'axios';
 
 // styling for horizontal list
 const flexContainer = {
@@ -14,13 +17,37 @@ const flexContainer = {
   padding: 0,
 };
 
+/*function getMovieMaster(){
+  Axios.post('http://localhost:3001/getMaster', {
+            code: roomCode
+        }).then((response) => {
+            console.log(response);
+        }).catch(err => {
+            console.log(err);
+        });
+}*/
+
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
   // determines if either state has been seen
   state = {
     pqSeen: false,
-    mrSeen: false
+    gpSeen: false,
+    movieMaster: "",
+    roomCode: "123456",
   };
+
+  componentDidMount(){
+    const c = this.state.roomCode;
+    console.log(c);
+    Axios.post('http://localhost:3001/getMaster', {
+            code: c
+        }).then((response) => {
+            console.log(response);
+        }).catch(err => {
+            console.log(err);
+        });
+  }
 
   // methods to toggle pop ups
   togglePQ = () => {
@@ -30,9 +57,9 @@ export default class MovieRoom extends React.Component {
 
   };
 
-  toggleMR = () => {
+  toggleGP = () => {
     this.setState({
-      mrSeen: !this.state.mrSeen
+      gpSeen: !this.state.gpSeen
     });
   };
 
@@ -71,7 +98,16 @@ export default class MovieRoom extends React.Component {
           </Button>
           {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
 
+          <Button
+            onClick={this.toggleGP}
+            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+          >
+            Edit Group Preferences
+          </Button>
+          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
+
           <Typography
+            
             variant="h6"
             noWrap
             component="div"
