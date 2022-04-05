@@ -35,11 +35,16 @@ const theme = createTheme();
 export default function SearchMoviesPage() {
 
     const [searchResults, setSearchResults] = React.useState(null);
+    const [filteredResults, setFilteredResults] = React.useState(null);
 
     // this will trigger every time title search results changes for re-rendering
     React.useEffect(() => {
         console.log("searchResults: ", searchResults);
     }, [searchResults]);
+
+    React.useEffect(() => {
+        console.log("filteredResults: ", filteredResults);
+    }, [filteredResults]);
 
     const getMovieFromDB = async (title, year) => {
         console.log("checking db for movie: ", title, year);
