@@ -378,6 +378,15 @@ app.post('/addCastMembers', async (req, res) => {
     const result = await db.query(
       "INSERT INTO cast_members(title, year, actor, actor_dob) VALUES(?,?,?,?)",
       [m_title, m_year, m_actor, m_actor_dob]);
+
+//POST: register request
+app.post('/getMaster', async (req, res) => {
+  const roomCode = req.body.code;
+  console.log(roomCode);
+  try {
+    const result = await db.query(
+      "SELECT movie_master FROM movie_room WHERE code = ?",
+      [roomCode]);
     res.send(req.body);
   } catch (err) {
     throw err;
