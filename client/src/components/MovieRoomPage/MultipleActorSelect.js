@@ -23,7 +23,7 @@ export default function MultipleSelectChip(props) {
                     multiple
                     sx={{ width: 300 }}
                     onChange={(event, value) => props.action(value)}
-                    renderInput={(params) => <TextField {...params} label="Names" />}
+                    renderInput={(params) => <TextField {...params} label="Actors" />}
                 />
             </FormControl>
 

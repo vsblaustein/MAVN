@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
-import Axios from 'axios';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-// get actors from database
+// get actors from database, careful for ,'s
 const existingActors = [];
 const ea = JSON.parse(localStorage.getItem('actors'));
 for (const c in ea) {
@@ -25,7 +23,7 @@ export default function MultipleSelectChip(props) {
                     multiple
                     sx={{ width: 300 }}
                     onChange={(event, value) => props.action(value)}
-                    renderInput={(params) => <TextField {...params} label="Names" />}
+                    renderInput={(params) => <TextField {...params} label="Actors" />}
                 />
             </FormControl>
 

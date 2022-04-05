@@ -21,6 +21,7 @@ export default function GQPopUp(props) {
   const[e_year, setEYear] = React.useState(2000);
 
   let navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
 
   // makes the pop up disappear
@@ -37,14 +38,13 @@ export default function GQPopUp(props) {
 
     event.preventDefault();
     // actors
-    /*for (const a in actors) {
+    for (const a in actors) {
       console.log("current actor: " + actors[a]);
       Axios.post('http://localhost:3001/actorPref', {
         username: currentUser,
         actors: actors[a],
       }).then((response) => {
         console.log(response);
-        navigate("/my%20preferences", { replace: true });
       }).catch(err => {
         console.log(err);
       });
@@ -58,7 +58,6 @@ export default function GQPopUp(props) {
         genre: genre[g],
       }).then((response) => {
         console.log(response);
-        navigate("/my%20preferences", { replace: true });
       }).catch(err => {
         console.log(err);
       });
@@ -70,7 +69,6 @@ export default function GQPopUp(props) {
       length: length,
     }).then((response) => {
       console.log(response);
-      navigate("/my%20preferences", { replace: true });
     }).catch(err => {
       console.log(err);
     });
@@ -82,10 +80,9 @@ export default function GQPopUp(props) {
       e_year: e_year,
     }).then((response) => {
       console.log(response);
-      navigate("/my%20preferences", { replace: true });
     }).catch(err => {
       console.log(err);
-    });*/
+    });
 
     handleExit();
   }
