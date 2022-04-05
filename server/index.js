@@ -71,6 +71,19 @@ app.get('/getActors', async(req,res) => {
   }
 });
 
+//GET: metadata of a movie from DB
+app.get('/getMetadata', async(req,res) => {
+  const title = req.body.title;
+  try {
+    const result = await db.query(
+      "SELECT * FROM movies WHERE title = ?",
+        [title]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 // GET: Get genres from DB
 app.get('/getGenres', async(req,res) => {
   try {
@@ -103,6 +116,13 @@ app.post('/getMovie', async(req,res) => {
     const result = await db.query(
       "SELECT * FROM movies WHERE title = ? AND year = ?",
       [title, year]);
+
+// GET: user information
+app.get('/getProfile', async(req,res) => {
+  const name = req.body.name;
+  try {
+    const result = await db.query(
+      "SELECT * FROM users WHERE name = ?");
     res.send(result);
   } catch (err) {
     throw err;

@@ -10,10 +10,9 @@ import {useHistory, useNavigate} from 'react-router-dom';
 function MovieRoomSlider() {
   const navigate = useNavigate()
 
-
-
   const handleClick = (e) => {
     navigate("/movie%20room");
+    
   };
 
 
