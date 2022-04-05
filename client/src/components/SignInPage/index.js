@@ -81,7 +81,7 @@ export default function SignIn() {
             arr.push(actors[c].full_name);
           }
           console.log("list of actors: [" + arr + "]");
-          localStorage.setItem('actors', arr);
+          localStorage.setItem('actors', JSON.stringify(arr));
 
         }).catch(err => {
           console.log(err);
