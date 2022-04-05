@@ -3,6 +3,7 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Box from '@mui/material/Box';
 import Axios from 'axios';
+import handleClick from './Movies';
 
 export default function MovieList(props) {
     const [itemData, setItemData] = React.useState([]);
@@ -39,6 +40,7 @@ export default function MovieList(props) {
                                 srcSet={`${item}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                                 alt={props.genre}
                                 loading="lazy"
+                                required onClick={(e) => {handleClick(item.title)}}
                             />
                         </ImageListItem>
                     ))}
