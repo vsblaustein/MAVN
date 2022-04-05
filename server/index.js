@@ -80,6 +80,33 @@ app.get('/getGenres', async(req,res) => {
   }
 });
 
+// GET: Get movies from DB
+app.get('/getMovies', async(req,res) => {
+  try {
+    const result = await db.query(
+      "SELECT * FROM movies");
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// POST: Get single movie from DB
+app.post('/getMovie', async(req,res) => {
+  const title = req.body.t;
+  const year = req.body.y;
+  console.log("req.body", req.body);
+  try {
+    const result = await db.query(
+      "SELECT * FROM movies WHERE title = ? AND year = ?",
+      [title, year]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// **** START PREFERENCES ****
 //POST: adds to rating_pref table
 app.post('/ratingPref', async (req, res) => {
   const username = req.body.username;
@@ -182,6 +209,75 @@ app.post('/clearPref', async (req, res) => {
     throw err;
   }
 });
+
+// **** END PREFERENCES ****
+
+// **** INSERT INTO TABLES ****
+//POST: adds to movies table
+app.post('/addMovie', async (req, res) => {
+  const m_title = req.body.m_title;
+  const m_year = req.body.m_year;
+  const m_length = req.body.m_length;
+  const m_image_path = req.body.m_image_path;
+  const m_rating = req.body.m_rating;
+  const m_plot = req.body.m_plot;
+  try {
+    const result = await db.query(
+      "INSERT INTO movies(title, year, length, image_path, rating, plot) VALUES (?,?,?,?,?,?);",
+      [m_title, m_year, m_length, m_image_path, m_rating, m_plot]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: adds to movie_genre table
+app.post('/addMovieGenre', async (req, res) => {
+  const m_title = req.body.m_title;
+  const m_year = req.body.m_year;
+  const m_genre = req.body.m_genre;
+  try {
+    const result = await db.query(
+      "INSERT INTO movie_genre(title, year, genre) VALUES (?,?,?)",
+      [m_title, m_year, m_genre]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: adds to actors table
+app.post('/addActors', async (req, res) => {
+  const fl_name = req.body.fl_name;
+  const f_name = req.body.f_name;
+  const l_name = req.body.l_name;
+  const a_dob = req.body.a_dob;
+  try {
+    const result = await db.query(
+      "INSERT INTO actors(full_name, first_name, last_name, dob) VALUES (?,?,?,?)",
+      [fl_name, f_name, l_name, a_dob]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: adds to cast_members table
+app.post('/addCastMembers', async (req, res) => {
+  const m_title = req.body.m_title;
+  const m_year = req.body.m_year;
+  const m_actor = req.body.m_actor;
+  const m_actor_dob = req.body.m_actor_dob;
+  try {
+    const result = await db.query(
+      "INSERT INTO cast_members(title, year, actor, actor_dob) VALUES(?,?,?,?)",
+      [m_title, m_year, m_actor, m_actor_dob]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
