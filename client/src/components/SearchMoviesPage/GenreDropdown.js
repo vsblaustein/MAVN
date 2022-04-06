@@ -61,7 +61,7 @@ export default function MultipleSelectChip(props){
     return (
         <>
             <FormControl sx={{ m: 1, width: 300 }}>
-                <InputLabel id="genre-select-label">Genre</InputLabel>
+                <InputLabel id="genre-select-label">Select Genre(s)</InputLabel>
                 <Select
                     labelId="genre-select-label"
                     id="genre-select"
