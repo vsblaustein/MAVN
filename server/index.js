@@ -71,6 +71,19 @@ app.get('/getActors', async(req,res) => {
   }
 });
 
+// GET: Get actors from DB
+app.get('/getMovieMaster', async(req,res) => {
+  const c = req.query.c;
+  try {
+    const result = await db.query(
+      "SELECT username FROM part_of WHERE code = ? AND is_master = 1;"
+      ,[c]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 //GET: metadata of a movie from DB
 app.get('/getMetadata', async(req,res) => {
   const title = req.body.title;

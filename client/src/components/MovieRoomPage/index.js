@@ -39,12 +39,12 @@ export default class MovieRoom extends React.Component {
   };
 
   componentDidMount(){
-    const c = this.state.roomCode;
-    console.log(c);
-    Axios.post('http://localhost:3001/getMaster', {
-            code: c
-        }).then((response) => {
-            console.log(response);
+    const code = this.state.roomCode;
+    console.log(code);
+    Axios.get('http://localhost:3001/getMovieMaster', {
+            params: {c: code}}
+        ).then((response) => {
+            console.log("movie master is: " + response.data[0].username);
         }).catch(err => {
             console.log(err);
         });
