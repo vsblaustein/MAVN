@@ -21,7 +21,8 @@ export default function GQPopUp(props) {
   const[e_year, setEYear] = React.useState(2000);
 
   let navigate = useNavigate();
-  const currentUser = JSON.parse(localStorage.getItem('user'));
+  // current user should be a LIST of all users in the movie room?
+  // const currentUser = JSON.parse(localStorage.getItem('user'));
 
 
   // makes the pop up disappear
@@ -36,55 +37,55 @@ export default function GQPopUp(props) {
     console.log("submitting: (actors, " + actors + ") (genres, " + genre
     + ") (release years, " + s_year + " " + e_year + ") (length, " + length + ")");
 
-    event.preventDefault();
-    // actors
-    for (const a in actors) {
-      console.log("current actor: " + actors[a]);
-      Axios.post('http://localhost:3001/actorPref', {
-        username: currentUser,
-        actors: actors[a],
-      }).then((response) => {
-        console.log(response);
-      }).catch(err => {
-        console.log(err);
-      });
-    }
+    // event.preventDefault();
+    // // actors
+    // for (const a in actors) {
+    //   console.log("current actor: " + actors[a]);
+    //   Axios.post('http://localhost:3001/actorPref', {
+    //     username: currentUser,
+    //     actors: actors[a],
+    //   }).then((response) => {
+    //     console.log(response);
+    //   }).catch(err => {
+    //     console.log(err);
+    //   });
+    // }
 
-    // genre
-    for (const g in genre) {
-      console.log("current genre: " + genre[g]);
-      Axios.post('http://localhost:3001/genrePref', {
-        username: currentUser,
-        genre: genre[g],
-      }).then((response) => {
-        console.log(response);
-      }).catch(err => {
-        console.log(err);
-      });
-    }
+    // // genre
+    // for (const g in genre) {
+    //   console.log("current genre: " + genre[g]);
+    //   Axios.post('http://localhost:3001/genrePref', {
+    //     username: currentUser,
+    //     genre: genre[g],
+    //   }).then((response) => {
+    //     console.log(response);
+    //   }).catch(err => {
+    //     console.log(err);
+    //   });
+    // }
 
-    // length
-    Axios.post('http://localhost:3001/lengthPref', {
-      username: currentUser,
-      length: length,
-    }).then((response) => {
-      console.log(response);
-    }).catch(err => {
-      console.log(err);
-    });
+    // // length
+    // Axios.post('http://localhost:3001/lengthPref', {
+    //   username: currentUser,
+    //   length: length,
+    // }).then((response) => {
+    //   console.log(response);
+    // }).catch(err => {
+    //   console.log(err);
+    // });
 
-    // release year
-    Axios.post('http://localhost:3001/releaseYearPref', {
-      username: currentUser,
-      s_year: s_year,
-      e_year: e_year,
-    }).then((response) => {
-      console.log(response);
-    }).catch(err => {
-      console.log(err);
-    });
+    // // release year
+    // Axios.post('http://localhost:3001/releaseYearPref', {
+    //   username: currentUser,
+    //   s_year: s_year,
+    //   e_year: e_year,
+    // }).then((response) => {
+    //   console.log(response);
+    // }).catch(err => {
+    //   console.log(err);
+    // });
 
-    handleExit();
+    // handleExit();
   }
 
   // set the values

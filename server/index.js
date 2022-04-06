@@ -276,7 +276,6 @@ app.get('/getGroupPrefChart', async (req, res) => {
   BigInt.prototype.toJSON = function() { return this.toString() }
 
   console.log("fetching " + table + " for " + username);
-
   try {
     const result = await db.query(
       "SELECT DISTINCT n.value, n.numerator, n.numerator / d.denominator AS ratio \
@@ -293,6 +292,7 @@ app.get('/getGroupPrefChart', async (req, res) => {
               WHERE t.username IN (?) \
               GROUP BY p.code \
           ) d ON d.code = n.code \
+            HAVING ratio < 1.0 \
             ORDER BY n.value; ", [username, username]);
     res.send(result);
   } catch (err) {
