@@ -39,9 +39,9 @@ const theme = createTheme();
 
 export default function SearchMoviesPage() {
 
-    const [searchResults, setSearchResults] = React.useState(null);
-    const [filteredResults, setFilteredResults] = React.useState(null);
-    const [genres, setGenres] = React.useState(null);
+    const [searchResults, setSearchResults] = React.useState([]);
+    const [filteredResults, setFilteredResults] = React.useState([]);
+    const [genres, setGenres] = React.useState([]);
 
     const setValue = (g) => {
         setGenres(g);
