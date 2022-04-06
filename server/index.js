@@ -43,7 +43,7 @@ app.post('/login', async (req, res) => {
 
   const username = req.body.username;
   const password = req.body.password;
-  console.log("check for user " + username + " password " + password);
+  //console.log("check for user " + username + " password " + password);
   try {
     const result = await db.query(
       "SELECT * FROM users WHERE username = ? AND password = ?",
@@ -111,11 +111,28 @@ app.get('/getMovies', async (req, res) => {
 app.post('/getMovie', async (req, res) => {
   const title = req.body.t;
   const year = req.body.y;
-  console.log("req.body", req.body);
+  //console.log("req.body", req.body);
   try {
     const result = await db.query(
       "SELECT * FROM movies WHERE title = ? AND year = ?",
       [title, year]);
+    res.send(result);
+  }
+  catch (err) {
+    throw err;
+  }
+});
+
+// POST: Get all genres for a single movie from DB
+app.post('/getGenresOfMovie', async (req, res) => {
+  const title = req.body.t;
+  const year = req.body.y;
+  //console.log("req.body", req.body);
+  try {
+    const result = await db.query(
+      "SELECT genre FROM movie_genre WHERE title = ? AND year = ?",
+      [title, year]);
+    res.send(result);
   }
   catch (err) {
     throw err;
