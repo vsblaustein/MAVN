@@ -10,7 +10,6 @@ import MetaDataPopUp from './MetaDataPopUp';
 // get the genres from local storage
 const genres = localStorage.getItem('genres').split(',');
   
-
 // this document will generate the charts from the db and display them
 
 export default function Movies() {

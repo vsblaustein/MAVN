@@ -71,6 +71,19 @@ app.get('/getActors', async (req, res) => {
   }
 });
 
+// GET: Get actors from DB
+app.get('/getMovieMaster', async(req,res) => {
+  const c = req.query.c;
+  try {
+    const result = await db.query(
+      "SELECT username FROM part_of WHERE code = ? AND is_master = 1;"
+      ,[c]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 //GET: metadata of a movie from DB
 app.get('/getMetadata', async (req, res) => {
   const title = req.body.title;
@@ -295,7 +308,6 @@ app.get('/getGroupPrefChart', async (req, res) => {
   BigInt.prototype.toJSON = function () { return this.toString() }
 
   console.log("fetching " + table + " for " + username);
-
   try {
     const result = await db.query(
       "SELECT DISTINCT n.value, n.numerator, n.numerator / d.denominator AS ratio \
@@ -312,6 +324,7 @@ app.get('/getGroupPrefChart', async (req, res) => {
               WHERE t.username IN (?) \
               GROUP BY p.code \
           ) d ON d.code = n.code \
+            HAVING ratio < 1.0 \
             ORDER BY n.value; ", [username, username]);
     res.send(result);
   } catch (err) {
@@ -466,6 +479,39 @@ app.get('/getMovieGenre', async (req, res) => {
       WHERE genre = ?",
       [m_genre]);
     res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// QUERIES FOR INSERTING INTO ROOMS
+//POST: adds movie room
+app.post('/addMovieRoom', async (req, res) => {
+  const room_code = res.body.room_code;
+  const room_name = req.body.room_name;
+  const created = req.body.created;
+  const path = req.body.path;
+  const master = req.body.master;
+  try {
+    const result = await db.query(
+      "INSERT INTO movie_room(code, name, date_created, image_path, movie_master) VALUES(?,?,?,?,?)",
+      [room_code, room_name, created, path, master]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: add user to part of on first sign in
+app.post('/addPartOf', async (req, res) => {
+  const user = res.body.user;
+  const room_code = req.body.room_code;
+  const master = req.body.master;
+  try {
+    const result = await db.query(
+      "INSERT INTO part_of(username,code,is_master) VALUES(?,?,?)",
+      [user, room_code, master]);
+    res.send(req.body);
   } catch (err) {
     throw err;
   }
