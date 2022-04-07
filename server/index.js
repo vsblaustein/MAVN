@@ -43,7 +43,7 @@ app.post('/login', async (req, res) => {
 
   const username = req.body.username;
   const password = req.body.password;
-  console.log("check for user " + username + " password " + password);
+  //console.log("check for user " + username + " password " + password);
   try {
     const result = await db.query(
       "SELECT * FROM users WHERE username = ? AND password = ?",
@@ -61,7 +61,7 @@ app.post('/login', async (req, res) => {
 // QUERIES TO LOAD INFO FROM DATABASE
 
 // GET: Get actors from DB
-app.get('/getActors', async(req,res) => {
+app.get('/getActors', async (req, res) => {
   try {
     const result = await db.query(
       "SELECT DISTINCT full_name FROM actors");
@@ -85,12 +85,12 @@ app.get('/getMovieMaster', async(req,res) => {
 });
 
 //GET: metadata of a movie from DB
-app.get('/getMetadata', async(req,res) => {
+app.get('/getMetadata', async (req, res) => {
   const title = req.body.title;
   try {
     const result = await db.query(
       "SELECT * FROM movies WHERE title = ?",
-        [title]);
+      [title]);
     res.send(result);
   } catch (err) {
     throw err;
@@ -98,7 +98,7 @@ app.get('/getMetadata', async(req,res) => {
 });
 
 // GET: Get genres from DB
-app.get('/getGenres', async(req,res) => {
+app.get('/getGenres', async (req, res) => {
   try {
     const result = await db.query(
       "SELECT DISTINCT genre FROM genres");
@@ -110,7 +110,7 @@ app.get('/getGenres', async(req,res) => {
 
 
 // GET: Get movies from DB
-app.get('/getMovies', async(req,res) => {
+app.get('/getMovies', async (req, res) => {
   try {
     const result = await db.query(
       "SELECT * FROM movies");
@@ -121,20 +121,39 @@ app.get('/getMovies', async(req,res) => {
 });
 
 // POST: Get single movie from DB
-app.post('/getMovie', async(req,res) => {
+app.post('/getMovie', async (req, res) => {
   const title = req.body.t;
   const year = req.body.y;
-  console.log("req.body", req.body);
+  //console.log("req.body", req.body);
   try {
     const result = await db.query(
       "SELECT * FROM movies WHERE title = ? AND year = ?",
       [title, year]);
-    } catch(err){
-      throw err;
-    }
-  });
+    res.send(result);
+  }
+  catch (err) {
+    throw err;
+  }
+});
+
+// POST: Get all genres for a single movie from DB
+app.post('/getGenresOfMovie', async (req, res) => {
+  const title = req.body.t;
+  const year = req.body.y;
+  //console.log("req.body", req.body);
+  try {
+    const result = await db.query(
+      "SELECT genre FROM movie_genre WHERE title = ? AND year = ?",
+      [title, year]);
+    res.send(result);
+  }
+  catch (err) {
+    throw err;
+  }
+});
+
 // GET: user information
-app.get('/getProfile', async(req,res) => {
+app.get('/getProfile', async (req, res) => {
   const name = req.body.name;
   try {
     const result = await db.query(
@@ -256,7 +275,7 @@ app.get('/getPrefChart', async (req, res) => {
   const username = req.query.username;
   const table = req.query.table;
   // allows for serializing of a BigInt (for ratio)
-  BigInt.prototype.toJSON = function() { return this.toString() }
+  BigInt.prototype.toJSON = function () { return this.toString() }
 
   console.log("fetching " + table + " for " + username);
 
@@ -265,13 +284,13 @@ app.get('/getPrefChart', async (req, res) => {
       "SELECT n.username, n.value, n.numerator, n.numerator / d.denominator AS ratio \
         FROM( \
               SELECT username, value, COUNT(value) AS numerator \
-              FROM " + table + 
-              " WHERE username IN (?) \
+              FROM " + table +
+      " WHERE username IN (?) \
               GROUP BY value, username ) n \
           INNER JOIN ( \
               SELECT username, COUNT(value) AS denominator \
-              FROM " + table + 
-              " WHERE username IN (?) \
+              FROM " + table +
+      " WHERE username IN (?) \
               GROUP BY username \
           ) d ON d.username = n.username \
             ORDER BY n.value; ", [username, username]);
@@ -286,7 +305,7 @@ app.get('/getGroupPrefChart', async (req, res) => {
   const username = req.query.username;
   const table = req.query.table;
   // allows for serializing of a BigInt (for ratio)
-  BigInt.prototype.toJSON = function() { return this.toString() }
+  BigInt.prototype.toJSON = function () { return this.toString() }
 
   console.log("fetching " + table + " for " + username);
   try {
@@ -319,16 +338,16 @@ app.get('/getGroupPrefChart', async (req, res) => {
 app.get('/getMovieMetaData', async (req, res) => {
   const movie_title = req.query.movie_title;
   // allows for serializing of a BigInt (for ratio)
-  BigInt.prototype.toJSON = function() { return this.toString() }
+  BigInt.prototype.toJSON = function () { return this.toString() }
 
   try {
     const result = await db.query(
-      "SELECT title, year, length, rating FROM movies WHERE title = ?",[movie_title]);
+      "SELECT title, year, length, rating FROM movies WHERE title = ?", [movie_title]);
     res.send(result);
-  } catch(err){
+  } catch (err) {
     throw err;
   }
-  });
+});
 // **** END PREFERENCES ****
 
 // **** INSERT INTO TABLES ****
@@ -344,6 +363,20 @@ app.post('/addMovie', async (req, res) => {
     const result = await db.query(
       "INSERT INTO movies(title, year, length, image_path, rating, plot) VALUES (?,?,?,?,?,?);",
       [m_title, m_year, m_length, m_image_path, m_rating, m_plot]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: register request
+app.post('/getMaster', async (req, res) => {
+  const roomCode = req.body.code;
+  console.log(roomCode);
+  try {
+    const result = await db.query(
+      "SELECT movie_master FROM movie_room WHERE code = ?",
+      [roomCode]);
     res.send(req.body);
   } catch (err) {
     throw err;
@@ -388,7 +421,7 @@ app.get('/getMovieCast', async (req, res) => {
   } catch (err) {
     throw err;
   }
-  });
+});
 
 //POST: adds to actors table
 app.post('/addActors', async (req, res) => {
@@ -418,7 +451,7 @@ app.get('/getMembersList', async (req, res) => {
   } catch (err) {
     throw err;
   }
-  });
+});
 
 //POST: adds to cast_members table
 app.post('/addCastMembers', async (req, res) => {

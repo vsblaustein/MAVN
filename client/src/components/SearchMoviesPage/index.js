@@ -26,30 +26,94 @@ import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
+import './SearchMoviesPage.css';
+import GenreDropdown from './GenreDropdown';
+import { genres } from './GenreDropdown';
 
 const api_key = "76e275f04f332f92388a49a0a1ad92ee";
 const base_image_url = "https://image.tmdb.org/t/p/w500";
 
 const theme = createTheme();
 
+
+
 export default function SearchMoviesPage() {
 
-    const [searchResults, setSearchResults] = React.useState(null);
+    const [searchResults, setSearchResults] = React.useState([]);
+    const [filteredResults, setFilteredResults] = React.useState([]);
+    const [genres, setGenres] = React.useState([]);
+
+    const setValue = (g) => {
+        setGenres(g);
+    }
+
+    function filterMovies() {
+        //console.log("filtering by genre: ", genres);
+        if (!searchResults) {
+            return null;
+        }
+
+        //helper function to check if an array contains another array
+        //arr is the main array. we are checking if target is included in arr.
+        let checker = (arr, target) => target.every(v => arr.includes(v));
+
+        const results = [];
+        for (var movie of searchResults) {
+            //iterate over each movie here
+            //each movie will have a list of genres. This list must contain ALL of whatever is in the genre filter.
+            //in other words, genre filter must be a subset of movie_genres.
+            //console.log("movie genres: ", movie.genres);
+            if (checker(movie.genres, genres)) {
+                //console.log("found a match");
+                results.push(movie);
+            }
+        }
+        //console.log("after filtering results: ", results);
+        //at the end, set filtered results.
+        setFilteredResults(results);
+    }
 
     // this will trigger every time title search results changes for re-rendering
     React.useEffect(() => {
-        console.log("searchResults: ", searchResults);
+        //console.log("searchResults: ", searchResults);
     }, [searchResults]);
 
+    React.useEffect(() => {
+        //console.log("genres: ", genres);
+        filterMovies();
+    }, [genres]);
+
+    React.useEffect(() => {
+        //console.log("filteredResults: ", filteredResults);
+    }, [filteredResults]);
+
     const getMovieFromDB = async (title, year) => {
-        console.log("checking db for movie: ", title, year);
         try {
             const resp = await Axios.post('http://localhost:3001/getMovie', {
                 t: title,
                 y: year
             });
-            console.log("data: ", resp.data);
+            //console.log("data: ", resp.data);
             return resp.data;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const getMovieGenresFromDB = async (title, year) => {
+        //need to run query in server
+        try {
+            const resp = await Axios.post('http://localhost:3001/getGenresOfMovie', {
+                t: title,
+                y: year
+            });
+            //console.log("moviegenres from db: ", resp.data);
+            const results = [];
+            for (var x of resp.data) {
+                results.push(x.genre);
+            }
+            //console.log("movie genres from db: ", results)
+            return results;
         } catch (err) {
             console.error(err);
         }
@@ -83,20 +147,24 @@ export default function SearchMoviesPage() {
         data.year = res_json.release_date.substring(0, 4).length > 0 ? res_json.release_date.substring(0, 4) : '0000';
         //check db contains title/year
         const movie_in_db = await getMovieFromDB(data.title, data.year);
+        const movie_genres = await getMovieGenresFromDB(data.title, data.year);
+        //console.log("movie in db: ", movie_in_db);
         if (movie_in_db.length > 0) {
-            console.log("found movie in db");
+            //console.log("found movie in db");
             var result_json = JSON.parse(
                 JSON.stringify(
                     {
                         title: movie_in_db[0].title,
                         year: movie_in_db[0].year,
-                        image_path: movie_in_db[0].image_path
+                        image_path: movie_in_db[0].image_path,
+                        genres: movie_genres
                     }
                 )
             );
+            //console.log(result_json);
             return result_json;
         }
-        console.log("retrieving movie data ");
+        //console.log("retrieving movie data ");
 
         data.length = res_json.runtime;
         if (res_json.poster_path) {
@@ -122,7 +190,7 @@ export default function SearchMoviesPage() {
             data.actor_dobs.push(actor_json.birthday);
             //actor_ct += 1;
         }
-        console.log("movie_data: ", data);
+        //console.log("movie_data: ", data);
 
         // GUARDS FOR DUPLICATE INSERTS
         // get the list of previously added movies, commas make split
@@ -233,7 +301,8 @@ export default function SearchMoviesPage() {
                 {
                     title: data.title,
                     year: data.year,
-                    image_path: data.image_path
+                    image_path: data.image_path,
+                    genres: data.genres
                 }
             )
         );
@@ -301,7 +370,7 @@ export default function SearchMoviesPage() {
                 results.push(res);
             }
         }
-        console.log("final movie title/year results: ", results);
+        //console.log("final movie title/year results: ", results);
 
         //after everything, set searchResults to results.
         setSearchResults(results);
@@ -345,7 +414,7 @@ export default function SearchMoviesPage() {
                 results.push(res);
             }
         }
-        console.log("final results: ", results);
+        //console.log("final results: ", results);
         setSearchResults(results);
     };
 
@@ -421,8 +490,26 @@ export default function SearchMoviesPage() {
                     </Box>
                 </Container>
 
+                <div class="box">
+                    <div>
+                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                            <SearchIcon />
+                        </Avatar>
+                    </div>
+                    <div>
+                        <Typography component="h1" variant="h5">
+                            Filter Results
+                        </Typography>
+                    </div>
+                    <div>
+                        <GenreDropdown action={setValue} />
+                    </div>
+                </div>
+
+
+
                 <Container maxWidth="lg">
-                    {searchResults &&
+                    {(genres.length === 0 && searchResults) &&
                         <ImageList sx={{ width: 1135, height: 450 }} cols={5} rowHeight={'auto'} gap={8}>
                             {searchResults.map((item, idx) => (
                                 <ImageListItem key={idx} >
@@ -459,6 +546,45 @@ export default function SearchMoviesPage() {
                             ))}
 
                         </ImageList>
+                    }
+                    {genres.length > 0 &&
+                        <ImageList sx={{ width: 1135, height: 450 }} cols={5} rowHeight={'auto'} gap={8}>
+                            {filteredResults.map((item, idx) => (
+                                <ImageListItem key={idx} >
+                                    {item.image_path.length > 0 &&
+                                        <img
+                                            src={`${item.image_path}?w=150&h=150&fit=crop&auto=format`}
+                                            srcSet={`${item.image_path}?w=150&h=150&fit=crop&auto=format`}
+                                            alt={item.title}
+                                            loading="lazy"
+                                            height="100%"
+                                        />
+                                    }
+                                    {!item.image_path &&
+                                        <img
+                                            src={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                            srcSet={"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"}
+                                            alt={item.title}
+                                            loading="lazy"
+                                        />
+                                    }
+                                    <ImageListItemBar
+                                        title={item.title}
+                                        subtitle={item.year}
+                                        actionIcon={
+                                            <IconButton
+                                                sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                                                aria-label={`info about ${item.title}`}
+                                            >
+                                                <InfoIcon />
+                                            </IconButton>
+                                        }
+                                    />
+                                </ImageListItem>
+                            ))}
+
+                        </ImageList>
+
                     }
                 </Container>
 
