@@ -451,6 +451,39 @@ app.get('/getMovieGenre', async (req, res) => {
   }
 });
 
+// QUERIES FOR INSERTING INTO ROOMS
+//POST: adds movie room
+app.post('/addMovieRoom', async (req, res) => {
+  const room_code = res.body.room_code;
+  const room_name = req.body.room_name;
+  const created = req.body.created;
+  const path = req.body.path;
+  const master = req.body.master;
+  try {
+    const result = await db.query(
+      "INSERT INTO movie_room(code, name, date_created, image_path, movie_master) VALUES(?,?,?,?,?)",
+      [room_code, room_name, created, path, master]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: add user to part of on first sign in
+app.post('/addPartOf', async (req, res) => {
+  const user = res.body.user;
+  const room_code = req.body.room_code;
+  const master = req.body.master;
+  try {
+    const result = await db.query(
+      "INSERT INTO part_of(username,code,is_master) VALUES(?,?,?)",
+      [user, room_code, master]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
