@@ -47,8 +47,8 @@ export default function Genre(props) {
 
   return (
     <>
-      <Box className="modal">
-        <Box className="mini_pref_modal">
+      <Box className="modal"  >
+        <Box className="modal-content" >
           <span className="close" onClick={handleExit}>
             <Button>
               Exit
@@ -59,13 +59,12 @@ export default function Genre(props) {
               variant="h6"
               noWrap
               component="div"
-              sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
-            >
+              sx={{ m: "3px", display: { xs: 'none', md: 'flex' } }}>
               Add Genre Preferences
             </Typography>
-            <label> What genres are you feeling? </label><br />
-            <MultipleGenreSelect action={setValue} toggle={handleExit} />
-            <Button type="submit">
+            <label > What genres are you feeling? </label><br />
+            <MultipleGenreSelect action={setValue} toggle={handleExit}/>
+            <Button type="submit" sx={{mt:'10px'}}>
               Submit
             </Button>
           </Box >

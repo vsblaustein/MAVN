@@ -59,7 +59,6 @@ function CreateForm() {
       // display alert box with user
       // 'name' and 'email' details .
       let newRoomId = roomIdCreator();
-      //newRoomId = "102934"
       alert('A Movie Room was created with the name "' + name + '" and the 6 digit Code is ' + newRoomId);
       var currentdate = new Date();
       var datetime =

@@ -169,18 +169,15 @@ export default class slides extends React.Component {
     render() {
         return (
             <Box className="App">
-                <br />
                 <TextField id="title"
-                    inputProps={{ style: { textAlign: 'center', fontSize: 25 }, readOnly: true }}
+                    inputProps={{ style: { textAlign: 'center', fontSize: 20 }, readOnly: true }}
                     InputProps={{ disableUnderline: true }}
-                    sx={{ width: '100%' }}
+                    sx={{ width: '100%', mt:'5px'}}
                     variant='standard' value={currentTitle} /> <br /> <br />
 
-                <Box >
                     <Box >
-                        <img className="lazy" src={currentImage} alt="sample" />
+                        <img className="photo" src={currentImage} alt="sample" />
                     </Box>
-                </Box>
 
                 {/* change button watch adds to db, skip does nothing, both advance forward */}
                 <Box className="slide-container buttons">
