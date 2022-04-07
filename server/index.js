@@ -356,6 +356,20 @@ app.post('/addMovie', async (req, res) => {
   }
 });
 
+//POST: register request
+app.post('/getMaster', async (req, res) => {
+  const roomCode = req.body.code;
+  console.log(roomCode);
+  try {
+    const result = await db.query(
+      "SELECT movie_master FROM movie_room WHERE code = ?",
+      [roomCode]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
 // GET: all the genres for a given movie
 app.get('/getMovieGenres', async (req, res) => {
   const movie_title = req.query.movie_title;
