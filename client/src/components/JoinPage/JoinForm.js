@@ -5,9 +5,11 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Navigate } from 'react-router-dom';
 import {useHistory, useNavigate} from 'react-router-dom';
+import Axios from 'axios';
 
 function JoinForm() {
   const [name , setName] = useState('');
+  const currentUser = JSON.parse(localStorage.getItem('user'));
   const navigate = useNavigate()
 
 
@@ -37,10 +39,8 @@ function JoinForm() {
       alert("Room Does not Exist");
     }
 
+
   }
-
-
-
 
 
   return (
