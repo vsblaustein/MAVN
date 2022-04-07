@@ -31,27 +31,20 @@ export default class profile extends React.Component {
     seen: !this.state.seen
    });
 
-        // store the user in local storage
-        Axios.get('http://localhost:3001/getUser', {
-        }).then((response)=> {
-            // gives a list of json objects
-            const genres = JSON.stringify(response.data);
-            const arr = []
-            // parse the JSON objects
-            for(const c in JSON.parse(genres)){
-              arr.push(JSON.parse(genres)[c].genre);
-            }
-            console.log("list of genre: [" + arr + "]");
-            localStorage.setItem('genres', arr);
-
-            
-          
-        }).catch(err => {
-          console.log(err);
-        });
 
   };
 render() {
+   //Retrieve user's information
+   Axios.get('http://localhost:3001/getProfile', {
+    user: localStorage.getItem('user')
+  }).then((response)=> {
+      console.log("success");
+    
+  }).catch(err => {
+    console.log("no success");
+    console.log(err);
+  });
+  
   return (
    <div>
        <ResponsiveAppBar />
