@@ -61,7 +61,6 @@ export default function SignIn() {
       if (response.data.message) {
         //wrong combination- invalid login
         console.log(response.data);
-        console.log("yer");
         setLoginStatus(response.data.message);
       } else {
         //valid login!

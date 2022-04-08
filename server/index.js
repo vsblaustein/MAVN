@@ -518,6 +518,19 @@ app.post('/addPartOf', async (req, res) => {
   }
 });
 
+//POST: register request
+app.get('/getPassword', async (req, res) => {
+  const roomCode = req.query.roomCode;
+  try {
+    const result = await db.query(
+      "SELECT password FROM movie_room WHERE code = ?",
+      [roomCode]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });

@@ -17,15 +17,6 @@ const flexContainer = {
   padding: 0,
 };
 
-/*function getMovieMaster(){
-  Axios.post('http://localhost:3001/getMaster', {
-            code: roomCode
-        }).then((response) => {
-            console.log(response);
-        }).catch(err => {
-            console.log(err);
-        });
-}*/
 
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
@@ -34,7 +25,7 @@ export default class MovieRoom extends React.Component {
     pqSeen: false,
     gpSeen: false,
     movieMaster: "",
-    roomCode: "123456",
+    roomCode: "123456", // get this from wherever needed
     chart: true,
   };
 
