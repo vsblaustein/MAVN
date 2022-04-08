@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import PQPopUp from './MovieSelectionPopUp';
 import GPPopUp from './GroupPrefPopUp';
 import * as React from 'react';
-import {componentDidMount} from 'react';
+import { componentDidMount } from 'react';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
@@ -29,16 +29,20 @@ export default class MovieRoom extends React.Component {
     chart: true,
   };
 
-  componentDidMount(){
+  componentDidMount() {
     const code = this.state.roomCode;
     console.log(code);
     Axios.get('http://localhost:3001/getMovieMaster', {
-            params: {c: code}}
-        ).then((response) => {
-            console.log("movie master is: " + response.data[0].username);
-        }).catch(err => {
-            console.log(err);
-        });
+      params: { c: code }
+    }
+    ).then((response) => {
+      console.log("movie master is: " + response.data[0].username);
+      this.setState({
+        movieMaster: response.data[0].username,
+      })
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
   // methods to toggle pop ups
@@ -74,15 +78,37 @@ export default class MovieRoom extends React.Component {
         <ResponsiveAppBar />
 
         <Box position="static">
-        {/* generate copy link button */}
-        <Button
+          {/* generate copy link button */}
+          <Button
             onClick={this.copyToClipboard}
             sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
           >
-            Copy Link
+            Copy Room Link
           </Button>
-          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
 
+          <Typography
+
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+          >
+            Movie Master: {this.state.movieMaster}
+          </Typography>
+
+          {/* group member icons section */}
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+          >
+            Group Members
+          </Typography>
+
+          <GroupMembers style={flexContainer} class='center-screen' />
+
+          <Box display="flex" flexDirection={'horizontal'}>
           {/* generate selection button */}
           <Button
             onClick={this.togglePQ}
@@ -98,29 +124,9 @@ export default class MovieRoom extends React.Component {
           >
             Edit Group Preferences
           </Button>
+          </Box>
           {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
-
-          <Typography
-            
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Movie Master: Mehdi
-          </Typography>
-
-          {/* group member icons section */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Group Members
-          </Typography>
-
-          <GroupMembers style={flexContainer} class='center-screen'/>
+          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
 
           {/* saved preferences section */}
           <Typography
@@ -132,7 +138,7 @@ export default class MovieRoom extends React.Component {
             Group Preferences
           </Typography>
 
-          {this.state.chart ? <PreferencesStats style={flexContainer} class='center-screen'/> : null}
+          {this.state.chart ? <PreferencesStats style={flexContainer} class='center-screen' /> : null}
 
         </Box>
 

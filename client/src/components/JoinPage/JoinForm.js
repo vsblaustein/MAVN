@@ -49,7 +49,7 @@ function JoinForm() {
           // gives a list of json objects
           console.log(response);
           //navigate("/movie%20room"); + 6 digit code
-
+          // NEED TO CATCH THIS ERROR
         }).catch(err => {
           alert("Already joined room.");
           console.log(err);
