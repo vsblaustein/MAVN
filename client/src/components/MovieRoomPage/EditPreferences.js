@@ -25,67 +25,20 @@ export default function GQPopUp(props) {
     // current user should be a LIST of all users in the movie room?
     // const currentUser = JSON.parse(localStorage.getItem('user'));
 
-
     // makes the pop up disappear
     const handleExit = () => {
         props.toggle();
     };
 
     // submits the form to the DB
+    // store as state variables to index prop? when generate movie selection multiply by these at the end?
     const handleSubmit = async (event) => {
         console.log("updating preference weights");
         // write info to the database and continue
         console.log("new weights: (genre: " + genre + ") (actor, " + actors
-            + ") (release years, " + s_year + " " + e_year + ") (length, " + length + ")");
+            + ") (release years, " + s_year + " " + e_year + ") (length, " + length + ") (rating: "+ rating + ")");
 
         event.preventDefault();
-        // // actors
-        // for (const a in actors) {
-        //   console.log("current actor: " + actors[a]);
-        //   Axios.post('http://localhost:3001/actorPref', {
-        //     username: currentUser,
-        //     actors: actors[a],
-        //   }).then((response) => {
-        //     console.log(response);
-        //   }).catch(err => {
-        //     console.log(err);
-        //   });
-        // }
-
-        // // genre
-        // for (const g in genre) {
-        //   console.log("current genre: " + genre[g]);
-        //   Axios.post('http://localhost:3001/genrePref', {
-        //     username: currentUser,
-        //     genre: genre[g],
-        //   }).then((response) => {
-        //     console.log(response);
-        //   }).catch(err => {
-        //     console.log(err);
-        //   });
-        // }
-
-        // // length
-        // Axios.post('http://localhost:3001/lengthPref', {
-        //   username: currentUser,
-        //   length: length,
-        // }).then((response) => {
-        //   console.log(response);
-        // }).catch(err => {
-        //   console.log(err);
-        // });
-
-        // // release year
-        // Axios.post('http://localhost:3001/releaseYearPref', {
-        //   username: currentUser,
-        //   s_year: s_year,
-        //   e_year: e_year,
-        // }).then((response) => {
-        //   console.log(response);
-        // }).catch(err => {
-        //   console.log(err);
-        // });
-
         handleExit();
     }
 
@@ -107,6 +60,10 @@ export default function GQPopUp(props) {
         setLength(value);
     };
 
+    const setRatingVal = (r) => {
+        setRating(r);
+    };
+
     // add a "are you sure you want to leave?"
     return (
         <>
@@ -124,7 +81,15 @@ export default function GQPopUp(props) {
                             component="div"
                             sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
                         >
-                            Edit Preference Weights
+                            Edit Preference Weights:
+                        </Typography>
+                        <Typography
+                            variant="h9"
+                            noWrap
+                            component="div"
+                            sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
+                        >
+                            Assume 50% means equal representation within the group
                         </Typography>
                         {/* movie genre */}
                         <Box mt='10px'>
@@ -143,6 +108,10 @@ export default function GQPopUp(props) {
 
                             <label> How important is release year? </label><br />
                             <WeightSlider action={setReleaseYearVal} />
+                            <br />
+
+                            <label> How important is rating? </label><br />
+                            <WeightSlider action={setRatingVal} />
 
                         </Box><br />
                         <Button type="submit">
