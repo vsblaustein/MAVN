@@ -514,6 +514,7 @@ app.post('/addPartOf', async (req, res) => {
       [user, room_code, master]);
     res.send(req.body);
   } catch (err) {
+    res.send(req.body);
     throw err;
   }
 });

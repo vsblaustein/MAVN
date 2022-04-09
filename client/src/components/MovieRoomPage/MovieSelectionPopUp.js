@@ -18,7 +18,7 @@ export default class MovieSelectionPopUp extends React.Component {
     vetoSelection = () => {
         let i = this.state.index;
         console.log("index: " + i)
-        if (i == 0){
+        if (i === 0){
             i = 1;
         }else{
             i = 0;

@@ -6,6 +6,7 @@ import PQPopUp from './MovieSelectionPopUp';
 import GPPopUp from './GroupPrefPopUp';
 import * as React from 'react';
 import { componentDidMount } from 'react';
+import PPopUp from './EditPreferences.js';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
@@ -24,6 +25,7 @@ export default class MovieRoom extends React.Component {
   state = {
     pqSeen: false,
     gpSeen: false,
+    pSeen: false,
     movieMaster: "",
     roomCode: "123456", // get this from wherever needed
     chart: true,
@@ -60,6 +62,12 @@ export default class MovieRoom extends React.Component {
       chart: this.state.gpSeen
     });
   };
+  toggleP = () => {
+    this.setState({
+      pSeen: !this.state.pSeen,
+      chart: this.state.pSeen
+    });
+  };
 
   copyToClipboard = () => {
     var inputc = document.body.appendChild(document.createElement("input"))
@@ -85,6 +93,30 @@ export default class MovieRoom extends React.Component {
           >
             Copy Room Link
           </Button>
+          {/* generate selection button */}
+          <Button
+            onClick={this.togglePQ}
+            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+          >
+            Generate Selection
+          </Button>
+          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
+
+          <Button
+            onClick={this.toggleGP}
+            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+          >
+            Edit Group Preferences
+          </Button>
+          <Button
+            onClick={this.toggleP}
+            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
+          >
+            Edit Preferences
+          </Button>
+          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
+          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
+          {this.state.pSeen ? <PPopUp toggle={this.toggleP} /> : null}
 
           <Typography
 
@@ -107,26 +139,6 @@ export default class MovieRoom extends React.Component {
           </Typography>
 
           <GroupMembers style={flexContainer} class='center-screen' />
-
-          <Box display="flex" flexDirection={'horizontal'}>
-          {/* generate selection button */}
-          <Button
-            onClick={this.togglePQ}
-            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
-          >
-            Generate Movie Selection
-          </Button>
-          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
-
-          <Button
-            onClick={this.toggleGP}
-            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
-          >
-            Edit Group Preferences
-          </Button>
-          </Box>
-          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
-          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
 
           {/* saved preferences section */}
           <Typography

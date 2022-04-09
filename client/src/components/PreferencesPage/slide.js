@@ -184,6 +184,7 @@ export default class slides extends React.Component {
                     <Button onClick={this.nextImage} sx={{ position: 'absolute', bottom: '5%', left: '13%' }}>
                         Would Skip
                     </Button>
+                                
                     <Button onClick={this.swipeRight} sx={{ position: 'absolute', bottom: '5%', right: '10%' }}>
                         Would Watch
                     </Button>

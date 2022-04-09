@@ -51,7 +51,9 @@ function JoinForm() {
           //navigate("/movie%20room"); + 6 digit code
           // NEED TO CATCH THIS ERROR
         }).catch(err => {
-          alert("Already joined room.");
+          if (err.code === 'ER_DUP_ENTRY'){
+            alert("Already joined room.");
+          }
           console.log(err);
         });
 
