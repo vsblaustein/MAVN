@@ -62,6 +62,7 @@ export default class MovieRoom extends React.Component {
       chart: this.state.gpSeen
     });
   };
+
   toggleP = () => {
     this.setState({
       pSeen: !this.state.pSeen,
@@ -150,7 +151,9 @@ export default class MovieRoom extends React.Component {
             Group Preferences
           </Typography>
 
-          {this.state.chart ? <PreferencesStats style={flexContainer} class='center-screen' /> : null}
+          {this.state.chart ? <PreferencesStats 
+          code={this.state.roomCode} style={flexContainer} 
+          class='center-screen' /> : null}
 
         </Box>
 

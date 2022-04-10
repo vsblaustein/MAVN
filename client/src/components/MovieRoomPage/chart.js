@@ -49,12 +49,13 @@ export default function PieChart(props) {
 
     // may need to set lists as a state if they change frequently
     const [hover, setHover] = React.useState(null);
+    
     // set actor_pref to query results
 
     // console.log("props.chartRes: " + JSON.stringify(props.chartRes));
     // sets Pref Data to the current chart
     prefData = props.chartRes;
- 
+    
 
     return (
         <>

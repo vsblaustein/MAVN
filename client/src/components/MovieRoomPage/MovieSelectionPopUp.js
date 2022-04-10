@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './MovieSelectionPopUp.css';
+import './GroupPrefPopUp.css';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
