@@ -17,7 +17,6 @@ export default class PreferencesStats extends React.Component {
       rating_pref: [],
       released_after_pref: [],
       released_before_pref: [],
-      group_members: [],
       roomCode: props.code,
     };
   }
@@ -70,15 +69,13 @@ export default class PreferencesStats extends React.Component {
 
   // do this on componenet render
   componentDidMount() {
-    const currentUser = JSON.parse(localStorage.getItem('user'));
 
     // for each chart get the stats from the query
     for (const c in chart) {
       console.log("preferred chart: " + chart[c]);
       const members = [];
 
-      // get the group members given the current code
-      //console.log("the room code: "  + this.state.roomCode);
+      // get the group members given the room code
       Axios.get('http://localhost:3001/getMembersList',
         {
           params: { room_code: this.state.roomCode }
@@ -102,7 +99,7 @@ export default class PreferencesStats extends React.Component {
               const currChart = chart[c];
               this.setChart(currChart, response.data);
               this.setState({ currChart: response.data });
-              console.log(currChart + " " + JSON.stringify(this.state.currChart));
+              // console.log(currChart + " " + JSON.stringify(this.state.currChart));
             }).catch(err => {
               console.log(err);
             });

@@ -30,6 +30,7 @@ export default class PreferencesStats extends React.Component {
       released_after_pref: [],
       released_before_pref: [],
     };
+
   }
 
   handleClick = (title) => {
@@ -58,31 +59,32 @@ export default class PreferencesStats extends React.Component {
   // methods to toggle pop ups
   toggleGenre = () => {
     this.setState({
-      genre: !this.state.genre
+      genre: !this.state.genre,
     });
+    
   };
 
   toggleLength = () => {
     this.setState({
-      length: !this.state.length
+      length: !this.state.length,
     });
   };
 
   toggleYear = () => {
     this.setState({
-      year: !this.state.year
+      year: !this.state.year,
     });
   };
 
   toggleActors = () => {
     this.setState({
-      actors: !this.state.actors
+      actors: !this.state.actors,
     });
   };
 
   toggleRating = () => {
     this.setState({
-      rating: !this.state.rating
+      rating: !this.state.rating,
     });
   };
 
@@ -157,6 +159,11 @@ export default class PreferencesStats extends React.Component {
   render() {
     return (
       <>
+      {this.state.genre ? <Genre toggle={this.toggleGenre} /> : null}
+          {this.state.actors ? <Actors toggle={this.toggleActors} /> : null}
+          {this.state.length ? <Length toggle={this.toggleLength} /> : null}
+          {this.state.year ? <ReleaseYear toggle={this.toggleYear} /> : null}
+          {this.state.rating ? <Rating toggle={this.toggleRating} /> : null}
         <ImageList sx={{
           width: '100%', height: '100%', padding: 0,
           alignItems: "center", justifyContent: "center", justify: 'center'
@@ -176,11 +183,8 @@ export default class PreferencesStats extends React.Component {
               </Button>
             </ImageListItem>
           ))}
-          {this.state.genre ? <Genre toggle={this.toggleGenre} /> : null}
-          {this.state.actors ? <Actors toggle={this.toggleActors} /> : null}
-          {this.state.length ? <Length toggle={this.toggleLength} /> : null}
-          {this.state.year ? <ReleaseYear toggle={this.toggleYear} /> : null}
-          {this.state.rating ? <Rating toggle={this.toggleRating} /> : null}
+          
+
 
         </ImageList>
 
@@ -194,4 +198,3 @@ const preferences = [
   { title: 'Rating' }, { title: 'Released After' }, { title: 'Released Before' },
 ];
 const chart = ['genre_pref', 'length_pref', 'actor_pref', 'rating_pref', 'start_year_pref', 'end_year_pref'];
-

@@ -47,7 +47,7 @@ export default function Actors(props) {
   return (
     <>
       <Box className="modal">
-        <Box className="modal-content">
+        <Box className="mini_pref_modal">
           <span className="close" onClick={handleExit}>
             <Button>
               Exit
@@ -66,8 +66,8 @@ export default function Actors(props) {
             </Typography>
             <label> Who should you see on the big screen? </label><br />
             <MultipleActorSelect action={setValues} toggle={handleExit} />
-            <Button type="submit" sx={{mt:'10px'}}> 
-            Submit 
+            <Button type="submit" sx={{ mt: '10px' }}>
+              Submit
             </Button>
 
           </Box >

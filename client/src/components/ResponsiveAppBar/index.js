@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 
 
 const pages = [ 'Search Movies'];
-const settings = ['Profile', 'Browse Movies', 'My Preferences', 'Logout'];
+const settings = ['Profile', 'My Preferences', 'Logout'];
 
 const ResponsiveAppBar = () => {
 
