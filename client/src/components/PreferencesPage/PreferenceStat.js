@@ -18,6 +18,7 @@ export default class PreferencesStats extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // boolean are true if pop up shown
       genre: false,
       length: false,
       year: false,
