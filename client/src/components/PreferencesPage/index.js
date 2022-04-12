@@ -25,6 +25,7 @@ export default class Preferences extends React.Component {
       qSeen: false,
       mrSeen: false,
       chart: true,
+      
     };
   }
   // determines if either state has been seen
@@ -85,7 +86,7 @@ export default class Preferences extends React.Component {
             My Current Preferences
           </Typography>
           
-          {this.state.chart ? <PreferencesStats cTog={this.toggleChart} style={flexContainer} class='center-screen'/> : null}
+          {this.state.chart ? <PreferencesStats style={flexContainer} class='center-screen'/> : null}
           
           {/* if agree should wipe if not just exit */}
           <ClearConfirm class='center-screen' clear={this.clear}/>

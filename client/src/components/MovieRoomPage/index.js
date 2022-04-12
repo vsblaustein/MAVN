@@ -29,6 +29,11 @@ export default class MovieRoom extends React.Component {
     movieMaster: "",
     roomCode: "123456", // get this from wherever needed
     chart: true,
+    // state variables for the selection algo, 50% defaut
+    l_pref: 50,
+    r_pref: 50,
+    g_pref:50, 
+    ry_pref: 50,
   };
 
   componentDidMount() {
@@ -80,6 +85,34 @@ export default class MovieRoom extends React.Component {
 
   }
 
+  // changes value in edit preference pop up
+  setValues = (name, val) =>{
+    if(name === 'l_pref'){
+      this.setState({
+        l_pref: val,
+      });
+    }
+    else if(name === 'r_pref'){
+      this.setState({
+        r_pref: val,
+      });
+    }
+    else if(name === 'g_pref'){
+      this.setState({
+        g_pref: val,
+      });
+    }
+    else if(name === 'ry_pref'){
+      this.setState({
+        ry_pref: val,
+      });
+    }
+    else{
+      console.log("Cannot find preference rating trying to update");
+    }
+    console.log("set " + name + " to: " + val);
+  }
+
 
   render() {
     return (
@@ -117,7 +150,7 @@ export default class MovieRoom extends React.Component {
           </Button>
           {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
           {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
-          {this.state.pSeen ? <PPopUp toggle={this.toggleP} /> : null}
+          {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
 
           <Typography
 

@@ -10,7 +10,6 @@ import ReleaseYear from './release_year';
 import Rating from './rating';
 import StatChart from './chart';
 import Axios from 'axios';
-import Box from '@mui/material/Box';
 
 // this document will generate the charts from the db and display them
 

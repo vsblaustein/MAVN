@@ -3,24 +3,15 @@ import './GroupPrefPopUp.css';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Slider } from '@mui/material';
-import RangeSlider from './RangeSlider';
-import MultipleActorSelect from './MultipleActorSelect';
-import MultipleGenreSelect from './MultipleGenreSelect';
-import Axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import WeightSlider from './weightSlider';
-
-const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, { value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
 
 export default function GQPopUp(props) {
 
     const [genre, setGenre] = React.useState(50);
     const [length, setLength] = React.useState(50);
-    const [actors, setActors] = React.useState(50);
+    // const [actors, setActors] = React.useState(50);
     const [rating, setRating] = React.useState(50);
-    const [s_year, setSYear] = React.useState(50);
-    const [e_year, setEYear] = React.useState(50);
+    const [year, setYear] = React.useState(50);
 
     // current user should be a LIST of all users in the movie room?
     // const currentUser = JSON.parse(localStorage.getItem('user'));
@@ -35,8 +26,14 @@ export default function GQPopUp(props) {
     const handleSubmit = async (event) => {
         console.log("updating preference weights");
         // write info to the database and continue
-        console.log("new weights: (genre: " + genre + ") (actor, " + actors
-            + ") (release years, " + s_year + " " + e_year + ") (length, " + length + ") (rating: "+ rating + ")");
+        console.log("new weights: (genre: " + genre + ") (release years, " +
+         year + ") (length, " + length + ") (rating: "+ rating + ")");
+
+        // set the values in the previous componenet to use in SelectionAlgo
+        props.update('g_pref', genre);
+        props.update('l_pref', length);
+        props.update('ry_pref', year);
+        props.update('r_pref', rating);
 
         event.preventDefault();
         handleExit();
@@ -47,13 +44,12 @@ export default function GQPopUp(props) {
         setGenre(g);
     };
 
-    const setActorsVal = (a) => {
-        setActors(a);
-    };
+    // const setActorsVal = (a) => {
+    //     setActors(a);
+    // };
 
     const setReleaseYearVal = (start) => {
-        setSYear(start);
-        setEYear(start);
+        setYear(start);
     };
 
     const setLengthVal = (event, value) => {
@@ -100,9 +96,9 @@ export default function GQPopUp(props) {
                             {/* length of movie */}
                             <label> How important is length? </label><br />
                             <WeightSlider action={setLengthVal} />
-                            <br />
+                            {/* <br />
                             <label> How important are actors? </label><br />
-                            <WeightSlider action={setActorsVal} />
+                            <WeightSlider action={setActorsVal} /> */}
 
                             <br />
 
