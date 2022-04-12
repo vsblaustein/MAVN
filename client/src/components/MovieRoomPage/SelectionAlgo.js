@@ -1,9 +1,19 @@
 import * as React from 'react';
 import Axios from 'axios';
 
+
+// write stuff to generate the move
+export const selectMovie = () => {
+    console.log("yer");
+}
+
 // put the algorithm work in here
 // Selection List: (JSON, assigned score (default = 0))
-export default function SelectionAlgo(props) {
+export default function SelectionAlgo() {
+
+    // the values of the edit preferences pop up results are stored as state variables in index.js
+
+    
 
 
 // movie selection order

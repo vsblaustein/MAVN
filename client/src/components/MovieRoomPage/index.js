@@ -2,7 +2,7 @@ import ResponsiveAppBar from '../ResponsiveAppBar/index'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import PQPopUp from './MovieSelectionPopUp';
+import MSPopUp from './MovieSelectionPopUp';
 import GPPopUp from './GroupPrefPopUp';
 import * as React from 'react';
 import { componentDidMount } from 'react';
@@ -10,6 +10,9 @@ import PPopUp from './EditPreferences.js';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
+import { selectMovie } from "./SelectionAlgo.js";
+
+
 
 // styling for horizontal list
 const flexContainer = {
@@ -23,7 +26,7 @@ const flexContainer = {
 export default class MovieRoom extends React.Component {
   // determines if either state has been seen
   state = {
-    pqSeen: false,
+    msSeen: false,
     gpSeen: false,
     pSeen: false,
     movieMaster: "",
@@ -52,11 +55,20 @@ export default class MovieRoom extends React.Component {
     });
   }
 
+
+  // pass in the values stored as state variables to compute
+  generateSelection = (prefs) => {
+    // calls the selectMovie function in the SelectionAlgo class
+    selectMovie();
+    this.toggleMS();
+
+  }
+
   // methods to toggle pop ups
-  togglePQ = () => {
+  toggleMS = () => {
     this.setState({
-      pqSeen: !this.state.pqSeen,
-      chart: this.state.pqSeen
+      msSeen: !this.state.msSeen,
+      chart: this.state.msSeen
     });
 
   };
@@ -129,12 +141,12 @@ export default class MovieRoom extends React.Component {
           </Button>
           {/* generate selection button */}
           <Button
-            onClick={this.togglePQ}
+            onClick={this.generateSelection}
             sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
           >
             Generate Selection
           </Button>
-          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
+          {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
 
           <Button
             onClick={this.toggleGP}
@@ -149,7 +161,7 @@ export default class MovieRoom extends React.Component {
             Edit Preferences
           </Button>
           {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
-          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
+          {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
           {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
 
           <Typography
