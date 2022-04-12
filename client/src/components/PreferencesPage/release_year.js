@@ -65,7 +65,7 @@ export default function ReleaseYear(props) {
               Add Release Year Preferences
             </Typography>
             <Box mt='10px'>
-              <label> Preferred Movie Release Year </label><br /><br />
+              <label> Preferred Movie Release Year Range</label><br /><br />
               <Box width='80%' ml='30px'>
                 <RangeSlider action={setValues} />
               </Box>
