@@ -514,8 +514,10 @@ app.post('/addPartOf', async (req, res) => {
       [user, room_code, master]);
     res.send(req.body);
   } catch (err) {
-    res.send(req.body);
-    throw err;
+    if(err.message.toString().includes("no: 1062")){
+      res.send("duplicate");
+    }
+    else throw err;
   }
 });
 

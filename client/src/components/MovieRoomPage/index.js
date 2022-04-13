@@ -102,6 +102,7 @@ export default class MovieRoom extends React.Component {
     var big_pref_list = [];
     const gm = await this.fetchMembers();
     const group_members = [];
+    // get a list of group_member usernames
     for(const curr_gm in gm){
       group_members.push(gm[curr_gm].username);
     }
