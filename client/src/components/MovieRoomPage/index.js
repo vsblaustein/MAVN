@@ -57,9 +57,9 @@ export default class MovieRoom extends React.Component {
 
 
   // pass in the values stored as state variables to compute
-  generateSelection = (prefs) => {
+  generateSelection = () => {
     // calls the selectMovie function in the SelectionAlgo class
-    selectMovie();
+    selectMovie(this.state.l_pref, this.state.r_pref, this.state.g_pref, this.state.ry_pref);
     this.toggleMS();
 
   }

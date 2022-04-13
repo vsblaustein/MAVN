@@ -52,7 +52,7 @@ export default function GQPopUp(props) {
         setYear(start);
     };
 
-    const setLengthVal = (event, value) => {
+    const setLengthVal = (value) => {
         setLength(value);
     };
 

@@ -2,9 +2,17 @@ import * as React from 'react';
 import Axios from 'axios';
 
 
-// write stuff to generate the move
-export const selectMovie = () => {
-    console.log("yer");
+// write stuff to generate the move, params = percents
+// maybe change this to the Selection Algo Function?
+export const selectMovie = (l,r,g,ry) => {
+    console.log("length:" + l);
+    console.log("rating:" + r);
+    console.log("genre: " + g);
+    console.log("year:" + ry);
+
+    // need to enumerate values from the group preferences
+
+    // need to enumerate values for movie master (current user)
 }
 
 // put the algorithm work in here
