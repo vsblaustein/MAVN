@@ -35,7 +35,7 @@ export default class MovieRoom extends React.Component {
     // state variables for the selection algo, 50% defaut
     l_pref: 50,
     r_pref: 50,
-    g_pref:50, 
+    g_pref: 50,
     ry_pref: 50,
   };
 
@@ -55,12 +55,104 @@ export default class MovieRoom extends React.Component {
     });
   }
 
+  //get all members in room
+
+  fetchMembers = async () => {
+    //console.log("fetching members of group");
+    try {
+      const resp = await Axios.get('http://localhost:3001/getMembersList', {
+        params: { room_code: this.state.roomCode }
+      });
+      //console.log("member list", resp.data);
+      return resp.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  //get group prefs for all members in room
+  fetchGroupPrefs = async (user, table) => {
+    try {
+      const resp = await Axios.get('http://localhost:3001/getGroupPrefChart', {
+        params: { username: user, table: table }
+      });
+      //console.log("fetch group prefs returned", resp.data);
+      return resp.data;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  //get moviemaster prefs
+  fetchMovieMasterPrefs = async (table) => {
+    try {
+      const resp = await Axios.get('http://localhost:3001/getPrefChart', {
+        params: { username: this.state.movieMaster, table: table }
+      });
+      //console.log("fetch group prefs returned", resp.data);
+      return resp.data;
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   // pass in the values stored as state variables to compute
-  generateSelection = (prefs) => {
+  generateSelection = async (prefs) => {
+    //step 1: select all movies from db given the genre and rating (and sliders ofc)
+    var big_pref_list = [];
+    const group_members = await this.fetchMembers();
+    //console.log("group members", group_members);
+    const tables = ["genre_pref", "rating_pref", "length_pref", "actor_pref", "start_year_pref", "end_year_pref"];
+    //iterate over every table and store them in a list.
+    for (var member of group_members) {
+      //current user is member.username
+      //create a big json that stores all the current user's preferences
+      var user_prefs = [];
+      for (var table of tables) {
+        //console.log(`getting table ${table} from user ${member.username}`);
+        const data = await this.fetchGroupPrefs(member.username, table);
+        //console.log("fetchGroupPrefs returns ", data);
+        var json = JSON.parse(
+          JSON.stringify(
+            {
+              table: table,
+              data: data,
+            }
+          ));
+        user_prefs.push(json);
+      }
+      console.log(`user prefs for user ${member.username}`, user_prefs);
+      //create another json to push to bigpreflist
+      var json = JSON.parse(
+        JSON.stringify(
+          {
+            user: member.username,
+            prefs: user_prefs
+          }
+        ));
+      big_pref_list.push(json);
+    }
+    //console.log("big-pref-list", big_pref_list);
+    var mm_pref_list = [];
+    for (var table of tables) {
+      //console.log(`getting table ${table} from user ${member.username}`);
+      const data = await this.fetchMovieMasterPrefs(table);
+      var json = JSON.parse(
+        JSON.stringify(
+          {
+            table: table,
+            data: data,
+          }
+        ));
+      mm_pref_list.push(json);
+    }
+    console.log("movie master prefs: ", mm_pref_list);
+    //big pref list holds everyones shit
+    //mm_pref_list holds only movie masters shit
+
+
     // calls the selectMovie function in the SelectionAlgo class
-    selectMovie();
-    console.log("prefs: ", prefs);
+    const movie = await selectMovie();
     this.toggleMS();
 
   }
@@ -99,28 +191,28 @@ export default class MovieRoom extends React.Component {
   }
 
   // changes value in edit preference pop up
-  setValues = (name, val) =>{
-    if(name === 'l_pref'){
+  setValues = (name, val) => {
+    if (name === 'l_pref') {
       this.setState({
         l_pref: val,
       });
     }
-    else if(name === 'r_pref'){
+    else if (name === 'r_pref') {
       this.setState({
         r_pref: val,
       });
     }
-    else if(name === 'g_pref'){
+    else if (name === 'g_pref') {
       this.setState({
         g_pref: val,
       });
     }
-    else if(name === 'ry_pref'){
+    else if (name === 'ry_pref') {
       this.setState({
         ry_pref: val,
       });
     }
-    else{
+    else {
       console.log("Cannot find preference rating trying to update");
     }
     console.log("set " + name + " to: " + val);
@@ -197,9 +289,9 @@ export default class MovieRoom extends React.Component {
             Group Preferences
           </Typography>
 
-          {this.state.chart ? <PreferencesStats 
-          code={this.state.roomCode} style={flexContainer} 
-          class='center-screen' /> : null}
+          {this.state.chart ? <PreferencesStats
+            code={this.state.roomCode} style={flexContainer}
+            class='center-screen' /> : null}
 
         </Box>
 

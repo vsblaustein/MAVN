@@ -3,7 +3,7 @@ import Axios from 'axios';
 
 
 // write stuff to generate the move
-export const selectMovie = () => {
+export const selectMovie = async () => {
     console.log("yer");
 }
 
