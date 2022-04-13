@@ -60,6 +60,7 @@ export default class MovieRoom extends React.Component {
   generateSelection = (prefs) => {
     // calls the selectMovie function in the SelectionAlgo class
     selectMovie();
+    console.log("prefs: ", prefs);
     this.toggleMS();
 
   }
