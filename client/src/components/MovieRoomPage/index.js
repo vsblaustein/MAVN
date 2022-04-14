@@ -33,6 +33,7 @@ export default class MovieRoom extends React.Component {
     roomCode: "123456", // get this from wherever needed
     chart: true,
     // state variables for the selection algo, 50% defaut
+
     l_pref: 0.5,
     r_pref: 0.5,
     g_pref: 0.5,
@@ -127,10 +128,9 @@ export default class MovieRoom extends React.Component {
         ));
       big_pref_list.push(json);
     }
+
     console.log("group prefs: ", big_pref_list);
 
-
-    //console.log("big-pref-list", big_pref_list);
     var mm_pref_list = [];
     for (var table of tables) {
       //console.log(`getting table ${table} from user ${member.username}`);
@@ -150,6 +150,7 @@ export default class MovieRoom extends React.Component {
 
 
     // calls the selectMovie function in the SelectionAlgo class
+
     const movie = await selectMovie(this.state.l_pref, this.state.r_pref, this.state.g_pref
       , this.state.ry_pref, big_pref_list, mm_pref_list);
     this.toggleMS();

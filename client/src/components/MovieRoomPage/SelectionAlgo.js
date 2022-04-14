@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Axios from 'axios';
 
-
+// vars to store the query results
 var a_group = []; var a_master = [];
 var g_group = []; var g_master = [];
 var l_group = []; var l_master = [];
@@ -197,8 +197,7 @@ const setMasterPrefs = (master_list) => {
 
 }
 
-
-export const selectMovie = (l, r, g, ry, group_list, master_list) => {
+export const selectMovie = async(l, r, g, ry, group_list, master_list) => {
     console.log("length:" + l);
     console.log("rating:" + r);
     console.log("genre: " + g);
