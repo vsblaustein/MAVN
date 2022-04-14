@@ -64,11 +64,7 @@ function JoinForm() {
       console.log(err);
     });
 
-
-
-
   }
-
 
   return (
 

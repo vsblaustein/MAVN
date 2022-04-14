@@ -11,7 +11,7 @@ import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
 import { selectMovie } from "./SelectionAlgo.js";
-
+import { useEffect } from 'react'; //onload function
 
 
 // styling for horizontal list
@@ -22,8 +22,10 @@ const flexContainer = {
 };
 
 
+
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
+
   // determines if either state has been seen
   state = {
     msSeen: false,
@@ -39,9 +41,13 @@ export default class MovieRoom extends React.Component {
     ry_pref: 50,
   };
 
-  componentDidMount() {
-    const code = this.state.roomCode;
-    console.log(code);
+
+  componentDidMount() { //ONLOAD
+    let code = window.location.href.substring(35);
+
+    //Check if url code exists in db
+
+    
     Axios.get('http://localhost:3001/getMovieMaster', {
       params: { c: code }
     }
@@ -52,7 +58,15 @@ export default class MovieRoom extends React.Component {
       })
     }).catch(err => {
       console.log(err);
+      console.log("getMovieMaster doesnt work");
     });
+
+    //update users and images
+
+    //movie room code we have 
+      //check if current user is in this room
+        //if not load alert and redirect to home
+
   }
 
 
@@ -125,10 +139,12 @@ export default class MovieRoom extends React.Component {
     console.log("set " + name + " to: " + val);
   }
 
+  
 
   render() {
     return (
       <>
+    
         <ResponsiveAppBar />
 
         <Box position="static">

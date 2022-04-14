@@ -59,6 +59,10 @@ function CreateForm() {
       // display alert box with user
       // 'name' and 'email' details .
       let newRoomId = roomIdCreator();
+
+      //add check to make sure it doesnt currently exist in the database
+
+
       alert('A Movie Room was created with the name "' + name + '" and the 6 digit Code is ' + newRoomId);
       var currentdate = new Date();
       var datetime =
@@ -79,14 +83,14 @@ function CreateForm() {
         created: datetime,
         pass: password,
         master: currentUser,
-
       }).then((response) => {
         // gives a list of json objects
         console.log(response);
-
+        console.log("Movie Room successfully created");
       }).catch(err => {
         console.log(err);
       }).finally(() => {
+
        Axios.post('http://localhost:3001/addPartOf', {
         user: currentUser,
         room_code: newRoomId,
@@ -104,10 +108,7 @@ function CreateForm() {
       navigate("/movie%20room");
     }
 
-    
   }
-
-
 
   return (
     <div className="App">

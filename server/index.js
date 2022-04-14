@@ -59,7 +59,6 @@ app.post('/login', async (req, res) => {
 });
 
 // QUERIES TO LOAD INFO FROM DATABASE
-
 // GET: Get actors from DB
 app.get('/getActors', async (req, res) => {
   try {
