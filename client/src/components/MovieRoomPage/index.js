@@ -10,7 +10,7 @@ import PPopUp from './EditPreferences.js';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
-import { selectMovie } from "./SelectionAlgo.js";
+import {SelectionAlgo,selectMovie} from "./SelectionAlgo.js";
 
 
 
@@ -33,10 +33,11 @@ export default class MovieRoom extends React.Component {
     roomCode: "123456", // get this from wherever needed
     chart: true,
     // state variables for the selection algo, 50% defaut
-    l_pref: 50,
-    r_pref: 50,
-    g_pref: 50,
-    ry_pref: 50,
+
+    l_pref: 0.5,
+    r_pref: 0.5,
+    g_pref: 0.5,
+    ry_pref: 0.5,
   };
 
   componentDidMount() {
@@ -100,39 +101,36 @@ export default class MovieRoom extends React.Component {
   generateSelection = async (prefs) => {
     //step 1: select all movies from db given the genre and rating (and sliders ofc)
     var big_pref_list = [];
-    const group_members = await this.fetchMembers();
+    const gm = await this.fetchMembers();
+    const group_members = [];
+    // get a list of group_member usernames
+    for(const curr_gm in gm){
+      group_members.push(gm[curr_gm].username);
+    }
+  
     //console.log("group members", group_members);
     const tables = ["genre_pref", "rating_pref", "length_pref", "actor_pref", "start_year_pref", "end_year_pref"];
     //iterate over every table and store them in a list.
-    for (var member of group_members) {
-      //current user is member.username
-      //create a big json that stores all the current user's preferences
-      var user_prefs = [];
-      for (var table of tables) {
-        //console.log(`getting table ${table} from user ${member.username}`);
-        const data = await this.fetchGroupPrefs(member.username, table);
-        //console.log("fetchGroupPrefs returns ", data);
-        var json = JSON.parse(
-          JSON.stringify(
-            {
-              table: table,
-              data: data,
-            }
-          ));
-        user_prefs.push(json);
-      }
-      console.log(`user prefs for user ${member.username}`, user_prefs);
-      //create another json to push to bigpreflist
+    //current user is member.username
+    console.log("members:" + group_members);
+    //create a big json that stores all the current user's preferences
+
+    for (var table of tables) {
+      //console.log(`getting table ${table} from user ${member.username}`);
+      const data = await this.fetchGroupPrefs(group_members, table);
+      //console.log("fetchGroupPrefs returns ", data);
       var json = JSON.parse(
         JSON.stringify(
           {
-            user: member.username,
-            prefs: user_prefs
+            table: table,
+            data: data,
           }
         ));
       big_pref_list.push(json);
     }
-    //console.log("big-pref-list", big_pref_list);
+
+    console.log("group prefs: ", big_pref_list);
+
     var mm_pref_list = [];
     for (var table of tables) {
       //console.log(`getting table ${table} from user ${member.username}`);
@@ -152,7 +150,9 @@ export default class MovieRoom extends React.Component {
 
 
     // calls the selectMovie function in the SelectionAlgo class
-    const movie = await selectMovie();
+
+    const movie = await selectMovie(this.state.l_pref, this.state.r_pref, this.state.g_pref
+      , this.state.ry_pref, big_pref_list, mm_pref_list);
     this.toggleMS();
 
   }
@@ -194,28 +194,28 @@ export default class MovieRoom extends React.Component {
   setValues = (name, val) => {
     if (name === 'l_pref') {
       this.setState({
-        l_pref: val,
+        l_pref: val / 100,
       });
     }
     else if (name === 'r_pref') {
       this.setState({
-        r_pref: val,
+        r_pref: val / 100,
       });
     }
     else if (name === 'g_pref') {
       this.setState({
-        g_pref: val,
+        g_pref: val / 100,
       });
     }
     else if (name === 'ry_pref') {
       this.setState({
-        ry_pref: val,
+        ry_pref: val / 100,
       });
     }
     else {
       console.log("Cannot find preference rating trying to update");
     }
-    console.log("set " + name + " to: " + val);
+    console.log("set " + name + " to: " + val / 100);
   }
 
 

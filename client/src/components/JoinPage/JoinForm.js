@@ -48,24 +48,21 @@ function JoinForm() {
         }).then((response) => {
           // gives a list of json objects
           console.log(response);
-          //navigate("/movie%20room"); + 6 digit code
           // NEED TO CATCH THIS ERROR
-        }).catch(err => {
-          if (err.code === 'ER_DUP_ENTRY'){
+          if(response.data === 'duplicate'){
             alert("Already joined room.");
           }
+        }).catch(err => {
           console.log(err);
         });
 
       }
-    // alert user of incorrect room
+      // alert user of incorrect room
     }).catch(err => {
+
       alert("No room with code " + room_code + " exists.");
       console.log(err);
     });
-
-
-
 
   }
 
