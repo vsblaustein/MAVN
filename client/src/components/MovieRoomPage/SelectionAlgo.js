@@ -39,11 +39,24 @@ const yearRange = (ry) => {
         master_max = curr_val.value > master_max ? curr_val.value : master_max;   
     }
 
-    console.log("group min: " + group_min + " max: " + group_max);
-    console.log("master min: " + master_min + " max: " + master_max);
+    // console.log("group min: " + group_min + " max: " + group_max);
+    // console.log("master min: " + master_min + " max: " + master_max);
 
-    // MIN(AFTER(G,M)) + [(max(after(g,m)) - min(after(g,m))) * % ] to 
-    // MAX(BEFORE(G,M)) - [(max(before(g,m)) - min(before(g,m))* % ]
+    // math to compute the ranges
+    const min_after = Math.min(group_min, master_min);
+    const max_after = Math.max(group_min, master_min);
+    const min_before = Math.min(group_max, master_max);
+    const max_before = Math.max(group_max, master_max);
+
+    const lower_range = Math.round(min_after + ((max_after - min_after) * ry));
+    const upper_range = Math.round(max_before - ((max_before - min_before) * ry));
+
+    console.log("lower: " + lower_range + " and upper: " +  upper_range);
+
+    var res = [];
+    // returns the lower and upper ranges
+    res.push(lower_range); res.push(upper_range);
+    return res;
 
 
 }
@@ -197,8 +210,13 @@ export const selectMovie = (l, r, g, ry, group_list, master_list) => {
     const length_val = lengthAverage(l);
 
     // 3) Release year: min of released before and max of released after as range, 
-    yearRange(ry);
+    const res = yearRange(ry);
+    // split the result into lower and upper
+    const lower_range = res[0];
+    const upper_range = res[1];
 
+    // print the resulting values
+    console.log("ranges: " + lower_range + " to " + upper_range);
     console.log("rating: " + rating_val + " length: " + length_val);
 
     // 4) Actors servers as the “order by” once the “prooned” list is computed, 100% actors in movie from pref = at the top, 0 = at the bottom of the list → alters the score
