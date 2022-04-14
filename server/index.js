@@ -163,6 +163,19 @@ app.get('/getProfile', async (req, res) => {
   }
 });
 
+// GET: check if movie room exists
+app.get('/checkMovieRoomCode', async (req, res) => {
+  const c = req.query.c;
+  try {
+    const result = await db.query(
+      "SELECT * FROM movie_room WHERE code = ?",
+      [c]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 // **** START PREFERENCES ****
 //POST: adds to rating_pref table
 app.post('/ratingPref', async (req, res) => {

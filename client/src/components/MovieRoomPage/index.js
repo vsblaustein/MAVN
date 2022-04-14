@@ -11,7 +11,7 @@ import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
 import { selectMovie } from "./SelectionAlgo.js";
-import { useEffect } from 'react'; //onload function
+import { useNavigate } from 'react-router-dom';
 
 
 // styling for horizontal list
@@ -44,10 +44,25 @@ export default class MovieRoom extends React.Component {
 
   componentDidMount() { //ONLOAD
     let code = window.location.href.substring(35);
-
+    console.log("code is " + code);
     //Check if url code exists in db
+   Axios.get('http://localhost:3001/checkMovieRoomCode', {
+    params: { c: code }
+  }
+    ).then((response) => {
+      console.log("movie room exists -> code is " + response.data[0].code);
 
+    }).catch(err => {
+      console.log("movie room doesnt exist");
+      //load alert saying you dont have access to this room
+      
+      //navigate home
+      let navigate = useNavigate()
+      navigate("/home");
+    });
     
+
+
     Axios.get('http://localhost:3001/getMovieMaster', {
       params: { c: code }
     }
@@ -58,7 +73,6 @@ export default class MovieRoom extends React.Component {
       })
     }).catch(err => {
       console.log(err);
-      console.log("getMovieMaster doesnt work");
     });
 
     //update users and images
