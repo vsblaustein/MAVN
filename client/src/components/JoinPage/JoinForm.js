@@ -48,7 +48,6 @@ function JoinForm() {
         }).then((response) => {
           // gives a list of json objects
           console.log(response);
-          //navigate("/movie%20room"); + 6 digit code
           // NEED TO CATCH THIS ERROR
           if(response.data === 'duplicate'){
             alert("Already joined room.");
@@ -64,9 +63,6 @@ function JoinForm() {
       alert("No room with code " + room_code + " exists.");
       console.log(err);
     });
-
-
-
 
   }
 

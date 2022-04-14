@@ -10,7 +10,7 @@ import PPopUp from './EditPreferences.js';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
-import { selectMovie } from "./SelectionAlgo.js";
+import {SelectionAlgo,selectMovie} from "./SelectionAlgo.js";
 
 
 
@@ -33,10 +33,10 @@ export default class MovieRoom extends React.Component {
     roomCode: "123456", // get this from wherever needed
     chart: true,
     // state variables for the selection algo, 50% defaut
-    l_pref: 50,
-    r_pref: 50,
-    g_pref: 50,
-    ry_pref: 50,
+    l_pref: 0.5,
+    r_pref: 0.5,
+    g_pref: 0.5,
+    ry_pref: 0.5,
   };
 
   componentDidMount() {
@@ -193,28 +193,28 @@ export default class MovieRoom extends React.Component {
   setValues = (name, val) => {
     if (name === 'l_pref') {
       this.setState({
-        l_pref: val,
+        l_pref: val / 100,
       });
     }
     else if (name === 'r_pref') {
       this.setState({
-        r_pref: val,
+        r_pref: val / 100,
       });
     }
     else if (name === 'g_pref') {
       this.setState({
-        g_pref: val,
+        g_pref: val / 100,
       });
     }
     else if (name === 'ry_pref') {
       this.setState({
-        ry_pref: val,
+        ry_pref: val / 100,
       });
     }
     else {
       console.log("Cannot find preference rating trying to update");
     }
-    console.log("set " + name + " to: " + val);
+    console.log("set " + name + " to: " + val / 100);
   }
 
 
