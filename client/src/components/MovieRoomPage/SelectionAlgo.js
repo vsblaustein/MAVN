@@ -9,56 +9,15 @@ var r_group = []; var r_master = [];
 var ra_group = []; var ra_master = [];
 var rb_group = []; var rb_master = [];
 
-// gives the range of values for release year
-const yearRange = (ry) => {
 
-    var group_min = 2060; var master_min = 2060;
-    var group_max = 0; var master_max = 0;
+// returns how many movie master genres must match?
+const genreMatches = (g) => {
+    // if g == 100% must match the number of genres in the master preferences
+    console.log("num movie master genres is : " + g_master.length);
+    const numMatches = Math.round(g_master.length * g);
 
-    // compute group min
-    for(const g in ra_group){
-        const curr_val = ra_group[g];
-        group_min = curr_val.value < group_min ? curr_val.value : group_min;   
-    }
-
-    // compute group max
-    for(const g in rb_group){
-        const curr_val = rb_group[g];
-        group_max = curr_val.value > group_max ? curr_val.value : group_max;   
-    }
-
-    // compute group min
-    for(const m in ra_master){
-        const curr_val = ra_master[m];
-        master_min = curr_val.value < master_min ? curr_val.value : master_min;   
-    }
-
-    // compute group ma
-    for(const m in rb_master){
-        const curr_val = rb_master[m];
-        master_max = curr_val.value > master_max ? curr_val.value : master_max;   
-    }
-
-    // console.log("group min: " + group_min + " max: " + group_max);
-    // console.log("master min: " + master_min + " max: " + master_max);
-
-    // math to compute the ranges
-    const min_after = Math.min(group_min, master_min);
-    const max_after = Math.max(group_min, master_min);
-    const min_before = Math.min(group_max, master_max);
-    const max_before = Math.max(group_max, master_max);
-
-    const lower_range = Math.round(min_after + ((max_after - min_after) * ry));
-    const upper_range = Math.round(max_before - ((max_before - min_before) * ry));
-
-    console.log("lower: " + lower_range + " and upper: " +  upper_range);
-
-    var res = [];
-    // returns the lower and upper ranges
-    res.push(lower_range); res.push(upper_range);
-    return res;
-
-
+    return numMatches;
+    // if g == 0% does not have to match any genres
 }
 
 const ratingAverage = (r) => {
@@ -116,6 +75,63 @@ const lengthAverage = (l) => {
 
 }
 
+// gives the range of values for release year
+const yearRange = (ry) => {
+
+    var group_min = 2060; var master_min = 2060;
+    var group_max = 0; var master_max = 0;
+
+    // compute group min
+    for(const g in ra_group){
+        const curr_val = ra_group[g];
+        group_min = curr_val.value < group_min ? curr_val.value : group_min;   
+    }
+
+    // compute group max
+    for(const g in rb_group){
+        const curr_val = rb_group[g];
+        group_max = curr_val.value > group_max ? curr_val.value : group_max;   
+    }
+
+    // compute group min
+    for(const m in ra_master){
+        const curr_val = ra_master[m];
+        master_min = curr_val.value < master_min ? curr_val.value : master_min;   
+    }
+
+    // compute group ma
+    for(const m in rb_master){
+        const curr_val = rb_master[m];
+        master_max = curr_val.value > master_max ? curr_val.value : master_max;   
+    }
+
+    // console.log("group min: " + group_min + " max: " + group_max);
+    // console.log("master min: " + master_min + " max: " + master_max);
+
+    // math to compute the ranges
+    const min_after = Math.min(group_min, master_min);
+    const max_after = Math.max(group_min, master_min);
+    const min_before = Math.min(group_max, master_max);
+    const max_before = Math.max(group_max, master_max);
+
+    const lower_range = Math.round(min_after + ((max_after - min_after) * ry));
+    const upper_range = Math.round(max_before - ((max_before - min_before) * ry));
+
+    console.log("lower: " + lower_range + " and upper: " +  upper_range);
+
+    var res = [];
+    // returns the lower and upper ranges
+    res.push(lower_range); res.push(upper_range);
+    return res;
+
+
+}
+
+// if all moviemaster actors present, give 100%
+// else, enumerate by how many movie master and group actors are in the cast_mambers list?
+const actorPref = (a) => {
+
+}
 
 // put the algorithm work in here
 // Selection List: (JSON, assigned score (default = 0))
@@ -197,13 +213,13 @@ export const selectMovie = (l, r, g, ry, group_list, master_list) => {
     setGroupPrefs(group_list);
     setMasterPrefs(master_list);
 
-
-
     // movie selection order
     // 1) contains one of all genres and rating >= average rating to nearest 10th
-    // Genre contains one of all the genres, rating is >= group rating average to nearest 10th (0-10 floats)’
-    // If genre slider == 100: must match all movie master preferences
-    // Rating = 80%, then take 0.8(master avg) + 0.2(group avg) += some constant (2)
+    
+    // this is how many genres must be matched to MOVIE MASTER genres
+    const num_genres = genreMatches(g);
+
+    // does not include the over/under buffer yet
     const rating_val = ratingAverage(r);
 
     // 2) Length = same as rating, buffer of 30 minutes
@@ -217,9 +233,11 @@ export const selectMovie = (l, r, g, ry, group_list, master_list) => {
 
     // print the resulting values
     console.log("ranges: " + lower_range + " to " + upper_range);
-    console.log("rating: " + rating_val + " length: " + length_val);
+    console.log("rating: " + rating_val + " length: " + length_val + " genre: " + num_genres);
 
-    // 4) Actors servers as the “order by” once the “prooned” list is computed, 100% actors in movie from pref = at the top, 0 = at the bottom of the list → alters the score
+    // 4) Actors servers as the “order by” once the “prooned” list is computed, 
+    // 100% actors in movie from pref = at the top, 0 = at the bottom of the list → alters the score
+    
 
 }
 
