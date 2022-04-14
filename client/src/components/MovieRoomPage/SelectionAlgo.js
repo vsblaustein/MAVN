@@ -12,6 +12,40 @@ var rb_group = []; var rb_master = [];
 // gives the range of values for release year
 const yearRange = (ry) => {
 
+    var group_min = 2060; var master_min = 2060;
+    var group_max = 0; var master_max = 0;
+
+    // compute group min
+    for(const g in ra_group){
+        const curr_val = ra_group[g];
+        group_min = curr_val.value < group_min ? curr_val.value : group_min;   
+    }
+
+    // compute group max
+    for(const g in rb_group){
+        const curr_val = rb_group[g];
+        group_max = curr_val.value > group_max ? curr_val.value : group_max;   
+    }
+
+    // compute group min
+    for(const m in ra_master){
+        const curr_val = ra_master[m];
+        master_min = curr_val.value < master_min ? curr_val.value : master_min;   
+    }
+
+    // compute group ma
+    for(const m in rb_master){
+        const curr_val = rb_master[m];
+        master_max = curr_val.value > master_max ? curr_val.value : master_max;   
+    }
+
+    console.log("group min: " + group_min + " max: " + group_max);
+    console.log("master min: " + master_min + " max: " + master_max);
+
+    // MIN(AFTER(G,M)) + [(max(after(g,m)) - min(after(g,m))) * % ] to 
+    // MAX(BEFORE(G,M)) - [(max(before(g,m)) - min(before(g,m))* % ]
+
+
 }
 
 const ratingAverage = (r) => {
@@ -37,8 +71,8 @@ const ratingAverage = (r) => {
 
     console.log("group avg: " + group_avg);
     console.log("master avg: " + master_avg);
-    // the sum of the averages should be returned
-    console.log("overall: " + (master_avg + group_avg));
+    // the sum of the averages should be returned, rounds to 10th
+    return Math.round(10 * (master_avg + group_avg)) / 10;
 
 }
 
@@ -65,7 +99,8 @@ const lengthAverage = (l) => {
     console.log("group avg: " + group_avg);
     console.log("master avg: " + master_avg);
     // the sum of the averages should be returned
-    console.log("overall: " + (master_avg + group_avg));
+    return Math.round(master_avg + group_avg);
+
 }
 
 
@@ -156,11 +191,15 @@ export const selectMovie = (l, r, g, ry, group_list, master_list) => {
     // Genre contains one of all the genres, rating is >= group rating average to nearest 10th (0-10 floats)’
     // If genre slider == 100: must match all movie master preferences
     // Rating = 80%, then take 0.8(master avg) + 0.2(group avg) += some constant (2)
-    ratingAverage(r);
+    const rating_val = ratingAverage(r);
 
     // 2) Length = same as rating, buffer of 30 minutes
-    lengthAverage(l);
+    const length_val = lengthAverage(l);
+
     // 3) Release year: min of released before and max of released after as range, 
+    yearRange(ry);
+
+    console.log("rating: " + rating_val + " length: " + length_val);
 
     // 4) Actors servers as the “order by” once the “prooned” list is computed, 100% actors in movie from pref = at the top, 0 = at the bottom of the list → alters the score
 

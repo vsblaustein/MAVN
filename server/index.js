@@ -310,7 +310,7 @@ app.get('/getGroupPrefChart', async (req, res) => {
   console.log("fetching " + table + " for " + username);
   try {
     const result = await db.query(
-      "SELECT DISTINCT n.value, n.numerator, n.numerator / d.denominator AS ratio \
+      "SELECT DISTINCT n.value, MAX(n.numerator), MIN(n.numerator / d.denominator) AS ratio \
         FROM( \
               SELECT p.code, value, COUNT(value) AS numerator  \
               FROM " + table + " AS t \
@@ -324,7 +324,7 @@ app.get('/getGroupPrefChart', async (req, res) => {
               WHERE t.username IN (?) \
               GROUP BY p.code \
           ) d ON d.code = n.code \
-            HAVING ratio < 1.0 \
+            GROUP BY n.value \
             ORDER BY n.value; ", [username, username]);
     res.send(result);
   } catch (err) {
