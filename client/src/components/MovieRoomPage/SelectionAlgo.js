@@ -26,13 +26,13 @@ const ratingAverage = (r) => {
     var master_avg = 0;
 
     // compute average of group
-    for(const g in r_group){
+    for (const g in r_group) {
         const curr_val = r_group[g];
         group_avg += (curr_val.value * curr_val.ratio)
     }
 
     // compute average of group
-    for(const m in r_master){
+    for (const m in r_master) {
         const curr_val = r_master[m];
         master_avg += (curr_val.value * curr_val.ratio)
     }
@@ -53,13 +53,13 @@ const lengthAverage = (l) => {
     var master_avg = 0;
 
     // compute average of group
-    for(const g in l_group){
+    for (const g in l_group) {
         const curr_val = l_group[g];
         group_avg += (curr_val.value * curr_val.ratio)
     }
 
     // compute average of group
-    for(const m in l_master){
+    for (const m in l_master) {
         const curr_val = l_master[m];
         master_avg += (curr_val.value * curr_val.ratio)
     }
@@ -82,27 +82,27 @@ const yearRange = (ry) => {
     var group_max = 0; var master_max = 0;
 
     // compute group min
-    for(const g in ra_group){
+    for (const g in ra_group) {
         const curr_val = ra_group[g];
-        group_min = curr_val.value < group_min ? curr_val.value : group_min;   
+        group_min = curr_val.value < group_min ? curr_val.value : group_min;
     }
 
     // compute group max
-    for(const g in rb_group){
+    for (const g in rb_group) {
         const curr_val = rb_group[g];
-        group_max = curr_val.value > group_max ? curr_val.value : group_max;   
+        group_max = curr_val.value > group_max ? curr_val.value : group_max;
     }
 
     // compute group min
-    for(const m in ra_master){
+    for (const m in ra_master) {
         const curr_val = ra_master[m];
-        master_min = curr_val.value < master_min ? curr_val.value : master_min;   
+        master_min = curr_val.value < master_min ? curr_val.value : master_min;
     }
 
     // compute group ma
-    for(const m in rb_master){
+    for (const m in rb_master) {
         const curr_val = rb_master[m];
-        master_max = curr_val.value > master_max ? curr_val.value : master_max;   
+        master_max = curr_val.value > master_max ? curr_val.value : master_max;
     }
 
     // console.log("group min: " + group_min + " max: " + group_max);
@@ -117,7 +117,7 @@ const yearRange = (ry) => {
     const lower_range = Math.round(min_after + ((max_after - min_after) * ry));
     const upper_range = Math.round(max_before - ((max_before - min_before) * ry));
 
-    console.log("lower: " + lower_range + " and upper: " +  upper_range);
+    console.log("lower: " + lower_range + " and upper: " + upper_range);
 
     var res = [];
     // returns the lower and upper ranges
@@ -130,6 +130,28 @@ const yearRange = (ry) => {
 // if all moviemaster actors present, give 100%
 // else, enumerate by how many movie master and group actors are in the cast_mambers list?
 const actorPref = (a) => {
+    // need to get the list of cast members for each movie
+    // need to count how many cast members are in the movie_master actor list (and group)?
+
+    // map stores the actor name as key and number of times it is in there * the master preferences as val
+    var groupActors = new Map(); // access via map.get
+    var masterActors = new Map();
+
+    // add the actors for group and master into maps, rounded to 100ths
+    for (const g in a_group) {
+        const curr_actor = a_group[g];
+        groupActors.set(curr_actor.value, Math.round(100 * curr_actor.numerator * (1 - a)) / 100);
+    }
+
+    for(const m in a_master){
+        const curr_actor = a_master[m];
+        masterActors.set(curr_actor.value, Math.round(100 * curr_actor.numerator * a) / 100);
+    }
+
+    console.log("printing maps");
+    // holds actor names and preference to the 100th, want to maximize the sum of the values
+    console.log(groupActors);
+    console.log(masterActors);
 
 }
 
@@ -142,7 +164,7 @@ const setGroupPrefs = (group_list) => {
     for (const g in group_list) {
         const curr_table = group_list[g].table;
         const curr_vals = group_list[g].data;
-        console.log("data for " + curr_table + " is " + curr_vals);
+        // console.log("data for " + curr_table + " is " + curr_vals);
 
         if (curr_table === 'genre_pref') {
             g_group = curr_vals;
@@ -172,7 +194,7 @@ const setMasterPrefs = (master_list) => {
     for (const m in master_list) {
         const curr_table = master_list[m].table;
         const curr_vals = master_list[m].data;
-        console.log("data for " + curr_table + " is " + curr_vals);
+        // console.log("data for " + curr_table + " is " + curr_vals);
 
         if (curr_table === 'genre_pref') {
             g_master = curr_vals;
@@ -197,11 +219,12 @@ const setMasterPrefs = (master_list) => {
 
 }
 
-export const selectMovie = async(l, r, g, ry, group_list, master_list) => {
+export const selectMovie = async (l, r, g, ry, a, group_list, master_list) => {
     console.log("length:" + l);
     console.log("rating:" + r);
     console.log("genre: " + g);
     console.log("year:" + ry);
+    console.log("actors: " + a);
 
     // need to enumerate values from the group preferences
     console.log("attempting to get group pref");
@@ -214,7 +237,7 @@ export const selectMovie = async(l, r, g, ry, group_list, master_list) => {
 
     // movie selection order
     // 1) contains one of all genres and rating >= average rating to nearest 10th
-    
+
     // this is how many genres must be matched to MOVIE MASTER genres
     const num_genres = genreMatches(g);
 
@@ -236,7 +259,8 @@ export const selectMovie = async(l, r, g, ry, group_list, master_list) => {
 
     // 4) Actors servers as the “order by” once the “prooned” list is computed, 
     // 100% actors in movie from pref = at the top, 0 = at the bottom of the list → alters the score
-    
+    actorPref(a);
+
 
 }
 

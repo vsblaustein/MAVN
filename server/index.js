@@ -310,7 +310,7 @@ app.get('/getGroupPrefChart', async (req, res) => {
   console.log("fetching " + table + " for " + username);
   try {
     const result = await db.query(
-      "SELECT DISTINCT n.value, MAX(n.numerator), MIN(n.numerator / d.denominator) AS ratio \
+      "SELECT DISTINCT n.value, MAX(n.numerator) as numerator, MIN(n.numerator / d.denominator) AS ratio \
         FROM( \
               SELECT p.code, value, COUNT(value) AS numerator  \
               FROM " + table + " AS t \

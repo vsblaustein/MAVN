@@ -10,9 +10,7 @@ import PPopUp from './EditPreferences.js';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
-import {SelectionAlgo,selectMovie} from "./SelectionAlgo.js";
-
-
+import {selectMovie} from "./SelectionAlgo.js";
 
 // styling for horizontal list
 const flexContainer = {
@@ -33,11 +31,11 @@ export default class MovieRoom extends React.Component {
     roomCode: "123456", // get this from wherever needed
     chart: true,
     // state variables for the selection algo, 50% defaut
-
     l_pref: 0.5,
     r_pref: 0.5,
     g_pref: 0.5,
     ry_pref: 0.5,
+    a_pref: 0.5,
   };
 
   componentDidMount() {
@@ -152,7 +150,7 @@ export default class MovieRoom extends React.Component {
     // calls the selectMovie function in the SelectionAlgo class
 
     const movie = await selectMovie(this.state.l_pref, this.state.r_pref, this.state.g_pref
-      , this.state.ry_pref, big_pref_list, mm_pref_list);
+      , this.state.ry_pref, this.state.a_pref, big_pref_list, mm_pref_list);
     this.toggleMS();
 
   }
@@ -210,6 +208,11 @@ export default class MovieRoom extends React.Component {
     else if (name === 'ry_pref') {
       this.setState({
         ry_pref: val / 100,
+      });
+    }
+    else if (name === 'a_pref') {
+      this.setState({
+        a_pref: val / 100,
       });
     }
     else {
