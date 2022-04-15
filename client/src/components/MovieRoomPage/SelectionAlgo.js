@@ -142,7 +142,7 @@ const setGroupPrefs = (group_list) => {
     for (const g in group_list) {
         const curr_table = group_list[g].table;
         const curr_vals = group_list[g].data;
-        console.log("data for " + curr_table + " is " + curr_vals);
+        console.log("data for " + curr_table + " is %o", curr_vals);
 
         if (curr_table === 'genre_pref') {
             g_group = curr_vals;
@@ -172,7 +172,7 @@ const setMasterPrefs = (master_list) => {
     for (const m in master_list) {
         const curr_table = master_list[m].table;
         const curr_vals = master_list[m].data;
-        console.log("data for " + curr_table + " is " + curr_vals);
+        console.log("master data for " + curr_table + " is %o", curr_vals);
 
         if (curr_table === 'genre_pref') {
             g_master = curr_vals;
@@ -197,6 +197,16 @@ const setMasterPrefs = (master_list) => {
 
 }
 
+const getProonList = async (num_genres, rating) => {
+    //here we need to select movies that
+    //1. does the genre match with moviemaster,
+    //2. also meets rating criteria within a buffer of 2.
+    const buffer = 2;
+    const lower = Math.max(0, rating - buffer);
+    const upper = Math.min(10, rating + buffer);
+    console.log("buffer: [%o, %o]", lower, upper);
+}
+
 export const selectMovie = async(l, r, g, ry, group_list, master_list) => {
     console.log("length:" + l);
     console.log("rating:" + r);
@@ -205,8 +215,8 @@ export const selectMovie = async(l, r, g, ry, group_list, master_list) => {
 
     // need to enumerate values from the group preferences
     console.log("attempting to get group pref");
-    console.log("group: " + group_list);
-    console.log("master:" + master_list);
+    console.log("group: %o", group_list);
+    console.log("master: %o", master_list);
 
     // set the group and master pref variables
     setGroupPrefs(group_list);
@@ -236,7 +246,7 @@ export const selectMovie = async(l, r, g, ry, group_list, master_list) => {
 
     // 4) Actors servers as the “order by” once the “prooned” list is computed, 
     // 100% actors in movie from pref = at the top, 0 = at the bottom of the list → alters the score
-    
+    const prooned_list = await getProonList(num_genres, rating_val);
 
 }
 
