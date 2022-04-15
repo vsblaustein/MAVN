@@ -280,7 +280,7 @@ export default class MovieRoom extends React.Component {
             Group Members
           </Typography>
 
-          <GroupMembers style={flexContainer} class='center-screen' />
+          <GroupMembers code={this.state.roomCode} style={flexContainer} class='center-screen' />
 
           {/* saved preferences section */}
           <Typography

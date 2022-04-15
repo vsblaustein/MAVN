@@ -72,12 +72,12 @@ app.get('/getActors', async (req, res) => {
 });
 
 // GET: Get actors from DB
-app.get('/getMovieMaster', async(req,res) => {
+app.get('/getMovieMaster', async (req, res) => {
   const c = req.query.c;
   try {
     const result = await db.query(
       "SELECT username FROM part_of WHERE code = ? AND is_master = 1;"
-      ,[c]);
+      , [c]);
     res.send(result);
   } catch (err) {
     throw err;
@@ -300,6 +300,23 @@ app.get('/getPrefChart', async (req, res) => {
   }
 });
 
+// do yo thang
+app.get('/nateStuff', async (req, res) => {
+  const buffer = req.query.buffer;
+  const num_genre = req.query.num_genre;
+
+  try {
+    const result = await db.query(
+      "SELECT * from movies where COUNT(genre) = ? AND rating in ?",
+      [num_genre, buffer]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+
+
 // GET: group preferences for current user
 app.get('/getGroupPrefChart', async (req, res) => {
   const username = req.query.username;
@@ -514,7 +531,7 @@ app.post('/addPartOf', async (req, res) => {
       [user, room_code, master]);
     res.send(req.body);
   } catch (err) {
-    if(err.message.toString().includes("no: 1062")){
+    if (err.message.toString().includes("no: 1062")) {
       res.send("duplicate");
     }
     else throw err;
