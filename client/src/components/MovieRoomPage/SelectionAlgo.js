@@ -130,6 +130,28 @@ const yearRange = (ry) => {
 // if all moviemaster actors present, give 100%
 // else, enumerate by how many movie master and group actors are in the cast_mambers list?
 const actorPref = (a) => {
+    // need to get the list of cast members for each movie
+    // need to count how many cast members are in the movie_master actor list (and group)?
+
+    // map stores the actor name as key and number of times it is in there * the master preferences as val
+    var groupActors = new Map(); // access via map.get
+    var masterActors = new Map();
+
+    // add the actors for group and master into maps, rounded to 100ths
+    for (const g in a_group) {
+        const curr_actor = a_group[g];
+        groupActors.set(curr_actor.value, Math.round(100 * curr_actor.numerator * (1 - a)) / 100);
+    }
+
+    for(const m in a_master){
+        const curr_actor = a_master[m];
+        masterActors.set(curr_actor.value, Math.round(100 * curr_actor.numerator * a) / 100);
+    }
+
+    console.log("printing maps");
+    // holds actor names and preference to the 100th, want to maximize the sum of the values
+    console.log(groupActors);
+    console.log(masterActors);
 
 }
 
@@ -172,7 +194,11 @@ const setMasterPrefs = (master_list) => {
     for (const m in master_list) {
         const curr_table = master_list[m].table;
         const curr_vals = master_list[m].data;
+
+        // console.log("data for " + curr_table + " is " + curr_vals);
+
         console.log("master data for " + curr_table + " is %o", curr_vals);
+
 
         if (curr_table === 'genre_pref') {
             g_master = curr_vals;
@@ -196,6 +222,7 @@ const setMasterPrefs = (master_list) => {
     }
 
 }
+
 
 const getFirstProonCall = async (lower, upper, num_genres) => {
     try {
@@ -302,6 +329,7 @@ export const selectMovie = async (l, r, g, ry, group_list, master_list) => {
     console.log("rating:" + r);
     console.log("genre: " + g);
     console.log("year:" + ry);
+    console.log("actors: " + a);
 
     // need to enumerate values from the group preferences
     console.log("attempting to get group pref");
@@ -340,7 +368,8 @@ export const selectMovie = async (l, r, g, ry, group_list, master_list) => {
 
     // 4) Actors servers as the “order by” once the “prooned” list is computed, 
     // 100% actors in movie from pref = at the top, 0 = at the bottom of the list → alters the score
-    
+    actorPref(a);
+
 
 }
 

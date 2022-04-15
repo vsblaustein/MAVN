@@ -9,7 +9,7 @@ export default function GQPopUp(props) {
 
     const [genre, setGenre] = React.useState(50);
     const [length, setLength] = React.useState(50);
-    // const [actors, setActors] = React.useState(50);
+    const [actors, setActors] = React.useState(50);
     const [rating, setRating] = React.useState(50);
     const [year, setYear] = React.useState(50);
 
@@ -27,13 +27,14 @@ export default function GQPopUp(props) {
         console.log("updating preference weights");
         // write info to the database and continue
         console.log("new weights: (genre: " + genre + ") (release years, " +
-         year + ") (length, " + length + ") (rating: "+ rating + ")");
+         year + ") (length, " + length + ") (rating: "+ rating + ") (actors: " + actors + ")");
 
         // set the values in the previous componenet to use in SelectionAlgo
         props.update('g_pref', genre);
         props.update('l_pref', length);
         props.update('ry_pref', year);
         props.update('r_pref', rating);
+        props.update('a_pref', actors);
 
         event.preventDefault();
         handleExit();
@@ -44,9 +45,9 @@ export default function GQPopUp(props) {
         setGenre(g);
     };
 
-    // const setActorsVal = (a) => {
-    //     setActors(a);
-    // };
+    const setActorsVal = (a) => {
+        setActors(a);
+    };
 
     const setReleaseYearVal = (start) => {
         setYear(start);
@@ -96,9 +97,9 @@ export default function GQPopUp(props) {
                             {/* length of movie */}
                             <label> How important is length? </label><br />
                             <WeightSlider action={setLengthVal} />
-                            {/* <br />
+                            <br />
                             <label> How important are actors? </label><br />
-                            <WeightSlider action={setActorsVal} /> */}
+                            <WeightSlider action={setActorsVal} />
 
                             <br />
 

@@ -72,12 +72,12 @@ app.get('/getActors', async (req, res) => {
 });
 
 // GET: Get actors from DB
-app.get('/getMovieMaster', async(req,res) => {
+app.get('/getMovieMaster', async (req, res) => {
   const c = req.query.c;
   try {
     const result = await db.query(
       "SELECT username FROM part_of WHERE code = ? AND is_master = 1;"
-      ,[c]);
+      , [c]);
     res.send(result);
   } catch (err) {
     throw err;
@@ -320,7 +320,6 @@ app.get('/getFirstProon', async (req, res) => {
   }
 });
 
-
 // GET: group preferences for current user
 app.get('/getGroupPrefChart', async (req, res) => {
   const username = req.query.username;
@@ -331,7 +330,7 @@ app.get('/getGroupPrefChart', async (req, res) => {
   console.log("fetching " + table + " for " + username);
   try {
     const result = await db.query(
-      "SELECT DISTINCT n.value, MAX(n.numerator), MIN(n.numerator / d.denominator) AS ratio \
+      "SELECT DISTINCT n.value, MAX(n.numerator) as numerator, MIN(n.numerator / d.denominator) AS ratio \
         FROM( \
               SELECT p.code, value, COUNT(value) AS numerator  \
               FROM " + table + " AS t \
@@ -474,6 +473,19 @@ app.get('/getMembersList', async (req, res) => {
   }
 });
 
+// removes a member from a room
+app.post('/removeMembers', async (req, res) => {
+  const users = req.body.users;
+  try {
+    const result = await db.query(
+      "DELETE FROM part_of WHERE username IN (?)",
+      [users]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 //POST: adds to cast_members table
 app.post('/addCastMembers', async (req, res) => {
   const m_title = req.body.m_title;
@@ -535,7 +547,7 @@ app.post('/addPartOf', async (req, res) => {
       [user, room_code, master]);
     res.send(req.body);
   } catch (err) {
-    if(err.message.toString().includes("no: 1062")){
+    if (err.message.toString().includes("no: 1062")) {
       res.send("duplicate");
     }
     else throw err;

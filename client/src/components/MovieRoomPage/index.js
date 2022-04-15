@@ -3,16 +3,14 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import MSPopUp from './MovieSelectionPopUp';
-import GPPopUp from './GroupPrefPopUp';
+import MembersPop from './MembersPopUp';
 import * as React from 'react';
 import { componentDidMount } from 'react';
 import PPopUp from './EditPreferences.js';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
-import {SelectionAlgo,selectMovie} from "./SelectionAlgo.js";
-
-
+import {selectMovie} from "./SelectionAlgo.js";
 
 // styling for horizontal list
 const flexContainer = {
@@ -27,20 +25,21 @@ export default class MovieRoom extends React.Component {
   // determines if either state has been seen
   state = {
     msSeen: false,
-    gpSeen: false,
+    membersSeen: false,
     pSeen: false,
     movieMaster: "",
     roomCode: "123456", // get this from wherever needed
     chart: true,
+    members: [],
     // state variables for the selection algo, 50% defaut
-
     l_pref: 0.5,
     r_pref: 0.5,
     g_pref: 0.5,
     ry_pref: 0.5,
+    a_pref: 0.5,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const code = this.state.roomCode;
     console.log(code);
     Axios.get('http://localhost:3001/getMovieMaster', {
@@ -54,6 +53,19 @@ export default class MovieRoom extends React.Component {
     }).catch(err => {
       console.log(err);
     });
+
+    // get the group members to pass to member icons
+    const gm = await this.fetchMembers();
+    const group_members = [];
+    // get a list of group_member usernames
+    for(const curr_gm in gm){
+      group_members.push(gm[curr_gm].username);
+    }
+
+    this.setState({
+      members: group_members,
+    });
+
   }
 
   //get all members in room
@@ -101,18 +113,14 @@ export default class MovieRoom extends React.Component {
   generateSelection = async (prefs) => {
     //step 1: select all movies from db given the genre and rating (and sliders ofc)
     var big_pref_list = [];
-    const gm = await this.fetchMembers();
-    const group_members = [];
-    // get a list of group_member usernames
-    for(const curr_gm in gm){
-      group_members.push(gm[curr_gm].username);
-    }
+    const group_members = this.state.members;
   
     //console.log("group members", group_members);
     const tables = ["genre_pref", "rating_pref", "length_pref", "actor_pref", "start_year_pref", "end_year_pref"];
     //iterate over every table and store them in a list.
     //current user is member.username
     console.log("members:" + group_members);
+    
     //create a big json that stores all the current user's preferences
 
     for (var table of tables) {
@@ -152,7 +160,7 @@ export default class MovieRoom extends React.Component {
     // calls the selectMovie function in the SelectionAlgo class
 
     const movie = await selectMovie(this.state.l_pref, this.state.r_pref, this.state.g_pref
-      , this.state.ry_pref, big_pref_list, mm_pref_list);
+      , this.state.ry_pref, this.state.a_pref, big_pref_list, mm_pref_list);
     this.toggleMS();
 
   }
@@ -166,10 +174,10 @@ export default class MovieRoom extends React.Component {
 
   };
 
-  toggleGP = () => {
+  toggleMembers = () => {
     this.setState({
-      gpSeen: !this.state.gpSeen,
-      chart: this.state.gpSeen
+      membersSeen: !this.state.membersSeen,
+      chart: this.state.membersSeen
     });
   };
 
@@ -212,6 +220,11 @@ export default class MovieRoom extends React.Component {
         ry_pref: val / 100,
       });
     }
+    else if (name === 'a_pref') {
+      this.setState({
+        a_pref: val / 100,
+      });
+    }
     else {
       console.log("Cannot find preference rating trying to update");
     }
@@ -242,10 +255,10 @@ export default class MovieRoom extends React.Component {
           {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
 
           <Button
-            onClick={this.toggleGP}
+            onClick={this.toggleMembers}
             sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
           >
-            Edit Group Preferences
+            Remove Group Members
           </Button>
           <Button
             onClick={this.toggleP}
@@ -253,7 +266,8 @@ export default class MovieRoom extends React.Component {
           >
             Edit Preferences
           </Button>
-          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
+          {this.state.membersSeen ? <MembersPop code={this.state.roomCode} 
+          mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
           {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
           {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
 
@@ -277,7 +291,8 @@ export default class MovieRoom extends React.Component {
             Group Members
           </Typography>
 
-          <GroupMembers style={flexContainer} class='center-screen' />
+          <GroupMembers mem={this.state.members} code={this.state.roomCode} 
+          style={flexContainer} class='center-screen' />
 
           {/* saved preferences section */}
           <Typography
