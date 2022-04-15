@@ -15,7 +15,7 @@ const genreMatches = (g) => {
     // if g == 100% must match the number of genres in the master preferences
     console.log("num movie master genres is : " + g_master.length);
     const numMatches = Math.round(g_master.length * g);
-
+    console.log("number of matches: ", numMatches)
     return numMatches;
     // if g == 0% does not have to match any genres
 }
@@ -164,7 +164,7 @@ const setGroupPrefs = (group_list) => {
     for (const g in group_list) {
         const curr_table = group_list[g].table;
         const curr_vals = group_list[g].data;
-        // console.log("data for " + curr_table + " is " + curr_vals);
+        console.log("data for " + curr_table + " is %o", curr_vals);
 
         if (curr_table === 'genre_pref') {
             g_group = curr_vals;
@@ -194,7 +194,11 @@ const setMasterPrefs = (master_list) => {
     for (const m in master_list) {
         const curr_table = master_list[m].table;
         const curr_vals = master_list[m].data;
+
         // console.log("data for " + curr_table + " is " + curr_vals);
+
+        console.log("master data for " + curr_table + " is %o", curr_vals);
+
 
         if (curr_table === 'genre_pref') {
             g_master = curr_vals;
@@ -219,7 +223,108 @@ const setMasterPrefs = (master_list) => {
 
 }
 
-export const selectMovie = async (l, r, g, ry, a, group_list, master_list) => {
+
+const getFirstProonCall = async (lower, upper, num_genres) => {
+    try {
+        const resp = await Axios.get('http://localhost:3001/getFirstProon', {
+            params: {
+                lower: lower,
+                higher: upper,
+                num_genres: num_genres
+            }
+        });
+        //console.log("data: ", resp.data);
+        return resp.data;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+const getMovieGenresFromDB = async (title, year) => {
+    //need to run query in server
+    try {
+        const resp = await Axios.post('http://localhost:3001/getGenresOfMovie', {
+            t: title,
+            y: year
+        });
+        //console.log("moviegenres from db: ", resp.data);
+        const results = [];
+        for (var x of resp.data) {
+            results.push(x.genre);
+        }
+        //console.log("movie genres from db: ", results)
+        return results;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+//do this after filter by rating
+const proonByGenre = async (genres, num_genres, movie_list) => {
+    //console.log("movie list: ", movie_list);
+    console.log("pruning by genres: ", genres);
+    //console.log("matches: ", num_genres);
+    var res = [];
+    var ct = 0;
+    //for every single movie, we need to make sure it contains genre matches of at least num_genres.
+    for (var movie of movie_list) {
+        const movie_genres = await getMovieGenresFromDB(movie.title, movie.year);
+        //console.log(movie_genres);
+        ct = 0;
+        for (var g of movie_genres) {
+            //console.log("g: %o", g);
+            if (genres.includes(g)) {
+                ct++;
+                //console.log("found a match: ", ct);
+                if (ct >= num_genres) {
+                    res.push(movie);
+                    break;
+                }
+            }
+        }
+    }
+    console.log("res after pruning by genre: ", res)
+    return res;
+}
+
+//given master_list, extract into a list of master genres
+const getMasterGenres = (master_list) => {
+    //console.log("%o", master_list);
+    var res = [];
+    for (var idx of master_list) {
+        //console.log("idx:",idx);
+        if (idx.table === 'genre_pref') {
+            for (var genre of idx.data) {
+                //console.log("genre: ", genre)
+                res.push(genre.value);
+            }
+        }
+    }
+    //console.log("master genre: ", res)
+    return res;
+}
+
+const getProonList = async (master_list, num_genres, rating) => {
+    //here we need to select movies that
+    //1. does the genre match with moviemaster,
+    //2. also meets rating criteria within a buffer of 2.
+    const buffer = 2;
+    const lower = Math.max(0, rating - buffer);
+    const upper = Math.min(10, rating + buffer);
+    console.log("buffer: [%o, %o]", lower, upper);
+
+    const movies_matching_rating = await getFirstProonCall(lower, upper, num_genres);
+    
+    const master_genres = getMasterGenres(master_list);
+    
+    const firstProonList = await proonByGenre(master_genres, num_genres, movies_matching_rating);
+    console.log("first proon: ", firstProonList);
+    return firstProonList;
+
+
+}
+
+export const selectMovie = async (l, r, g, ry, group_list, master_list) => {
     console.log("length:" + l);
     console.log("rating:" + r);
     console.log("genre: " + g);
@@ -228,8 +333,8 @@ export const selectMovie = async (l, r, g, ry, a, group_list, master_list) => {
 
     // need to enumerate values from the group preferences
     console.log("attempting to get group pref");
-    console.log("group: " + group_list);
-    console.log("master:" + master_list);
+    console.log("group: %o", group_list);
+    console.log("master: %o", master_list);
 
     // set the group and master pref variables
     setGroupPrefs(group_list);
@@ -256,6 +361,10 @@ export const selectMovie = async (l, r, g, ry, a, group_list, master_list) => {
     // print the resulting values
     console.log("ranges: " + lower_range + " to " + upper_range);
     console.log("rating: " + rating_val + " length: " + length_val + " genre: " + num_genres);
+
+    //lets proon the list. we'll first target movies that are within the rating buffer, then run it through genre filtering using master_list.
+    const prooned_list = getProonList(master_list, num_genres, rating_val);
+
 
     // 4) Actors servers as the “order by” once the “prooned” list is computed, 
     // 100% actors in movie from pref = at the top, 0 = at the bottom of the list → alters the score

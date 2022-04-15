@@ -301,21 +301,24 @@ app.get('/getPrefChart', async (req, res) => {
 });
 
 // do yo thang
-app.get('/nateStuff', async (req, res) => {
-  const buffer = req.query.buffer;
-  const num_genre = req.query.num_genre;
+app.get('/getFirstProon', async (req, res) => {
+  console.log("getting first proon");
+  const lower = req.query.lower;
+  const higher = req.query.higher;
+  const num_genres = req.query.num_genres;
+  console.log("buffer: [%o %o]", lower, higher);
+  console.log("num genres: ", num_genres);
 
   try {
     const result = await db.query(
-      "SELECT * from movies where COUNT(genre) = ? AND rating in ?",
-      [num_genre, buffer]);
+      //need to figure out count genre
+      "SELECT * FROM movies HAVING rating BETWEEN ? AND ?",
+      [lower, higher]);
     res.send(result);
   } catch (err) {
     throw err;
   }
 });
-
-
 
 // GET: group preferences for current user
 app.get('/getGroupPrefChart', async (req, res) => {
