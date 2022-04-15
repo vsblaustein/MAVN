@@ -30,6 +30,7 @@ export default class MovieRoom extends React.Component {
     movieMaster: "",
     roomCode: "123456", // get this from wherever needed
     chart: true,
+    members: [],
     // state variables for the selection algo, 50% defaut
     l_pref: 0.5,
     r_pref: 0.5,
@@ -38,7 +39,7 @@ export default class MovieRoom extends React.Component {
     a_pref: 0.5,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const code = this.state.roomCode;
     console.log(code);
     Axios.get('http://localhost:3001/getMovieMaster', {
@@ -52,6 +53,19 @@ export default class MovieRoom extends React.Component {
     }).catch(err => {
       console.log(err);
     });
+
+    // get the group members to pass to member icons
+    const gm = await this.fetchMembers();
+    const group_members = [];
+    // get a list of group_member usernames
+    for(const curr_gm in gm){
+      group_members.push(gm[curr_gm].username);
+    }
+
+    this.setState({
+      members: group_members,
+    });
+
   }
 
   //get all members in room
@@ -111,6 +125,7 @@ export default class MovieRoom extends React.Component {
     //iterate over every table and store them in a list.
     //current user is member.username
     console.log("members:" + group_members);
+    
     //create a big json that stores all the current user's preferences
 
     for (var table of tables) {
@@ -280,7 +295,7 @@ export default class MovieRoom extends React.Component {
             Group Members
           </Typography>
 
-          <GroupMembers code={this.state.roomCode} style={flexContainer} class='center-screen' />
+          <GroupMembers mem={this.state.members} code={this.state.roomCode} style={flexContainer} class='center-screen' />
 
           {/* saved preferences section */}
           <Typography

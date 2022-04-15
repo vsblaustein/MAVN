@@ -10,43 +10,22 @@ import { useEffect } from "react";
 
 export default function GroupMemberIcons(props) {
 
-  const [group_members, setGM] = React.useState([]);
 
-  useEffect(() => {
-    const members = [];
-
-    // get the group members given the room code
-    Axios.get('http://localhost:3001/getMembersList',
-      {
-        params: { room_code: props.code }
-      }).then((response) => {
-
-        // add members to the list
-        for (const m in response.data) {
-          members.push(response.data[m].username);
-        }
-        console.log("members for room " + props.code + ": " + members);
-        setGM(members);
-
-      }).catch(err => {
-        console.log(err);
-
-      });
-  });
+  
 
 
   return (
     <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={5} rowHeight={270}>
-      {group_members.map((item) => (
+      {props.mem.map((item, idx) => (
         <ImageListItem key={item} sx={{ width: '250px', height: '100%', left: 40, m: '10px', objectFit: 'cover' }}>
           <img
-            src={`${itemData[item].img}?w=164&h=164&fit=crop&auto=format`}
-            srcSet={`${itemData[item].img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-            alt={group_members[item]}
+            src={`${itemData[idx].img}?w=164&h=164&fit=crop&auto=format`}
+            srcSet={`${itemData[idx].img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+            alt={props.mem[idx]}
             loading="lazy"
           />
           <ImageListItemBar
-            title={group_members[item]}
+            title={props.mem[idx]}
             align='center'
             position="below"
             fontWeight='bold'
