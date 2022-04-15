@@ -470,6 +470,19 @@ app.get('/getMembersList', async (req, res) => {
   }
 });
 
+// removes a member from a room
+app.post('/removeMembers', async (req, res) => {
+  const users = req.body.users;
+  try {
+    const result = await db.query(
+      "DELETE FROM part_of WHERE username IN (?)",
+      [users]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 //POST: adds to cast_members table
 app.post('/addCastMembers', async (req, res) => {
   const m_title = req.body.m_title;

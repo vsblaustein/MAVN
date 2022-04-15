@@ -33,17 +33,19 @@ function MovieRoomSlider() {
             </Typography>
 
             <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={itemData.length} rowHeight={180}>
-              {itemData.map((item, index) => (
-                <ImageListItem key={index} sx={{ width: '100%', height: '100%', left: 40, m: '10px' }}>
-                  <img
-                    src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                    srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                    alt={item.title}
-                    loading="lazy"
-                    required onClick={(e) => { handleClick(e) }}
-                  />
-                </ImageListItem>
-              ))}
+                {itemData.map((item, index) => (
+
+                  <ImageListItem key={index} sx={{ width: '100%', height: '100%', left: 40, m: '10px' }}>
+                    <img
+                      src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+                      srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                      alt={item.title}
+                      loading="lazy"
+                      required onClick={(e) => { handleClick(e) }}
+                    />
+                  </ImageListItem>
+
+                ))}  
             </ImageList>
           </>
         ))}

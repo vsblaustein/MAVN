@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import MSPopUp from './MovieSelectionPopUp';
-import GPPopUp from './GroupPrefPopUp';
+import MembersPop from './MembersPopUp';
 import * as React from 'react';
 import { componentDidMount } from 'react';
 import PPopUp from './EditPreferences.js';
@@ -25,7 +25,7 @@ export default class MovieRoom extends React.Component {
   // determines if either state has been seen
   state = {
     msSeen: false,
-    gpSeen: false,
+    membersSeen: false,
     pSeen: false,
     movieMaster: "",
     roomCode: "123456", // get this from wherever needed
@@ -113,12 +113,7 @@ export default class MovieRoom extends React.Component {
   generateSelection = async (prefs) => {
     //step 1: select all movies from db given the genre and rating (and sliders ofc)
     var big_pref_list = [];
-    const gm = await this.fetchMembers();
-    const group_members = [];
-    // get a list of group_member usernames
-    for(const curr_gm in gm){
-      group_members.push(gm[curr_gm].username);
-    }
+    const group_members = this.state.members;
   
     //console.log("group members", group_members);
     const tables = ["genre_pref", "rating_pref", "length_pref", "actor_pref", "start_year_pref", "end_year_pref"];
@@ -179,10 +174,10 @@ export default class MovieRoom extends React.Component {
 
   };
 
-  toggleGP = () => {
+  toggleMembers = () => {
     this.setState({
-      gpSeen: !this.state.gpSeen,
-      chart: this.state.gpSeen
+      membersSeen: !this.state.membersSeen,
+      chart: this.state.membersSeen
     });
   };
 
@@ -260,10 +255,10 @@ export default class MovieRoom extends React.Component {
           {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
 
           <Button
-            onClick={this.toggleGP}
+            onClick={this.toggleMembers}
             sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
           >
-            Edit Group Preferences
+            Remove Group Members
           </Button>
           <Button
             onClick={this.toggleP}
@@ -271,7 +266,8 @@ export default class MovieRoom extends React.Component {
           >
             Edit Preferences
           </Button>
-          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
+          {this.state.membersSeen ? <MembersPop code={this.state.roomCode} 
+          mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
           {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
           {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
 
@@ -295,7 +291,8 @@ export default class MovieRoom extends React.Component {
             Group Members
           </Typography>
 
-          <GroupMembers mem={this.state.members} code={this.state.roomCode} style={flexContainer} class='center-screen' />
+          <GroupMembers mem={this.state.members} code={this.state.roomCode} 
+          style={flexContainer} class='center-screen' />
 
           {/* saved preferences section */}
           <Typography

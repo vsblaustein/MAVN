@@ -5,7 +5,7 @@ import Slider from '@mui/material/Slider';
 import Button from '@mui/material/Button';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './GroupPrefPopUp';
+import './MembersPopUp';
 
 // pop up for individual length preferences
 
