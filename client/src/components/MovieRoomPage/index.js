@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import MSPopUp from './MovieSelectionPopUp';
 import MembersPop from './MembersPopUp';
 import * as React from 'react';
-import { componentDidMount } from 'react';
 import PPopUp from './EditPreferences.js';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
@@ -37,6 +36,7 @@ export default class MovieRoom extends React.Component {
     g_pref: 0.5,
     ry_pref: 0.5,
     a_pref: 0.5,
+    movie_list: [],
   };
 
   async componentDidMount() {
@@ -158,16 +158,20 @@ export default class MovieRoom extends React.Component {
 
 
     // calls the selectMovie function in the SelectionAlgo class
-
     const movie = await selectMovie(this.state.l_pref, this.state.r_pref, this.state.g_pref
       , this.state.ry_pref, this.state.a_pref, big_pref_list, mm_pref_list);
-    this.toggleMS();
+
+    // set the movie list state variable to use in selection
+
+    this.toggleMS(movie);
+
 
   }
 
   // methods to toggle pop ups
-  toggleMS = () => {
+  toggleMS = (movie) => {
     this.setState({
+      movie_list: movie,
       msSeen: !this.state.msSeen,
       chart: this.state.msSeen
     });
@@ -238,13 +242,7 @@ export default class MovieRoom extends React.Component {
         <ResponsiveAppBar />
 
         <Box position="static">
-          {/* generate copy link button */}
-          <Button
-            onClick={this.copyToClipboard}
-            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
-          >
-            Copy Room Link
-          </Button>
+          
           {/* generate selection button */}
           <Button
             onClick={this.generateSelection}
@@ -252,7 +250,18 @@ export default class MovieRoom extends React.Component {
           >
             Generate Selection
           </Button>
-          {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
+          <Button
+            onClick={this.toggleP}
+            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
+          >
+            Bias Movie Selection
+          </Button>
+          <Button
+            onClick={this.copyToClipboard}
+            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+          >
+            Copy Room Link
+          </Button>
 
           <Button
             onClick={this.toggleMembers}
@@ -260,16 +269,12 @@ export default class MovieRoom extends React.Component {
           >
             Remove Group Members
           </Button>
-          <Button
-            onClick={this.toggleP}
-            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
-          >
-            Edit Preferences
-          </Button>
+          
+          
+          {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
+          {this.state.pSeen ? <PPopUp  update={this.setValues} toggle={this.toggleP} /> : null}
           {this.state.membersSeen ? <MembersPop code={this.state.roomCode} 
           mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
-          {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
-          {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
 
           <Typography
 
@@ -278,7 +283,7 @@ export default class MovieRoom extends React.Component {
             component="div"
             sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
           >
-            Movie Master: {this.state.movieMaster}
+            Room {this.state.roomCode} Movie Master: {this.state.movieMaster}
           </Typography>
 
           {/* group member icons section */}

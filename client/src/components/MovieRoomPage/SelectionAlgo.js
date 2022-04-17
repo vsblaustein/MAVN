@@ -465,5 +465,7 @@ export const selectMovie = async (l, r, g, ry, a, group_list, master_list) => {
         console.log(key.title + " = " + value);
     })
 
+    return orderedProon;
+
 }
 

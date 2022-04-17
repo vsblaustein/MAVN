@@ -86,7 +86,7 @@ export default function GQPopUp(props) {
                             component="div"
                             sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
                         >
-                            Assume 50% means equal representation within the group
+                            50% means equal say as the group
                         </Typography>
                         {/* movie genre */}
                         <Box mt='10px'>
