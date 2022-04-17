@@ -170,10 +170,11 @@ app.get('/getCastMembers', async (req, res) => {
 
 // GET: user information
 app.get('/getProfile', async (req, res) => {
-  const name = req.body.name;
+  const name = req.query.name;
   try {
     const result = await db.query(
-      "SELECT * FROM users WHERE name = ?");
+      "SELECT * FROM users WHERE username = ?",
+      [name]);
     res.send(result);
   } catch (err) {
     throw err;
