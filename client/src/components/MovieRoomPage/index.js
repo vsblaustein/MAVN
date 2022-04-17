@@ -9,7 +9,7 @@ import PPopUp from './EditPreferences.js';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
-import {selectMovie} from "./SelectionAlgo.js";
+import { selectMovie } from "./SelectionAlgo.js";
 
 // styling for horizontal list
 const flexContainer = {
@@ -20,6 +20,7 @@ const flexContainer = {
 
 var roomMaster = "";
 var rCode = "";
+var movieImgPath = "";
 
 
 // display current preferences at the bottom of the page
@@ -57,6 +58,13 @@ export default class MovieRoom extends React.Component {
       this.setState({
         movieMaster: response.data[0].username,
       })
+      console.log("Master: " + this.state.movieMaster);
+      roomMaster = this.state.movieMaster;
+      const currUser = JSON.parse(localStorage.getItem('user'));
+      console.log("user: " + currUser);
+      if (currUser === this.state.movieMaster) {
+        this.setState({ showMasterButtons: true });
+      }
     }).catch(err => {
       console.log(err);
     });
@@ -65,26 +73,26 @@ export default class MovieRoom extends React.Component {
     const gm = await this.fetchMembers();
     const group_members = [];
     // get a list of group_member usernames
-    for(const curr_gm in gm){
+    for (const curr_gm in gm) {
       group_members.push(gm[curr_gm].username);
     }
 
     this.setState({
       members: group_members,
     });
-  
-   //check if a new selection has been inserted in database
+
+    //check if a new selection has been inserted in database
     Axios.get('http://localhost:3001/getSelection', {
-            params: {code: code}
-        }).then((response) => {
-          if (response.data.length > 0){
-            movieImgPath = response.data[0].image_path;
-            this.togglePQ();
-          }
-            console.log(response);
-        }).catch(err => {
-            console.log(err);
-        });
+      params: { code: code }
+    }).then((response) => {
+      if (response.data.length > 0) {
+        movieImgPath = response.data[0].image_path;
+        this.togglePQ();
+      }
+      console.log(response);
+    }).catch(err => {
+      console.log(err);
+    });
 
   }
 
@@ -134,13 +142,13 @@ export default class MovieRoom extends React.Component {
     //step 1: select all movies from db given the genre and rating (and sliders ofc)
     var big_pref_list = [];
     const group_members = this.state.members;
-  
+
     //console.log("group members", group_members);
     const tables = ["genre_pref", "rating_pref", "length_pref", "actor_pref", "start_year_pref", "end_year_pref"];
     //iterate over every table and store them in a list.
     //current user is member.username
     console.log("members:" + group_members);
-    
+
     //create a big json that stores all the current user's preferences
 
     for (var table of tables) {
@@ -210,14 +218,14 @@ export default class MovieRoom extends React.Component {
     const img = "https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg";
     console.log("params: " + c + " " + t + " " + y);
     Axios.post('http://localhost:3001/movieSelection', {
-            code: c, title: t, year: y, imagePath: img
-        }).then((response) => {
-            movieImgPath = img;
-            this.togglePQ();
-            console.log(response);
-        }).catch(err => {
-            console.log(err);
-        });
+      code: c, title: t, year: y, imagePath: img
+    }).then((response) => {
+      movieImgPath = img;
+      this.togglePQ();
+      console.log(response);
+    }).catch(err => {
+      console.log(err);
+    });
   };
 
   toggleMembers = () => {
@@ -286,8 +294,35 @@ export default class MovieRoom extends React.Component {
         <ResponsiveAppBar />
 
         <Box position="static">
-          
+
           {/* generate selection button */}
+          {show && <Button
+            onClick={this.generateSelection}
+            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+          >
+            Generate Selection
+          </Button>}
+          {show && <Button
+            onClick={this.toggleP}
+            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
+          >
+            Bias Movie Selection
+          </Button>}
+          <Button
+            onClick={this.copyToClipboard}
+            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+          >
+            Copy Room Link
+          </Button>
+
+          {show && <Button
+            onClick={this.toggleMembers}
+            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+          >
+            Remove Group Members
+          </Button>}
+
+          {/* generate selection button
           {show && <Button
             onClick={this.onClick}
             sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
@@ -304,12 +339,12 @@ export default class MovieRoom extends React.Component {
             Edit Group Preferences
           </Button>}
           {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
-          <Button
+          {show && <Button
             onClick={this.generateSelection}
             sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
           >
             Generate Selection
-          </Button>
+          </Button> }
           <Button
             onClick={this.toggleP}
             sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
@@ -321,20 +356,20 @@ export default class MovieRoom extends React.Component {
             sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
           >
             Copy Room Link
-          </Button>
+          </Button> */}
 
-          <Button
+          {/* <Button
             onClick={this.toggleMembers}
             sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
           >
             Remove Group Members
-          </Button>
-          
-          
+          </Button> */}
+
+
           {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
-          {this.state.pSeen ? <PPopUp  update={this.setValues} toggle={this.toggleP} /> : null}
-          {this.state.membersSeen ? <MembersPop code={this.state.roomCode} 
-          mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
+          {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
+          {this.state.membersSeen ? <MembersPop code={this.state.roomCode}
+            mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
 
           <Typography
 
@@ -358,8 +393,8 @@ export default class MovieRoom extends React.Component {
             Group Members
           </Typography>
 
-          <GroupMembers mem={this.state.members} code={this.state.roomCode} 
-          style={flexContainer} class='center-screen' />
+          <GroupMembers mem={this.state.members} code={this.state.roomCode}
+            style={flexContainer} class='center-screen' />
 
           {/* saved preferences section */}
           <Typography
@@ -381,6 +416,6 @@ export default class MovieRoom extends React.Component {
     );
   }
 }
-export {movieImgPath};
-export {roomMaster};
-export {rCode};
+export { movieImgPath };
+export { roomMaster };
+export { rCode };
