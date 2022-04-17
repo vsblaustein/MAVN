@@ -356,14 +356,45 @@ app.post('/addMovie', async (req, res) => {
   }
 });
 
-//POST: register request
-app.post('/getMaster', async (req, res) => {
-  const roomCode = req.body.code;
+//GET: the movie master of a given movie room
+app.get('/getMaster', async (req, res) => {
+  const roomCode = req.query.code;
   console.log(roomCode);
   try {
     const result = await db.query(
       "SELECT movie_master FROM movie_room WHERE code = ?",
       [roomCode]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//GET: the movie selection of a given movie room
+app.get('/getSelection', async (req, res) => {
+  const roomCode = req.query.code;
+  console.log(roomCode);
+  try {
+    const result = await db.query(
+      "SELECT title, image_path FROM movie_selection WHERE code = ?",
+      [roomCode]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: adds to movie_selection table
+app.post('/movieSelection', async (req, res) => {
+  const code = req.body.code;
+  const title = req.body.title;
+  const year = req.body.year;
+  const imagePath = req.body.imagePath;
+  console.log("params: " + code + " " + title + " " + year);
+  try {
+    const result = await db.query(
+      "INSERT INTO movie_selection (code, title, year, image_path) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE image_path = ? ",
+      [code, title, year, imagePath, imagePath]);
     res.send(req.body);
   } catch (err) {
     throw err;

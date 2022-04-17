@@ -17,15 +17,9 @@ const flexContainer = {
   padding: 0,
 };
 
-/*function getMovieMaster(){
-  Axios.post('http://localhost:3001/getMaster', {
-            code: roomCode
-        }).then((response) => {
-            console.log(response);
-        }).catch(err => {
-            console.log(err);
-        });
-}*/
+var movieImgPath = "";
+var roomMaster = "";
+var rCode = "";
 
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
@@ -33,16 +27,40 @@ export default class MovieRoom extends React.Component {
   state = {
     pqSeen: false,
     gpSeen: false,
+    showMasterButtons: false,
     movieMaster: "",
     roomCode: "123456",
   };
 
   componentDidMount(){
     const c = this.state.roomCode;
+    rCode = c;
     console.log(c);
-    Axios.post('http://localhost:3001/getMaster', {
-            code: c
+    //get movie master
+    Axios.get('http://localhost:3001/getMaster', {
+            params: {code: c}
         }).then((response) => {
+            const master = response.data[0].movie_master;
+            console.log("Master: " + master);
+            this.setState({movieMaster: master});
+            roomMaster = master;
+            const currUser = JSON.parse(localStorage.getItem('user'));
+            console.log("user: " + currUser);
+            if (currUser == master){
+              this.setState({showMasterButtons: true});
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+
+    //check if a new selection has been inserted in database
+    Axios.get('http://localhost:3001/getSelection', {
+            params: {code: c}
+        }).then((response) => {
+          if (response.data.length > 0){
+            movieImgPath = response.data[0].image_path;
+            this.togglePQ();
+          }
             console.log(response);
         }).catch(err => {
             console.log(err);
@@ -54,7 +72,29 @@ export default class MovieRoom extends React.Component {
     this.setState({
       pqSeen: !this.state.pqSeen
     });
+  };
 
+  onClick = () => {
+    //this.togglePQ();
+    this.setSelection();
+  };
+
+  setSelection = () => {
+    //insert selection into database 
+    const c = this.state.roomCode;
+    const t = "The Avengers";
+    const y = 2012;
+    const img = "https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg";
+    console.log("params: " + c + " " + t + " " + y);
+    Axios.post('http://localhost:3001/movieSelection', {
+            code: c, title: t, year: y, imagePath: img
+        }).then((response) => {
+            movieImgPath = img;
+            this.togglePQ();
+            console.log(response);
+        }).catch(err => {
+            console.log(err);
+        });
   };
 
   toggleGP = () => {
@@ -75,6 +115,8 @@ export default class MovieRoom extends React.Component {
 
 
   render() {
+    var currentMaster = this.state.movieMaster;
+    var show = this.state.showMasterButtons;
     return (
       <>
         <ResponsiveAppBar />
@@ -90,20 +132,21 @@ export default class MovieRoom extends React.Component {
           {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
 
           {/* generate selection button */}
-          <Button
-            onClick={this.togglePQ}
+          {show && <Button
+            onClick={this.onClick}
             sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
           >
             Generate Movie Selection
-          </Button>
+          </Button>}
           {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
+          
 
-          <Button
+          {show && <Button
             onClick={this.toggleGP}
             sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
           >
             Edit Group Preferences
-          </Button>
+          </Button>}
           {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
 
           <Typography
@@ -113,7 +156,7 @@ export default class MovieRoom extends React.Component {
             component="div"
             sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
           >
-            Movie Master: Mehdi
+            Movie Master: {currentMaster}
           </Typography>
 
           {/* group member icons section */}
@@ -146,3 +189,6 @@ export default class MovieRoom extends React.Component {
     );
   }
 }
+export {movieImgPath};
+export {roomMaster};
+export {rCode};
