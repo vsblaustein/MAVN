@@ -3,58 +3,60 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-import {useHistory, useNavigate} from 'react-router-dom';
+import { useHistory, useNavigate } from 'react-router-dom';
 
 // this document will generate the charts from the db and display them
 
 function MovieRoomSlider() {
   const navigate = useNavigate()
 
-
-
   const handleClick = (e) => {
     navigate("/movie%20room");
+
   };
 
 
   return (
-        <>
+    <>
       <Box>
-    {genres.map((g) => (
-        <>
-        <Typography
-        variant="h7"
-        noWrap
-        component="div"
-        sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-        fontWeight='bold'
-      >
-        {g}
-        </Typography>
+        {genres.map((g) => (
+          <>
+            <Typography
+              variant="h7"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+              fontWeight='bold'
+              key={g}
+            >
+              {g}
+            </Typography>
 
-        <ImageList sx={{ width: '100%', height:'100%', padding:0}} cols={itemData.length} rowHeight={180}>
-        {itemData.map((item) => (
-          <ImageListItem key={item.img} sx={{width:'100%', height:'100%', left:40, m:'10px'}}>
-            <img
-              src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-              srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-              alt={item.title}
-              loading="lazy"
-              required onClick={(e) => {handleClick(e)}}
-            /> 
-          </ImageListItem>
+            <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={itemData.length} rowHeight={180}>
+                {itemData.map((item, index) => (
+
+                  <ImageListItem key={index} sx={{ width: '100%', height: '100%', left: 40, m: '10px' }}>
+                    <img
+                      src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+                      srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                      alt={item.title}
+                      loading="lazy"
+                      required onClick={(e) => { handleClick(e) }}
+                    />
+                  </ImageListItem>
+
+                ))}  
+            </ImageList>
+          </>
         ))}
-      </ImageList>
-      </>
-    ))}
-    </Box>
-    
+      </Box>
+
     </>
   );
 }
 
 const genres = [
-    'Movie Rooms'
+  'Movie Rooms'
 ];
 
 const itemData = [
@@ -71,7 +73,7 @@ const itemData = [
     title: 'Movie Room 3',
   },
   {
-    img : 'https://sitmeanssit.com/dog-training-mu/san-gabriel-valley-dog-training/files/2017/10/dog-friends.jpg',
+    img: 'https://sitmeanssit.com/dog-training-mu/san-gabriel-valley-dog-training/files/2017/10/dog-friends.jpg',
     title: 'Movie Room 4',
   },
   {

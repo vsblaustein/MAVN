@@ -2,13 +2,14 @@ import ResponsiveAppBar from '../ResponsiveAppBar/index'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import PQPopUp from './MovieSelectionPopUp';
-import GPPopUp from './GroupPrefPopUp';
+import MSPopUp from './MovieSelectionPopUp';
+import MembersPop from './MembersPopUp';
 import * as React from 'react';
-import {componentDidMount} from 'react';
+import PPopUp from './EditPreferences.js';
 import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
+import {selectMovie} from "./SelectionAlgo.js";
 
 // styling for horizontal list
 const flexContainer = {
@@ -17,9 +18,9 @@ const flexContainer = {
   padding: 0,
 };
 
-var movieImgPath = "";
 var roomMaster = "";
 var rCode = "";
+
 
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
@@ -28,34 +29,53 @@ export default class MovieRoom extends React.Component {
     pqSeen: false,
     gpSeen: false,
     showMasterButtons: false,
+    msSeen: false,
+    membersSeen: false,
+    pSeen: false,
     movieMaster: "",
-    roomCode: "123456",
+    roomCode: "123456", // get this from wherever needed
+    chart: true,
+    members: [],
+    // state variables for the selection algo, 50% defaut
+    l_pref: 0.5,
+    r_pref: 0.5,
+    g_pref: 0.5,
+    ry_pref: 0.5,
+    a_pref: 0.5,
+    movie_list: [],
   };
 
-  componentDidMount(){
-    const c = this.state.roomCode;
-    rCode = c;
-    console.log(c);
-    //get movie master
-    Axios.get('http://localhost:3001/getMaster', {
-            params: {code: c}
-        }).then((response) => {
-            const master = response.data[0].movie_master;
-            console.log("Master: " + master);
-            this.setState({movieMaster: master});
-            roomMaster = master;
-            const currUser = JSON.parse(localStorage.getItem('user'));
-            console.log("user: " + currUser);
-            if (currUser == master){
-              this.setState({showMasterButtons: true});
-            }
-        }).catch(err => {
-            console.log(err);
-        });
+  async componentDidMount() {
+    const code = this.state.roomCode;
+    console.log(code);
+    // get movie master
+    Axios.get('http://localhost:3001/getMovieMaster', {
+      params: { c: code }
+    }
+    ).then((response) => {
+      console.log("movie master is: " + response.data[0].username);
+      this.setState({
+        movieMaster: response.data[0].username,
+      })
+    }).catch(err => {
+      console.log(err);
+    });
 
-    //check if a new selection has been inserted in database
+    // get the group members to pass to member icons
+    const gm = await this.fetchMembers();
+    const group_members = [];
+    // get a list of group_member usernames
+    for(const curr_gm in gm){
+      group_members.push(gm[curr_gm].username);
+    }
+
+    this.setState({
+      members: group_members,
+    });
+  
+   //check if a new selection has been inserted in database
     Axios.get('http://localhost:3001/getSelection', {
-            params: {code: c}
+            params: {code: code}
         }).then((response) => {
           if (response.data.length > 0){
             movieImgPath = response.data[0].image_path;
@@ -65,12 +85,114 @@ export default class MovieRoom extends React.Component {
         }).catch(err => {
             console.log(err);
         });
+
+  }
+
+  //get all members in room
+
+  fetchMembers = async () => {
+    //console.log("fetching members of group");
+    try {
+      const resp = await Axios.get('http://localhost:3001/getMembersList', {
+        params: { room_code: this.state.roomCode }
+      });
+      //console.log("member list", resp.data);
+      return resp.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  //get group prefs for all members in room
+  fetchGroupPrefs = async (user, table) => {
+    try {
+      const resp = await Axios.get('http://localhost:3001/getGroupPrefChart', {
+        params: { username: user, table: table }
+      });
+      //console.log("fetch group prefs returned", resp.data);
+      return resp.data;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  //get moviemaster prefs
+  fetchMovieMasterPrefs = async (table) => {
+    try {
+      const resp = await Axios.get('http://localhost:3001/getPrefChart', {
+        params: { username: this.state.movieMaster, table: table }
+      });
+      //console.log("fetch group prefs returned", resp.data);
+      return resp.data;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // pass in the values stored as state variables to compute
+  generateSelection = async (prefs) => {
+    //step 1: select all movies from db given the genre and rating (and sliders ofc)
+    var big_pref_list = [];
+    const group_members = this.state.members;
+  
+    //console.log("group members", group_members);
+    const tables = ["genre_pref", "rating_pref", "length_pref", "actor_pref", "start_year_pref", "end_year_pref"];
+    //iterate over every table and store them in a list.
+    //current user is member.username
+    console.log("members:" + group_members);
+    
+    //create a big json that stores all the current user's preferences
+
+    for (var table of tables) {
+      //console.log(`getting table ${table} from user ${member.username}`);
+      const data = await this.fetchGroupPrefs(group_members, table);
+      //console.log("fetchGroupPrefs returns ", data);
+      var json = JSON.parse(
+        JSON.stringify(
+          {
+            table: table,
+            data: data,
+          }
+        ));
+      big_pref_list.push(json);
+    }
+
+    console.log("group prefs: ", big_pref_list);
+
+    var mm_pref_list = [];
+    for (var table of tables) {
+      //console.log(`getting table ${table} from user ${member.username}`);
+      const data = await this.fetchMovieMasterPrefs(table);
+      var json = JSON.parse(
+        JSON.stringify(
+          {
+            table: table,
+            data: data,
+          }
+        ));
+      mm_pref_list.push(json);
+    }
+    console.log("movie master prefs: ", mm_pref_list);
+    //big pref list holds everyones shit
+    //mm_pref_list holds only movie masters shit
+
+
+    // calls the selectMovie function in the SelectionAlgo class
+    const movie = await selectMovie(this.state.l_pref, this.state.r_pref, this.state.g_pref
+      , this.state.ry_pref, this.state.a_pref, big_pref_list, mm_pref_list);
+
+    // set the movie list state variable to use in selection
+
+    this.toggleMS(movie);
+
   }
 
   // methods to toggle pop ups
-  togglePQ = () => {
+  toggleMS = (movie) => {
     this.setState({
-      pqSeen: !this.state.pqSeen
+      movie_list: movie,
+      msSeen: !this.state.msSeen,
+      chart: this.state.msSeen
     });
   };
 
@@ -79,6 +201,7 @@ export default class MovieRoom extends React.Component {
     this.setSelection();
   };
 
+  // may not need this - double check
   setSelection = () => {
     //insert selection into database 
     const c = this.state.roomCode;
@@ -97,9 +220,17 @@ export default class MovieRoom extends React.Component {
         });
   };
 
-  toggleGP = () => {
+  toggleMembers = () => {
     this.setState({
-      gpSeen: !this.state.gpSeen
+      membersSeen: !this.state.membersSeen,
+      chart: this.state.membersSeen
+    });
+  };
+
+  toggleP = () => {
+    this.setState({
+      pSeen: !this.state.pSeen,
+      chart: this.state.pSeen
     });
   };
 
@@ -113,6 +244,39 @@ export default class MovieRoom extends React.Component {
 
   }
 
+  // changes value in edit preference pop up
+  setValues = (name, val) => {
+    if (name === 'l_pref') {
+      this.setState({
+        l_pref: val / 100,
+      });
+    }
+    else if (name === 'r_pref') {
+      this.setState({
+        r_pref: val / 100,
+      });
+    }
+    else if (name === 'g_pref') {
+      this.setState({
+        g_pref: val / 100,
+      });
+    }
+    else if (name === 'ry_pref') {
+      this.setState({
+        ry_pref: val / 100,
+      });
+    }
+    else if (name === 'a_pref') {
+      this.setState({
+        a_pref: val / 100,
+      });
+    }
+    else {
+      console.log("Cannot find preference rating trying to update");
+    }
+    console.log("set " + name + " to: " + val / 100);
+  }
+
 
   render() {
     var currentMaster = this.state.movieMaster;
@@ -122,15 +286,7 @@ export default class MovieRoom extends React.Component {
         <ResponsiveAppBar />
 
         <Box position="static">
-        {/* generate copy link button */}
-        <Button
-            onClick={this.copyToClipboard}
-            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
-          >
-            Copy Link
-          </Button>
-          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
-
+          
           {/* generate selection button */}
           {show && <Button
             onClick={this.onClick}
@@ -148,15 +304,48 @@ export default class MovieRoom extends React.Component {
             Edit Group Preferences
           </Button>}
           {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
+          <Button
+            onClick={this.generateSelection}
+            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+          >
+            Generate Selection
+          </Button>
+          <Button
+            onClick={this.toggleP}
+            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
+          >
+            Bias Movie Selection
+          </Button>
+          <Button
+            onClick={this.copyToClipboard}
+            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+          >
+            Copy Room Link
+          </Button>
+
+          <Button
+            onClick={this.toggleMembers}
+            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+          >
+            Remove Group Members
+          </Button>
+          
+          
+          {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
+          {this.state.pSeen ? <PPopUp  update={this.setValues} toggle={this.toggleP} /> : null}
+          {this.state.membersSeen ? <MembersPop code={this.state.roomCode} 
+          mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
 
           <Typography
-            
+
             variant="h6"
             noWrap
             component="div"
             sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
           >
-            Movie Master: {currentMaster}
+
+            Room {this.state.roomCode} Movie Master: {this.state.movieMaster}
+
           </Typography>
 
           {/* group member icons section */}
@@ -169,7 +358,8 @@ export default class MovieRoom extends React.Component {
             Group Members
           </Typography>
 
-          <GroupMembers style={flexContainer} class='center-screen'/>
+          <GroupMembers mem={this.state.members} code={this.state.roomCode} 
+          style={flexContainer} class='center-screen' />
 
           {/* saved preferences section */}
           <Typography
@@ -181,7 +371,9 @@ export default class MovieRoom extends React.Component {
             Group Preferences
           </Typography>
 
-          <PreferencesStats style={flexContainer} class='center-screen'/>
+          {this.state.chart ? <PreferencesStats
+            code={this.state.roomCode} style={flexContainer}
+            class='center-screen' /> : null}
 
         </Box>
 

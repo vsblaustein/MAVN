@@ -1,77 +1,112 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './PopUp.css';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Navigate } from 'react-router-dom';
-import {useHistory, useNavigate} from 'react-router-dom';
+import { useHistory, useNavigate } from 'react-router-dom';
+import Axios from 'axios';
+import TextField from '@mui/material/TextField';
 
 function JoinForm() {
-  const [name , setName] = useState('');
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const [dbPass, setDBPass] = React.useState('');
   const navigate = useNavigate()
 
 
-  const handleChange =(e)=>{
-    setName(e.target.value);
-  }
+  const handleSubmit = (event) => {
 
-  const handleClick = (e) => {
-   this.props.toggle();
-  };
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
 
-  const handleExit = (e) => {
-    this.props.toggle();
-};
+    console.log("beginning axios.get")
+    const room_code = data.get('room_code');
+    const pass = data.get('password');
 
+    console.log("code: " + room_code + " pass: " + pass);
 
-  const handleSubmit=(e)=>{
-      
-      //DATABASE WORK
-    //if code is valid -> go through
-    if(name == "MAVN"){
-      alert('You Joined ' + name + '!' );
-      e.preventDefault();
-    navigate("/movie%20room");
+    // check password
+    Axios.get('http://localhost:3001/getPassword', {
+      params: { roomCode: room_code }
     }
-    else{
-      alert("Room Does not Exist");
-    }
+    ).then((response) => {
+      console.log("password for " + room_code + " is: " + response.data[0].password);
+      setDBPass(response.data[0].password);
+
+      // check that the passwords match
+      if (dbPass !== pass) {
+        alert("Incorrect pass word for " + room_code);
+      }
+      else {
+
+        // adds user to the part of table room
+        Axios.post('http://localhost:3001/addPartOf', {
+          user: currentUser,
+          room_code: room_code,
+          master: 0,
+
+        }).then((response) => {
+          // gives a list of json objects
+          console.log(response);
+          // NEED TO CATCH THIS ERROR
+          if(response.data === 'duplicate'){
+            alert("Already joined room.");
+          }
+        }).catch(err => {
+          console.log(err);
+        });
+
+      }
+      // alert user of incorrect room
+    }).catch(err => {
+
+      alert("No room with code " + room_code + " exists.");
+      console.log(err);
+    });
 
   }
-
-
-
 
 
   return (
-  
-    <div className="App">
-    <header className="App-header">
-    <form onSubmit={(e) => {handleSubmit(e)}}>
-        
 
+    <Box className="App">
 
-    <h2> Enter Room Id </h2>
-                <div>
-                  <label>
-                    Room Id:
-                    <input type="text" name="name" required onChange={(e) => {handleChange(e)}}/>
-                  </label>
+      <Typography component="h1" variant="h5">
+        Enter Room:
+      </Typography>
+      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <TextField
+          margin="normal"
+          required
+          width='100vw'
+          id="room_code"
+          label="Room Code"
+          name="room_code"
+          autoFocus
+        />
+        <br />
+        <TextField
+          margin="normal"
+          required
+          width='100vw'
+          name="password"
+          label="Room Password"
+          type="password"
+          id="password"
+        />
+        <br />
+        <Button
+          type="submit"
+          widht='50vw'
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Join
+        </Button>
+      </Box>
 
-                        <input type="submit" value="Submit" />
-
-            
-                    
-                </div>
-                
-        
-    </form>
-
-
-
-    </header>
-    </div>
+    </Box>
   );
- }
+}
 
 export default JoinForm;

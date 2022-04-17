@@ -5,15 +5,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 
-export default function AlertDialog() {
+export default function AlertDialog(props) {
   const [open, setOpen] = React.useState(false);
-
-  let navigate = useNavigate();
-  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -26,16 +21,8 @@ export default function AlertDialog() {
 
   // query to clear the database, need the user id
   const handleConfirm = async(event) => {
-    console.log("clear the preference databases for " + currentUser);
     event.preventDefault();
-    Axios.post('http://localhost:3001/clearPref', {
-      username: currentUser,
-    }).then((response) => {
-      console.log(response);
-      navigate("/my%20preferences", { replace: true });
-    }).catch(err => {
-      console.log(err);
-    });
+    props.action();
     document.location.reload();
     handleClose();
   }
@@ -44,7 +31,7 @@ export default function AlertDialog() {
   return (
     <Box sx={{ right: '43%', mt: "10px", position: 'absolute' }}>
       <Button onClick={handleClickOpen}>
-        Clear All Preferences
+        Remove Members
       </Button>
       <Dialog
         open={open}
@@ -57,13 +44,13 @@ export default function AlertDialog() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="clear-description">
-            Are you sure you want to clear ALL your preferences? This action
-            cannot be undone later.
+            Are you sure you want to remove these members from the room? These members
+            must be invited back to rejoin later.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Do Not Clear</Button>
-          <Button onClick={handleConfirm} autoFocus>Confirm Clear</Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleConfirm} autoFocus>Remove Members</Button>
         </DialogActions>
       </Dialog>
     </Box>

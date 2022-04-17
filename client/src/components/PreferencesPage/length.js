@@ -35,6 +35,7 @@ export default function Length(props) {
     }).catch(err => {
       console.log(err);
     });
+    document.location.reload();
     handleExit();
   }
 
@@ -45,7 +46,7 @@ export default function Length(props) {
   return (
     <>
       <Box className="modal">
-        <Box className="mini_slide_pref_modal">
+        <Box className="mini_pref_modal">
           <span className="close" onClick={handleExit}>
             <Button>
               Exit
@@ -77,7 +78,7 @@ export default function Length(props) {
               </Box>
             </Box>
 
-            <Button type="submit">
+            <Button type="submit" sx={{ mt: '10px' }}>
               Submit
             </Button>
           </Box >
