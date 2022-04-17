@@ -48,6 +48,7 @@ const ratingAverage = (r) => {
 
 }
 
+// compute the average length
 const lengthAverage = (l) => {
     var group_avg = 0;
     var master_avg = 0;
@@ -75,7 +76,7 @@ const lengthAverage = (l) => {
 
 }
 
-// gives the range of values for release year
+// compute the year range
 const yearRange = (ry) => {
 
     var group_min = 2060; var master_min = 2060;
@@ -124,11 +125,9 @@ const yearRange = (ry) => {
     res.push(lower_range); res.push(upper_range);
     return res;
 
-
 }
 
-// if all moviemaster actors present, give 100%
-// else, enumerate by how many movie master and group actors are in the cast_mambers list?
+// order the proon list by score of actors present
 const actorPref = (a) => {
     // need to get the list of cast members for each movie
     // need to count how many cast members are in the movie_master actor list (and group)?
@@ -143,7 +142,7 @@ const actorPref = (a) => {
         groupActors.set(curr_actor.value, Math.round(100 * curr_actor.numerator * (1 - a)) / 100);
     }
 
-    for(const m in a_master){
+    for (const m in a_master) {
         const curr_actor = a_master[m];
         masterActors.set(curr_actor.value, Math.round(100 * curr_actor.numerator * a) / 100);
     }
@@ -153,6 +152,92 @@ const actorPref = (a) => {
     console.log(groupActors);
     console.log(masterActors);
 
+    const actor_prefs = []
+    actor_prefs.push(groupActors);
+    actor_prefs.push(masterActors);
+
+    // return list where 0 = group map and 1 = master map
+    return actor_prefs;
+
+}
+
+// order the list of movies by the length
+const orderProon = async (length_avg, after_yr, before_yr, groupActors, masterActors, movieList) => {
+    console.log("ordering the prooned list...");
+    // return the ordered movieList, so put into a map and assing a value
+    const preOrderList = new Map();
+
+    // for each movie want to compute a value depending on how good a fit
+    for (const m in movieList) {
+        const curr_movie = movieList[m];
+        var finalScore = 0;
+        var lengthScore = Math.abs(curr_movie.length - length_avg);
+        var yearScore = 0;
+        var actorScore = 0;
+
+        // calculate the year score so favours in range, penalizes by how far out of range
+        const upperDist = curr_movie.year - after_yr; // positive means above the lower range
+        const lowerDist = before_yr - curr_movie.year; // positive means below the upper range
+        // falls within range
+        if (upperDist >= 0 && lowerDist >= 0) {
+            yearScore = upperDist + lowerDist;
+        }
+        else if (upperDist <= 0 && lowerDist >= 0) {
+            // console.log("produced too early");
+            // if 10 years before = -0.1 * years from upper
+            yearScore = (curr_movie.year - after_yr) / 100 * (before_yr - curr_movie.year);
+        }
+        else if (upperDist >= 0 && lowerDist <= 0) {
+            // console.log("produced too late");
+            // if 10 years before = -0.1 * years from upper
+            yearScore = (before_yr - curr_movie.year) / 100 * (curr_movie.year - after_yr);
+
+        }
+
+        // compute the actor score
+        // get the list of cast members for the current movie 
+        try {
+            const resp = await Axios.get('http://localhost:3001/getCastMembers', {
+                params: {
+                    title: curr_movie.title,
+                    year: curr_movie.year,
+                }
+            });
+            for (var x of resp.data) {
+                console.log(x.actor);
+                if(groupActors.has(x.actor)){
+                    actorScore += groupActors.get(x.actor);
+                }
+                if(masterActors.has(x.actor)){
+                    actorScore += masterActors.get(x.actor);
+                }
+                
+            }
+        } catch (err) {
+            console.error(err);
+        }
+
+        // go through the cast, if in the group map add the score to actors
+        // if in master map add the score
+
+        console.log("length score: " + lengthScore);
+        console.log("year score: " + yearScore + " with curr year " + curr_movie.year + " and bounds " + after_yr + " to " + before_yr);
+        console.log("Actor score: " + actorScore);
+        // add all scores to final score and add to map
+        finalScore += lengthScore + yearScore + actorScore
+
+        // add the movie title and score to the map (k = current movie object, v = score)
+        // can make this JSON.stringify
+        preOrderList.set(curr_movie, finalScore);
+    }
+
+    // sort the map in descending order
+    const orderedList = new Map([...preOrderList].sort((a, b) => b[1] - a[1]));
+
+    console.log("After sort: ");
+    console.log(orderedList);
+
+    return orderedList;
 }
 
 // put the algorithm work in here
@@ -304,6 +389,7 @@ const getMasterGenres = (master_list) => {
     return res;
 }
 
+// returns a list of movie objects that need to be ordered
 const getProonList = async (master_list, num_genres, rating) => {
     //here we need to select movies that
     //1. does the genre match with moviemaster,
@@ -314,9 +400,9 @@ const getProonList = async (master_list, num_genres, rating) => {
     console.log("buffer: [%o, %o]", lower, upper);
 
     const movies_matching_rating = await getFirstProonCall(lower, upper, num_genres);
-    
+
     const master_genres = getMasterGenres(master_list);
-    
+
     const firstProonList = await proonByGenre(master_genres, num_genres, movies_matching_rating);
     console.log("first proon: ", firstProonList);
     return firstProonList;
@@ -324,12 +410,12 @@ const getProonList = async (master_list, num_genres, rating) => {
 
 }
 
-export const selectMovie = async (l, r, g, ry, group_list, master_list) => {
-    console.log("length:" + l);
-    console.log("rating:" + r);
-    console.log("genre: " + g);
-    console.log("year:" + ry);
-    console.log("actors: " + a);
+export const selectMovie = async (l, r, g, ry, a, group_list, master_list) => {
+    // console.log("length:" + l);
+    // console.log("rating:" + r);
+    // console.log("genre: " + g);
+    // console.log("year:" + ry);
+    // console.log("actors: " + a);
 
     // need to enumerate values from the group preferences
     console.log("attempting to get group pref");
@@ -359,17 +445,25 @@ export const selectMovie = async (l, r, g, ry, group_list, master_list) => {
     const upper_range = res[1];
 
     // print the resulting values
-    console.log("ranges: " + lower_range + " to " + upper_range);
-    console.log("rating: " + rating_val + " length: " + length_val + " genre: " + num_genres);
+    // console.log("ranges: " + lower_range + " to " + upper_range);
+    // console.log("rating: " + rating_val + " length: " + length_val + " genre: " + num_genres);
 
     //lets proon the list. we'll first target movies that are within the rating buffer, then run it through genre filtering using master_list.
-    const prooned_list = getProonList(master_list, num_genres, rating_val);
+    const prooned_list = await getProonList(master_list, num_genres, rating_val);
 
 
     // 4) Actors servers as the “order by” once the “prooned” list is computed, 
     // 100% actors in movie from pref = at the top, 0 = at the bottom of the list → alters the score
-    actorPref(a);
+    const actorMaps = actorPref(a);
+    const groupMap = actorMaps[0];
+    const masterMap = actorMaps[1];
 
+    const orderedProon = await orderProon(length_val, lower_range, upper_range, groupMap, masterMap, prooned_list);
+
+    // print the prooned list by title (if need image do key.image)
+    orderedProon.forEach(function(value, key) {
+        console.log(key.title + " = " + value);
+    })
 
 }
 

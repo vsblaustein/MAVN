@@ -152,6 +152,22 @@ app.post('/getGenresOfMovie', async (req, res) => {
   }
 });
 
+
+// GET: cast members for a given movie
+app.get('/getCastMembers', async (req, res) => {
+  const movie_title = req.query.title;
+  const yr = req.query.year;
+  try {
+    const result = await db.query(
+      "SELECT DISTINCT actor FROM cast_members WHERE title = ? \
+      and year = ?",
+      [movie_title, yr]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 // GET: user information
 app.get('/getProfile', async (req, res) => {
   const name = req.body.name;
