@@ -18,11 +18,17 @@ const flexContainer = {
   padding: 0,
 };
 
+var roomMaster = "";
+var rCode = "";
+
 
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
   // determines if either state has been seen
   state = {
+    pqSeen: false,
+    gpSeen: false,
+    showMasterButtons: false,
     msSeen: false,
     membersSeen: false,
     pSeen: false,
@@ -42,6 +48,7 @@ export default class MovieRoom extends React.Component {
   async componentDidMount() {
     const code = this.state.roomCode;
     console.log(code);
+    // get movie master
     Axios.get('http://localhost:3001/getMovieMaster', {
       params: { c: code }
     }
@@ -65,6 +72,19 @@ export default class MovieRoom extends React.Component {
     this.setState({
       members: group_members,
     });
+  
+   //check if a new selection has been inserted in database
+    Axios.get('http://localhost:3001/getSelection', {
+            params: {code: code}
+        }).then((response) => {
+          if (response.data.length > 0){
+            movieImgPath = response.data[0].image_path;
+            this.togglePQ();
+          }
+            console.log(response);
+        }).catch(err => {
+            console.log(err);
+        });
 
   }
 
@@ -165,7 +185,6 @@ export default class MovieRoom extends React.Component {
 
     this.toggleMS(movie);
 
-
   }
 
   // methods to toggle pop ups
@@ -175,7 +194,30 @@ export default class MovieRoom extends React.Component {
       msSeen: !this.state.msSeen,
       chart: this.state.msSeen
     });
+  };
 
+  onClick = () => {
+    //this.togglePQ();
+    this.setSelection();
+  };
+
+  // may not need this - double check
+  setSelection = () => {
+    //insert selection into database 
+    const c = this.state.roomCode;
+    const t = "The Avengers";
+    const y = 2012;
+    const img = "https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg";
+    console.log("params: " + c + " " + t + " " + y);
+    Axios.post('http://localhost:3001/movieSelection', {
+            code: c, title: t, year: y, imagePath: img
+        }).then((response) => {
+            movieImgPath = img;
+            this.togglePQ();
+            console.log(response);
+        }).catch(err => {
+            console.log(err);
+        });
   };
 
   toggleMembers = () => {
@@ -237,6 +279,8 @@ export default class MovieRoom extends React.Component {
 
 
   render() {
+    var currentMaster = this.state.movieMaster;
+    var show = this.state.showMasterButtons;
     return (
       <>
         <ResponsiveAppBar />
@@ -244,6 +288,22 @@ export default class MovieRoom extends React.Component {
         <Box position="static">
           
           {/* generate selection button */}
+          {show && <Button
+            onClick={this.onClick}
+            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+          >
+            Generate Movie Selection
+          </Button>}
+          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
+          
+
+          {show && <Button
+            onClick={this.toggleGP}
+            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+          >
+            Edit Group Preferences
+          </Button>}
+          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
           <Button
             onClick={this.generateSelection}
             sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
@@ -283,7 +343,9 @@ export default class MovieRoom extends React.Component {
             component="div"
             sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
           >
+
             Room {this.state.roomCode} Movie Master: {this.state.movieMaster}
+
           </Typography>
 
           {/* group member icons section */}
@@ -319,3 +381,6 @@ export default class MovieRoom extends React.Component {
     );
   }
 }
+export {movieImgPath};
+export {roomMaster};
+export {rCode};

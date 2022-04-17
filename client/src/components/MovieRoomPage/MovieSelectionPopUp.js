@@ -3,6 +3,8 @@ import './GroupPrefPopUp.css';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { roomMaster, rCode} from '.';
+import Axios from 'axios';
 import { TextField } from '@mui/material';
 
 
@@ -15,6 +17,8 @@ export default class MovieSelectionPopUp extends React.Component {
             movies: props.selectList,
             movieImages: [],
             currentTitle: "",
+            showMasterButtons: false,
+            groupVotes: 0,
         };
 
     }
@@ -35,6 +39,11 @@ export default class MovieSelectionPopUp extends React.Component {
         })
 
         console.log("movie images:" + this.state.movieImages);
+      
+      const currUser = JSON.parse(localStorage.getItem('user'));
+        if (currUser == roomMaster){
+            this.setState({showMasterButtons: true})
+        }
 
     }
 
@@ -42,12 +51,36 @@ export default class MovieSelectionPopUp extends React.Component {
         this.props.toggle();
     };
 
-    handleSelect = () => {
-        // write to the database?
-        this.handleExit();
-    }
+
+    voteAgainstSelection = () => {
+        let i = this.state.groupVotes;
+        i +=1;
+        console.log("gorup votes: " + i)
+        this.setState({groupVotes: i})
+        //get members of group
+        const c = rCode;
+        console.log(rCode);
+        Axios.get('http://localhost:3001/getMembersList', {
+            params: { room_code: c}
+        }).then((response) => {
+          const numMembers = response.data.length;
+          //if more than half of members vote, remove selection
+          if (i > (numMembers/2)){
+              this.newSelection();
+          }
+            console.log(response);
+        }).catch(err => {
+            console.log(err);
+        });
+    };
 
     vetoSelection = () => {
+        //if master doesn't like movie, remove selection
+        this.newSelection();
+    }
+
+     // goes to next best movie in list
+     newSelection = () => {
         let i = this.state.index;
         console.log("index: " + i)
         i = i + 1;
@@ -60,10 +93,12 @@ export default class MovieSelectionPopUp extends React.Component {
         // set the title and index
         var key = Array.from(this.state.movies.keys())[this.state.index + 1];
         this.setState({ index: i, currentTitle: key.title });
-    };
+    }
 
     // add a "are you sure you want to leave?"
     render() {
+        var show = this.state.showMasterButtons;
+
         var currentSelectionImage = this.state.movieImages[this.state.index];
         return (
             <>
@@ -78,7 +113,7 @@ export default class MovieSelectionPopUp extends React.Component {
                             >
                                 Movie Selection
                             </Typography>
-                            <span className="close" onClick={this.handleSelect}>
+                            <span className="close" onClick={this.handleExit}>
                                 <Button>
                                     Select Movie
                                 </Button>
@@ -101,7 +136,10 @@ export default class MovieSelectionPopUp extends React.Component {
                                 src={currentSelectionImage}
                             />
 
-                            <Button onClick={this.vetoSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Generate New Selection</Button>
+
+                            {!show && <Button onClick={this.voteAgainstSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Vote against Selection</Button>}
+                            {show && <Button onClick={this.vetoSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Veto Selection</Button>}
+
 
                         </Box>
                     </Box>
