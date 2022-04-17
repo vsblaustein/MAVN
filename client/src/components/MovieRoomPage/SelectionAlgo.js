@@ -69,8 +69,8 @@ const lengthAverage = (l) => {
     group_avg *= (1 - l);
     master_avg *= l;
 
-    console.log("group avg: " + group_avg);
-    console.log("master avg: " + master_avg);
+    console.log("length group avg: " + group_avg);
+    console.log("length master avg: " + master_avg);
     // the sum of the averages should be returned
     return Math.round(master_avg + group_avg);
 
@@ -395,8 +395,8 @@ const getProonList = async (master_list, num_genres, rating) => {
     //1. does the genre match with moviemaster,
     //2. also meets rating criteria within a buffer of 2.
     const buffer = 2;
-    const lower = Math.max(0, rating - buffer);
-    const upper = Math.min(10, rating + buffer);
+    const lower = Math.max(0, Math.floor(rating - buffer));
+    const upper = Math.min(10, Math.ceil(rating + buffer));
     console.log("buffer: [%o, %o]", lower, upper);
 
     const movies_matching_rating = await getFirstProonCall(lower, upper, num_genres);
@@ -411,6 +411,7 @@ const getProonList = async (master_list, num_genres, rating) => {
 }
 
 export const selectMovie = async (l, r, g, ry, a, group_list, master_list) => {
+
     // console.log("length:" + l);
     // console.log("rating:" + r);
     // console.log("genre: " + g);
