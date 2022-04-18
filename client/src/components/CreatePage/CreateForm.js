@@ -8,12 +8,8 @@ import './CreateForm.css';
 
 //ADD DATABASE CHECK    
 function roomIdCreator() {
-
-  //do {} while(code is in database)
-
+  //add check to see if in db
   return Math.floor(100000 + Math.random() * 900000);
-
-
 }
 
 function CreateForm() {
@@ -62,7 +58,6 @@ function CreateForm() {
 
       //add check to make sure it doesnt currently exist in the database
 
-
       alert('A Movie Room was created with the name "' + name + '" and the 6 digit Code is ' + newRoomId);
       var currentdate = new Date();
       var datetime =
@@ -105,9 +100,8 @@ function CreateForm() {
       });
     });
 
-      navigate("/movie%20room");
+      navigate(`/movie%20room/${newRoomId}`);
     }
-
   }
 
   return (

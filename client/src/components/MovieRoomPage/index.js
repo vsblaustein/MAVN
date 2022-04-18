@@ -11,7 +11,8 @@ import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
 import { selectMovie } from "./SelectionAlgo.js";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
+import ReturnButton from './ReturnButton';
 
 
 // styling for horizontal list
@@ -21,11 +22,8 @@ const flexContainer = {
   padding: 0,
 };
 
-
-
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
-
   // determines if either state has been seen
   state = {
     msSeen: false,
@@ -37,32 +35,15 @@ export default class MovieRoom extends React.Component {
     // state variables for the selection algo, 50% defaut
     l_pref: 50,
     r_pref: 50,
-    g_pref:50, 
+    g_pref: 50,
     ry_pref: 50,
+    url_check: true,
   };
 
 
   componentDidMount() { //ONLOAD
+    this.CheckCode();
     let code = window.location.href.substring(35);
-    console.log("code is " + code);
-    //Check if url code exists in db
-   Axios.get('http://localhost:3001/checkMovieRoomCode', {
-    params: { c: code }
-  }
-    ).then((response) => {
-      console.log("movie room exists -> code is " + response.data[0].code);
-
-    }).catch(err => {
-      console.log("movie room doesnt exist");
-      //load alert saying you dont have access to this room
-      
-      //navigate home
-      let navigate = useNavigate()
-      navigate("/home");
-    });
-    
-
-
     Axios.get('http://localhost:3001/getMovieMaster', {
       params: { c: code }
     }
@@ -74,13 +55,27 @@ export default class MovieRoom extends React.Component {
     }).catch(err => {
       console.log(err);
     });
+    this.render();
+  }
 
-    //update users and images
+  CheckCode = () => {
+    let code = window.location.href.substring(35);
+    console.log("code is " + code);
+    //Check if url code exists in db
+    Axios.get('http://localhost:3001/checkMovieRoomCode', {
+      params: { c: code }
+    }
+    ).then((response) => {
+      console.log("movie room exists -> code is " + response.data[0].code);
 
-    //movie room code we have 
-      //check if current user is in this room
-        //if not load alert and redirect to home
-
+    }).catch(err => {
+      console.log("movie room doesnt exist");
+      //load alert saying you dont have access to this room
+      //MyFunction();
+      this.state.url_check = false;
+      console.log("url check after CheckCode catch: ", this.state.url_check);
+      this.forceUpdate();
+    });
   }
 
 
@@ -126,111 +121,113 @@ export default class MovieRoom extends React.Component {
   }
 
   // changes value in edit preference pop up
-  setValues = (name, val) =>{
-    if(name === 'l_pref'){
+  setValues = (name, val) => {
+    if (name === 'l_pref') {
       this.setState({
         l_pref: val,
       });
     }
-    else if(name === 'r_pref'){
+    else if (name === 'r_pref') {
       this.setState({
         r_pref: val,
       });
     }
-    else if(name === 'g_pref'){
+    else if (name === 'g_pref') {
       this.setState({
         g_pref: val,
       });
     }
-    else if(name === 'ry_pref'){
+    else if (name === 'ry_pref') {
       this.setState({
         ry_pref: val,
       });
     }
-    else{
+    else {
       console.log("Cannot find preference rating trying to update");
     }
     console.log("set " + name + " to: " + val);
   }
 
-  
-
   render() {
+
+    const check = this.state.url_check;
+    console.log("url check in render: ", check);
     return (
       <>
-    
         <ResponsiveAppBar />
+        {check
+          ? <Box position="static">
+            {/* generate copy link button */}
+            <Button
+              onClick={this.copyToClipboard}
+              sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+            >
+              Copy Room Link
+            </Button>
+            {/* generate selection button */}
+            <Button
+              onClick={this.generateSelection}
+              sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+            >
+              Generate Selection
+            </Button>
+            {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
 
-        <Box position="static">
-          {/* generate copy link button */}
-          <Button
-            onClick={this.copyToClipboard}
-            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
-          >
-            Copy Room Link
-          </Button>
-          {/* generate selection button */}
-          <Button
-            onClick={this.generateSelection}
-            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
-          >
-            Generate Selection
-          </Button>
-          {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
+            <Button
+              onClick={this.toggleGP}
+              sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+            >
+              Edit Group Preferences
+            </Button>
+            <Button
+              onClick={this.toggleP}
+              sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
+            >
+              Edit Preferences
+            </Button>
+            {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
+            {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
+            {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
 
-          <Button
-            onClick={this.toggleGP}
-            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
-          >
-            Edit Group Preferences
-          </Button>
-          <Button
-            onClick={this.toggleP}
-            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
-          >
-            Edit Preferences
-          </Button>
-          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
-          {this.state.msSeen ? <MSPopUp toggle={this.toggleMS} /> : null}
-          {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
+            <Typography
 
-          <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+            >
+              Movie Master: {this.state.movieMaster}
+            </Typography>
 
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Movie Master: {this.state.movieMaster}
-          </Typography>
+            {/* group member icons section */}
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+            >
+              Group Members
+            </Typography>
 
-          {/* group member icons section */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Group Members
-          </Typography>
+            <GroupMembers style={flexContainer} class='center-screen' />
 
-          <GroupMembers style={flexContainer} class='center-screen' />
+            {/* saved preferences section */}
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+            >
+              Group Preferences
+            </Typography>
 
-          {/* saved preferences section */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Group Preferences
-          </Typography>
+            {this.state.chart ? <PreferencesStats
+              code={this.state.roomCode} style={flexContainer}
+              class='center-screen' /> : null}
 
-          {this.state.chart ? <PreferencesStats 
-          code={this.state.roomCode} style={flexContainer} 
-          class='center-screen' /> : null}
-
-        </Box>
+          </Box>
+          : <ReturnButton />
+        }
 
       </>
     );
