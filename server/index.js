@@ -539,7 +539,7 @@ app.post('/addPartOf', async (req, res) => {
   const master = req.body.master;
   try {
     const result = await db.query(
-      "INSERT INTO part_of(username,code,is_master) VALUES(?,?,?)",
+      "INSERT ignore INTO part_of(username,code,is_master) VALUES(?,?,?)",
       [user, room_code, master]);
     res.send(req.body);
   } catch (err) {

@@ -25,6 +25,7 @@ function JoinForm() {
 
     console.log("code: " + room_code + " pass: " + pass);
 
+  
     // check password
     Axios.get('http://localhost:3001/getPassword', {
       params: { roomCode: room_code }
@@ -32,9 +33,11 @@ function JoinForm() {
     ).then((response) => {
       console.log("password for " + room_code + " is: " + response.data[0].password);
       setDBPass(response.data[0].password);
+      var passwordTemp = response.data[0].password;
 
-      // check that the passwords match
-      if (dbPass !== pass) {
+      console.log("passtemp = " + passwordTemp);
+      console.log(pass);
+      if (passwordTemp !== pass) {
         alert("Incorrect pass word for " + room_code);
       }
       else {
@@ -44,11 +47,10 @@ function JoinForm() {
           user: currentUser,
           room_code: room_code,
           master: 0,
-
         }).then((response) => {
           // gives a list of json objects
-          console.log(response);
-          //navigate("/movie%20room"); + 6 digit code
+          console.log("should work");
+          navigate(`/movie%20room/${room_code}`);
           // NEED TO CATCH THIS ERROR
         }).catch(err => {
           if (err.code === 'ER_DUP_ENTRY'){
@@ -58,6 +60,7 @@ function JoinForm() {
         });
 
       }
+      setDBPass(passwordTemp);
     // alert user of incorrect room
     }).catch(err => {
       alert("No room with code " + room_code + " exists.");
