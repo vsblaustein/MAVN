@@ -59,7 +59,6 @@ app.post('/login', async (req, res) => {
 });
 
 // QUERIES TO LOAD INFO FROM DATABASE
-
 // GET: Get actors from DB
 app.get('/getActors', async (req, res) => {
   try {
@@ -175,6 +174,32 @@ app.get('/getProfile', async (req, res) => {
     const result = await db.query(
       "SELECT * FROM users WHERE username = ?",
       [name]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: user's movie rooms
+app.get('/getMovieRooms', async (req, res) => {
+  const name = req.query.name;
+  try {
+    const result = await db.query(
+      "SELECT * FROM part_of WHERE username = ?",
+      [name]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: check if movie room exists
+app.get('/checkMovieRoomCode', async (req, res) => {
+  const c = req.query.c;
+  try {
+    const result = await db.query(
+      "SELECT * FROM movie_room WHERE code = ?",
+      [c]);
     res.send(result);
   } catch (err) {
     throw err;
@@ -379,12 +404,14 @@ app.get('/getMovieMetaData', async (req, res) => {
 
   try {
     const result = await db.query(
-      "SELECT title, year, length, rating FROM movies WHERE title = ?", [movie_title]);
+      "SELECT * FROM movies WHERE title = ?", [movie_title]);
     res.send(result);
   } catch (err) {
     throw err;
   }
 });
+
+
 // **** END PREFERENCES ****
 
 // **** INSERT INTO TABLES ****
@@ -591,7 +618,7 @@ app.post('/addPartOf', async (req, res) => {
   const master = req.body.master;
   try {
     const result = await db.query(
-      "INSERT INTO part_of(username,code,is_master) VALUES(?,?,?)",
+      "INSERT ignore INTO part_of(username,code,is_master) VALUES(?,?,?)",
       [user, room_code, master]);
     res.send(req.body);
   } catch (err) {

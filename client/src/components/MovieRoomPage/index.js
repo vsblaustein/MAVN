@@ -10,6 +10,9 @@ import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
 import { selectMovie } from "./SelectionAlgo.js";
+import { useNavigate } from 'react-router';
+import ReturnButton from './ReturnButton';
+
 
 // styling for horizontal list
 const flexContainer = {
@@ -18,10 +21,10 @@ const flexContainer = {
   padding: 0,
 };
 
+
 var roomMaster = "";
 var rCode = "";
 var movieImgPath = "";
-
 
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
@@ -38,18 +41,22 @@ export default class MovieRoom extends React.Component {
     chart: true,
     members: [],
     // state variables for the selection algo, 50% defaut
+
     l_pref: 0.5,
     r_pref: 0.5,
     g_pref: 0.5,
     ry_pref: 0.5,
     a_pref: 0.5,
     movie_list: [],
+    url_check: true
   };
 
-  async componentDidMount() {
+
+  componentDidMount() { //ONLOAD
     const code = this.state.roomCode;
     console.log(code);
     // get movie master
+    this.CheckCode();
     Axios.get('http://localhost:3001/getMovieMaster', {
       params: { c: code }
     }
@@ -93,7 +100,27 @@ export default class MovieRoom extends React.Component {
     }).catch(err => {
       console.log(err);
     });
+    this.render();
+  }
 
+  CheckCode = () => {
+    let code = window.location.href.substring(35);
+    console.log("code is " + code);
+    //Check if url code exists in db
+    Axios.get('http://localhost:3001/checkMovieRoomCode', {
+      params: { c: code }
+    }
+    ).then((response) => {
+      console.log("movie room exists -> code is " + response.data[0].code);
+
+    }).catch(err => {
+      console.log("movie room doesnt exist");
+      //load alert saying you dont have access to this room
+      //MyFunction();
+      this.state.url_check = false;
+      console.log("url check after CheckCode catch: ", this.state.url_check);
+      this.forceUpdate();
+    });
   }
 
   //get all members in room
@@ -285,15 +312,16 @@ export default class MovieRoom extends React.Component {
     console.log("set " + name + " to: " + val / 100);
   }
 
-
   render() {
     var currentMaster = this.state.movieMaster;
     var show = this.state.showMasterButtons;
+    const check = this.state.url_check;
+    console.log("url check in render: ", check);
     return (
       <>
         <ResponsiveAppBar />
-
-        <Box position="static">
+          {check
+            ? <Box position="static">
 
           {/* generate selection button */}
           {show && <Button
@@ -410,12 +438,14 @@ export default class MovieRoom extends React.Component {
             code={this.state.roomCode} style={flexContainer}
             class='center-screen' /> : null}
 
-        </Box>
-
+        </Box> 
+        : <ReturnButton />
+        }
       </>
     );
   }
 }
+
 export { movieImgPath };
 export { roomMaster };
 export { rCode };

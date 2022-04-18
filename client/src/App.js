@@ -28,6 +28,7 @@ function App() {
         <Route path="/create" element={<CreatePage/>}/>
         <Route path="/join" element={<JoinPage/>}/>
         <Route path="/search%20movies" element ={<SearchMoviesPage/>}/>
+        <Route path="/movie%20room/:code" element={<MovieRoomPage/>}/> 
       </Routes>
     </Router>
     
