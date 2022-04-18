@@ -50,6 +50,19 @@ html {
   overflow-y:auto;
 }
 
+.mini_pref_modal {
+  background-color: white;
+  position: absolute;
+  top: 10vh;
+  left: 25vw;
+  width: 50vw;
+  height: 40vh;
+  padding: 20px;
+  border-radius: 5px;
+  border: 2px solid black;
+  overflow-y:auto;
+}
+
 .photo{
   max-width: 30vw;
   max-height:35vh;

@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import "./styles.css";
 import "react-slideshow-image/dist/styles.css";
@@ -176,7 +174,7 @@ export default class slides extends React.Component {
                     variant='standard' value={currentTitle} /> <br /> <br />
 
                     <Box >
-                        <img className="photo" src={currentImage} alt="sample" />
+                        <img className="photo" src={currentImage} alt="No movie poster available" />
                     </Box>
 
                 {/* change button watch adds to db, skip does nothing, both advance forward */}

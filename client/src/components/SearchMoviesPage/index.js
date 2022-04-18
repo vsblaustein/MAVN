@@ -151,7 +151,7 @@ export default function SearchMoviesPage() {
 
         //call axios api to get a json
         var res_json = await axiosCall(JSON_URL);
-        //console.log("movie_query_result: ", res_json);
+        // console.log("movie_query_result: ", res_json);
 
         //set movie_data to whatever we can off of this singular query.
         const data = Object.create(movie_data);
@@ -174,7 +174,7 @@ export default function SearchMoviesPage() {
                     }
                 )
             );
-            //console.log(result_json);
+            // console.log(result_json);
             return result_json;
         }
         //console.log("retrieving movie data ");
@@ -383,7 +383,7 @@ export default function SearchMoviesPage() {
                 results.push(res);
             }
         }
-        //console.log("final movie title/year results: ", results);
+        // console.log("final movie title/year results: ", results);
 
         //after everything, set searchResults to results.
         setSearchResults(results);

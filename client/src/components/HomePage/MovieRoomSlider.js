@@ -34,9 +34,7 @@ export default class MovieRoomSlider extends React.Component {
     }).catch(err => {
       console.log(err);
     });
-
   }
-
 
   render() {
     const { navigation } = this.props;

@@ -31,12 +31,8 @@ function JoinForm() {
       params: { roomCode: room_code }
     }
     ).then((response) => {
-      console.log("password for " + room_code + " is: " + response.data[0].password);
       setDBPass(response.data[0].password);
       var passwordTemp = response.data[0].password;
-
-      console.log("passtemp = " + passwordTemp);
-      console.log(pass);
       if (passwordTemp !== pass) {
         alert("Incorrect pass word for " + room_code);
       }
@@ -49,13 +45,12 @@ function JoinForm() {
           master: 0,
         }).then((response) => {
           // gives a list of json objects
-          console.log("should work");
           navigate(`/movie%20room/${room_code}`);
           // NEED TO CATCH THIS ERROR
-        }).catch(err => {
-          if (err.code === 'ER_DUP_ENTRY'){
+          if(response.data === 'duplicate'){
             alert("Already joined room.");
           }
+        }).catch(err => {
           console.log(err);
         });
 
