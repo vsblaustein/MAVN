@@ -29,6 +29,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import './SearchMoviesPage.css';
 import GenreDropdown from './GenreDropdown';
 import { genres } from './GenreDropdown';
+import IconPopUp from './IconPopUp';
 
 const api_key = "76e275f04f332f92388a49a0a1ad92ee";
 const base_image_url = "https://image.tmdb.org/t/p/w500";
@@ -38,13 +39,25 @@ const theme = createTheme();
 
 
 export default function SearchMoviesPage() {
+    //iconpopup
+    const [isOpen, setIsOpen] = React.useState(false);
 
     const [searchResults, setSearchResults] = React.useState([]);
     const [filteredResults, setFilteredResults] = React.useState([]);
     const [genres, setGenres] = React.useState([]);
 
+    const [title, setTitle] = React.useState('')
+
+
     const setValue = (g) => {
         setGenres(g);
+    }
+
+    //icon popup
+    const togglePopup = (item) => {
+        console.log('press')
+        setIsOpen(!isOpen);
+        title == '' ? setTitle(item.title) : setTitle('')
     }
 
     function filterMovies() {
@@ -138,7 +151,7 @@ export default function SearchMoviesPage() {
 
         //call axios api to get a json
         var res_json = await axiosCall(JSON_URL);
-        //console.log("movie_query_result: ", res_json);
+        // console.log("movie_query_result: ", res_json);
 
         //set movie_data to whatever we can off of this singular query.
         const data = Object.create(movie_data);
@@ -161,7 +174,7 @@ export default function SearchMoviesPage() {
                     }
                 )
             );
-            //console.log(result_json);
+            // console.log(result_json);
             return result_json;
         }
         //console.log("retrieving movie data ");
@@ -370,7 +383,7 @@ export default function SearchMoviesPage() {
                 results.push(res);
             }
         }
-        //console.log("final movie title/year results: ", results);
+        // console.log("final movie title/year results: ", results);
 
         //after everything, set searchResults to results.
         setSearchResults(results);
@@ -535,18 +548,26 @@ export default function SearchMoviesPage() {
                                         subtitle={item.year}
                                         actionIcon={
                                             <IconButton
+                                                onClick={()=>togglePopup(item)}
                                                 sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
                                                 aria-label={`info about ${item.title}`}
                                             >
                                                 <InfoIcon />
+                                                
+
                                             </IconButton>
+                                            
+
                                         }
                                     />
+                                
                                 </ImageListItem>
                             ))}
 
                         </ImageList>
+                        
                     }
+                    {isOpen && <IconPopUp title={title} toggle={()=> togglePopup()}/>}
                     {genres.length > 0 &&
                         <ImageList sx={{ width: 1135, height: 450 }} cols={5} rowHeight={'auto'} gap={8}>
                             {filteredResults.map((item, idx) => (

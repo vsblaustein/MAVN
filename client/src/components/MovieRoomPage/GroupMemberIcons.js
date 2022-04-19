@@ -5,19 +5,25 @@ import { ImageListItemBar } from '@mui/material';
 
 // this document will generate the charts from the db and display them
 
-export default function GroupMemberIcons() {
+
+export default function GroupMemberIcons(props) {
+
+
   return (
-    <ImageList sx={{ width: '100%', height:'100%', padding:0}} cols={5} rowHeight={270}>
-      {itemData.map((item) => (
-        <ImageListItem key={item.img} sx={{width:'250px', height:'100%', left:40, m:'10px',objectFit:'cover'}}>
+    <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={5} >
+      {props.mem.map((item, idx) => (
+        <ImageListItem key={idx} 
+        sx={{ width: '100%', height: '100%', left:'5%', m: '10px', objectFit:'contain' }}>
           <img
-            src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-            srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-            alt={item.title}
+            src={`${itemData[idx].img}?w=164&h=164&fit=crop&auto=format`}
+            srcSet={`${itemData[idx].img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+            alt={props.mem[idx]}
             loading="lazy"
+            style={{width:'100%'}}            
           />
+
           <ImageListItemBar
-            title={item.title}
+            title={props.mem[idx]}
             align='center'
             position="below"
             fontWeight='bold'
@@ -27,6 +33,8 @@ export default function GroupMemberIcons() {
     </ImageList>
   );
 }
+
+
 
 const itemData = [
   {

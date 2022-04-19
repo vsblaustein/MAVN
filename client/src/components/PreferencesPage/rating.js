@@ -47,8 +47,8 @@ export default function Rating(props) {
 
   return (
     <>
-      <Box className="modal" >
-        <Box className="mini_slide_pref_modal">
+      <Box className="modal">
+        <Box className="mini_pref_modal">
           <span className="close" onClick={handleExit}>
             <Button>
               Exit
@@ -80,10 +80,10 @@ export default function Rating(props) {
               </Box>
             </Box>
 
-            <Button type="submit">
+            <Button type="submit" sx={{ mt: '10px' }}>
               Submit
             </Button>
-          </Box >
+          </Box>
         </Box>
       </Box>
     </>

@@ -59,16 +59,15 @@ export default function Genre(props) {
               variant="h6"
               noWrap
               component="div"
-              sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
-            >
+              sx={{ m: "3px", display: { xs: 'none', md: 'flex' } }}>
               Add Genre Preferences
             </Typography>
-            <label> What genres are you feeling? </label><br />
+            <label > What genres are you feeling? </label><br />
             <MultipleGenreSelect action={setValue} toggle={handleExit} />
-            <Button type="submit">
+            <Button type="submit" sx={{ mt: '10px' }}>
               Submit
             </Button>
-          </Box >
+          </Box>
         </Box>
       </Box>
     </>

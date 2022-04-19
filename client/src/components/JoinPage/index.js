@@ -47,12 +47,7 @@ export default class joinPopUp extends React.Component {
                   <Button  id= "big-btn">Join New Room</Button >
               </div>
             {this.state.seen ? <JoinPopUp toggle={this.togglePop} position="right center"/> : null }
-
-
         </div>
-
-
-       
      </div>
      
     );
