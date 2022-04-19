@@ -66,7 +66,9 @@ export default function Actors(props) {
             </Typography>
             <label> Who should you see on the big screen? </label><br />
             <MultipleActorSelect action={setValues} toggle={handleExit} />
-            <Button type="submit"> Submit </Button>
+            <Button type="submit" sx={{ mt: '10px' }}>
+              Submit
+            </Button>
 
           </Box >
         </Box>

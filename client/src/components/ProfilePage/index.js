@@ -4,14 +4,13 @@ import Typography from '@mui/material/Typography';
 import ProfileIcon from './ProfileIcon';
 import './ProfilePage.css';
 import Axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-
+import Box from '@mui/material/Box';
 import {
   BrowserRouter as Router,
   Routes,
   Route
 } from "react-router-dom";
-  
+
 // styling for horizontal list
 const flexContainer = {
   display: 'flex',
@@ -20,43 +19,46 @@ const flexContainer = {
 };
 
 
-
-  
 export default class profile extends React.Component {
-  state = {
-   seen: false
-   };
-  togglePop = () => {
-   this.setState({
-    seen: !this.state.seen
-   });
+  constructor(){
+    super();
+    this.state = {
+      seen: false,
+      username: "",
+      birthday:"",
+      email:"",
+  
+    };
+  }
+  
+  // load user information
+  componentDidMount() {
+    const currentUser = JSON.parse(localStorage.getItem('user'));
 
-        // store the user in local storage
-        Axios.get('http://localhost:3001/getUser', {
-        }).then((response)=> {
-            // gives a list of json objects
-            const genres = JSON.stringify(response.data);
-            const arr = []
-            // parse the JSON objects
-            for(const c in JSON.parse(genres)){
-              arr.push(JSON.parse(genres)[c].genre);
-            }
-            console.log("list of genre: [" + arr + "]");
-            localStorage.setItem('genres', arr);
+    // store the user in local storage
+    Axios.get('http://localhost:3001/getProfile', {
+      params: { name: currentUser }
+    }).then((response) => {
 
-            
-          
-        }).catch(err => {
-          console.log(err);
-        });
 
-  };
-render() {
-  return (
-   <div>
-       <ResponsiveAppBar />
-       <div class = "content" >
-       <Typography 
+      this.setState({
+        username: response.data[0].username,
+        // make the birthday a prettier thing
+        birthday: response.data[0].dob.substring(0,response.data[0].dob.toString().indexOf("T")),
+        email: response.data[0].email,
+      })
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+
+  render() {
+    return (
+      <Box>
+        <ResponsiveAppBar />
+        <Box class="content" >
+          <Typography
             variant="h2"
             noWrap
             component="div"
@@ -64,26 +66,26 @@ render() {
           >
             <b > Profile Page </b>
           </Typography>
-        <ProfileIcon style={flexContainer} class=''></ProfileIcon>
-        <Typography 
+          <ProfileIcon style={flexContainer} class=''></ProfileIcon>
+          <Typography
             variant="h5"
             noWrap
             component="div"
             sx={{ ml: "10px", mt: "15px", display: { xs: 'none', md: 'flex' } }}
           >
-            Email: 
+            Email: {this.state.email}
           </Typography>
-          <Typography 
+          <Typography
             variant="h5"
             noWrap
             component="div"
             sx={{ ml: "10px", mt: "15px", display: { xs: 'none', md: 'flex' } }}
           >
-            Birthday: 
+            Birthday: {this.state.birthday}
           </Typography>
-        
-          </div>
-   </div>
-  );
- }
+
+        </Box>
+      </Box>
+    );
+  }
 }

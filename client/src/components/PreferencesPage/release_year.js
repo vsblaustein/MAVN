@@ -20,7 +20,7 @@ export default function ReleaseYear(props) {
   const handleExit = () => {
     props.toggle();
   };
-  
+
   // submits query to database with information from form
   const handleSubmit = async (event) => {
     console.log("submit release year pref for " + currentUser);
@@ -49,7 +49,7 @@ export default function ReleaseYear(props) {
   return (
     <>
       <Box className="modal">
-        <Box className="mini_slide_pref_modal">
+        <Box className="mini_pref_modal">
           <span className="close" onClick={handleExit}>
             <Button>
               Exit
@@ -65,13 +65,13 @@ export default function ReleaseYear(props) {
               Add Release Year Preferences
             </Typography>
             <Box mt='10px'>
-              <label> Preferred Movie Release Year </label><br /><br />
+              <label> Preferred Movie Release Year Range</label><br /><br />
               <Box width='80%' ml='30px'>
                 <RangeSlider action={setValues} />
               </Box>
             </Box>
 
-            <Button type="submit">
+            <Button type="submit" sx={{ mt: '10px' }}>
               Submit
             </Button>
           </Box >

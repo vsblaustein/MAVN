@@ -1,36 +1,24 @@
 html {
   height: 100%;
 }
- 
+
 .modal {
-  position: fixed;
+  position: relative;
   z-index: 1;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.25);
 }
 
-.mini_pref_modal {
+.modal-content {
   background-color: white;
-  position: absolute;
-  top: 5%;
-  left: 40%;
-  width: 20%;
-  height: 40%;
-  padding: 20px;
-  border-radius: 5px;
-  border: 2px solid black;
-  overflow-y:auto;
-}
-
-.mini_slide_pref_modal {
-  background-color: white;
-  position: absolute;
-  top: 5%;
-  left: 30%;
-  width: 40%;
-  height: 35%;
-  padding: 20px;
+  position: relative;
+  top: 15vh;
+  left: 25vw;
+  width: 50vw;
+  height: 42vh;
+  padding: 4vh;
+  margin-top: 10vh;
   border-radius: 5px;
   border: 2px solid black;
   overflow-y:auto;
@@ -39,11 +27,11 @@ html {
 .pq-modal_content {
   background-color: white;
   position: absolute;
-  top: 5%;
-  left: 20%;
-  width: 60%;
-  height: 60%;
-  padding: 20px;
+  top: 5vh;
+  left: 20vw;
+  width: 60vw;
+  height: 60vh;
+  padding: 4vh;
   border-radius: 5px;
   border: 2px solid black;
   overflow-y:auto;
@@ -52,16 +40,38 @@ html {
 .mr-modal_content {
   background-color: white;
   position: absolute;
-  top: 2%;
-  left: 30%;
-  width: 40%;
-  height: 65%;
+  top: 2vh;
+  left: 30vw;
+  width: 40vw;
+  height: 50vh;
+  padding: 4vh;
+  border-radius: 5px;
+  border: 2px solid black;
+  overflow-y:auto;
+}
+
+.mini_pref_modal {
+  background-color: white;
+  position: absolute;
+  top: 10vh;
+  left: 25vw;
+  width: 50vw;
+  height: 40vh;
   padding: 20px;
   border-radius: 5px;
   border: 2px solid black;
   overflow-y:auto;
 }
 
+.photo{
+  max-width: 30vw;
+  max-height:35vh;
+}
+
+label{
+  display: block; /* add this */
+  padding-top: 5px;
+}
 .close {
   color: Black;
   float: right;

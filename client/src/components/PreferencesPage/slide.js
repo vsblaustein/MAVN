@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import "./styles.css";
 import "react-slideshow-image/dist/styles.css";
@@ -169,24 +167,22 @@ export default class slides extends React.Component {
     render() {
         return (
             <Box className="App">
-                <br />
                 <TextField id="title"
-                    inputProps={{ style: { textAlign: 'center', fontSize: 25 }, readOnly: true }}
+                    inputProps={{ style: { textAlign: 'center', fontSize: 20 }, readOnly: true }}
                     InputProps={{ disableUnderline: true }}
-                    sx={{ width: '100%' }}
+                    sx={{ width: '100%', mt:'5px'}}
                     variant='standard' value={currentTitle} /> <br /> <br />
 
-                <Box >
                     <Box >
-                        <img className="lazy" src={currentImage} alt="sample" />
+                        <img className="photo" src={currentImage} alt="No movie poster available" />
                     </Box>
-                </Box>
 
                 {/* change button watch adds to db, skip does nothing, both advance forward */}
                 <Box className="slide-container buttons">
                     <Button onClick={this.nextImage} sx={{ position: 'absolute', bottom: '5%', left: '13%' }}>
                         Would Skip
                     </Button>
+                                
                     <Button onClick={this.swipeRight} sx={{ position: 'absolute', bottom: '5%', right: '10%' }}>
                         Would Watch
                     </Button>

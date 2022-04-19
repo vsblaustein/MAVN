@@ -59,12 +59,24 @@ app.post('/login', async (req, res) => {
 });
 
 // QUERIES TO LOAD INFO FROM DATABASE
-
 // GET: Get actors from DB
 app.get('/getActors', async (req, res) => {
   try {
     const result = await db.query(
       "SELECT DISTINCT full_name FROM actors");
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: Get actors from DB
+app.get('/getMovieMaster', async (req, res) => {
+  const c = req.query.c;
+  try {
+    const result = await db.query(
+      "SELECT username FROM part_of WHERE code = ? AND is_master = 1;"
+      , [c]);
     res.send(result);
   } catch (err) {
     throw err;
@@ -139,12 +151,55 @@ app.post('/getGenresOfMovie', async (req, res) => {
   }
 });
 
-// GET: user information
-app.get('/getProfile', async (req, res) => {
-  const name = req.body.name;
+
+// GET: cast members for a given movie
+app.get('/getCastMembers', async (req, res) => {
+  const movie_title = req.query.title;
+  const yr = req.query.year;
   try {
     const result = await db.query(
-      "SELECT * FROM users WHERE name = ?");
+      "SELECT DISTINCT actor FROM cast_members WHERE title = ? \
+      and year = ?",
+      [movie_title, yr]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: user information
+app.get('/getProfile', async (req, res) => {
+  const name = req.query.name;
+  try {
+    const result = await db.query(
+      "SELECT * FROM users WHERE username = ?",
+      [name]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: user's movie rooms
+app.get('/getMovieRooms', async (req, res) => {
+  const name = req.query.name;
+  try {
+    const result = await db.query(
+      "SELECT * FROM part_of WHERE username = ?",
+      [name]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// GET: check if movie room exists
+app.get('/checkMovieRoomCode', async (req, res) => {
+  const c = req.query.c;
+  try {
+    const result = await db.query(
+      "SELECT * FROM movie_room WHERE code = ?",
+      [c]);
     res.send(result);
   } catch (err) {
     throw err;
@@ -287,6 +342,26 @@ app.get('/getPrefChart', async (req, res) => {
   }
 });
 
+// do yo thang
+app.get('/getFirstProon', async (req, res) => {
+  console.log("getting first proon");
+  const lower = req.query.lower;
+  const higher = req.query.higher;
+  const num_genres = req.query.num_genres;
+  console.log("buffer: [%o %o]", lower, higher);
+  console.log("num genres: ", num_genres);
+
+  try {
+    const result = await db.query(
+      //need to figure out count genre
+      "SELECT * FROM movies HAVING rating BETWEEN ? AND ?",
+      [lower, higher]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 // GET: group preferences for current user
 app.get('/getGroupPrefChart', async (req, res) => {
   const username = req.query.username;
@@ -295,10 +370,9 @@ app.get('/getGroupPrefChart', async (req, res) => {
   BigInt.prototype.toJSON = function () { return this.toString() }
 
   console.log("fetching " + table + " for " + username);
-
   try {
     const result = await db.query(
-      "SELECT DISTINCT n.value, n.numerator, n.numerator / d.denominator AS ratio \
+      "SELECT DISTINCT n.value, MAX(n.numerator) as numerator, MIN(n.numerator / d.denominator) AS ratio \
         FROM( \
               SELECT p.code, value, COUNT(value) AS numerator  \
               FROM " + table + " AS t \
@@ -312,6 +386,7 @@ app.get('/getGroupPrefChart', async (req, res) => {
               WHERE t.username IN (?) \
               GROUP BY p.code \
           ) d ON d.code = n.code \
+            GROUP BY n.value \
             ORDER BY n.value; ", [username, username]);
     res.send(result);
   } catch (err) {
@@ -329,12 +404,14 @@ app.get('/getMovieMetaData', async (req, res) => {
 
   try {
     const result = await db.query(
-      "SELECT title, year, length, rating FROM movies WHERE title = ?", [movie_title]);
+      "SELECT * FROM movies WHERE title = ?", [movie_title]);
     res.send(result);
   } catch (err) {
     throw err;
   }
 });
+
+
 // **** END PREFERENCES ****
 
 // **** INSERT INTO TABLES ****
@@ -471,6 +548,19 @@ app.get('/getMembersList', async (req, res) => {
   }
 });
 
+// removes a member from a room
+app.post('/removeMembers', async (req, res) => {
+  const users = req.body.users;
+  try {
+    const result = await db.query(
+      "DELETE FROM part_of WHERE username IN (?)",
+      [users]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 //POST: adds to cast_members table
 app.post('/addCastMembers', async (req, res) => {
   const m_title = req.body.m_title;
@@ -496,6 +586,56 @@ app.get('/getMovieGenre', async (req, res) => {
       INNER JOIN movie_genre mg ON mg.title = movies.title \
       WHERE genre = ?",
       [m_genre]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// QUERIES FOR INSERTING INTO ROOMS
+//POST: adds movie room
+app.post('/addMovieRoom', async (req, res) => {
+  const room_code = req.body.room_code;
+  const room_name = req.body.room_name;
+  const created = req.body.created;
+  const pass = req.body.pass;
+  const master = req.body.master;
+  try {
+    console.log("results: " + room_code + " " + room_name + " " + created + " " + pass + " " + master);
+    const result = await db.query(
+      "INSERT INTO movie_room(code, name, date_created, password, movie_master) VALUES(?,?,?,?,?)",
+      [room_code, room_name, created, pass, master]);
+    res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+//POST: add user to part of on first sign in
+app.post('/addPartOf', async (req, res) => {
+  const user = req.body.user;
+  const room_code = req.body.room_code;
+  const master = req.body.master;
+  try {
+    const result = await db.query(
+      "INSERT ignore INTO part_of(username,code,is_master) VALUES(?,?,?)",
+      [user, room_code, master]);
+    res.send(req.body);
+  } catch (err) {
+    if (err.message.toString().includes("no: 1062")) {
+      res.send("duplicate");
+    }
+    else throw err;
+  }
+});
+
+//POST: register request
+app.get('/getPassword', async (req, res) => {
+  const roomCode = req.query.roomCode;
+  try {
+    const result = await db.query(
+      "SELECT password FROM movie_room WHERE code = ?",
+      [roomCode]);
     res.send(result);
   } catch (err) {
     throw err;

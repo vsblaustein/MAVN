@@ -36,6 +36,8 @@ export default function SignIn() {
   const [loginStatus, setLoginStatus] = React.useState("");
   let navigate = useNavigate();
 
+  
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -61,7 +63,6 @@ export default function SignIn() {
       if (response.data.message) {
         //wrong combination- invalid login
         console.log(response.data);
-        console.log("yer");
         setLoginStatus(response.data.message);
       } else {
         //valid login!

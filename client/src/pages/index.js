@@ -2,7 +2,6 @@ import React from 'react';
 import ResponsiveAppBar from '../components/ResponsiveAppBar';
 import JoinPage from '../components/JoinPage';
 import CreatePage from '../components/CreatePage';
-import Movies from '../components/BrowseMoviesPage/Movies';
 import MovieRoomSlider from '../components/HomePage/MovieRoomSlider';
 
 
