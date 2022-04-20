@@ -52,7 +52,7 @@ export default class MovieRoom extends React.Component {
   };
 
 
-  componentDidMount() { //ONLOAD
+  async componentDidMount() { //ONLOAD
     const code = this.state.roomCode;
     console.log(code);
     // get movie master
@@ -124,7 +124,6 @@ export default class MovieRoom extends React.Component {
   }
 
   //get all members in room
-
   fetchMembers = async () => {
     //console.log("fetching members of group");
     try {
