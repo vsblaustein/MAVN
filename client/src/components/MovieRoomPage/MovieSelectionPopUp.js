@@ -41,7 +41,7 @@ export default class MovieSelectionPopUp extends React.Component {
         console.log("movie images:" + this.state.movieImages);
       
       const currUser = JSON.parse(localStorage.getItem('user'));
-        if (currUser == roomMaster){
+        if (currUser === roomMaster){
             this.setState({showMasterButtons: true})
         }
 
@@ -104,7 +104,7 @@ export default class MovieSelectionPopUp extends React.Component {
             <>
                 <form>
                     <Box className="modal">
-                        <Box className="mr-modal_content">
+                        <Box className="selection_content">
                             <Typography
                                 variant="h6"
                                 noWrap
@@ -127,7 +127,7 @@ export default class MovieSelectionPopUp extends React.Component {
 
                             <Box
                                 component="img"
-                                class='center-screen'
+                                className="photo"
                                 sx={{
                                     maxHeight: { xs: 250, md: 167 },
                                     maxWidth: { xs: 350, md: 250 },
@@ -137,8 +137,8 @@ export default class MovieSelectionPopUp extends React.Component {
                             />
 
 
-                            {!show && <Button onClick={this.voteAgainstSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Vote against Selection</Button>}
-                            {show && <Button onClick={this.vetoSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Veto Selection</Button>}
+                            {!show && <Button onClick={this.voteAgainstSelection} sx={{ position: 'relative', bottom: '10%', left: '30%' }}>Vote against Selection</Button>}
+                            {show && <Button onClick={this.vetoSelection} sx={{ position: 'absolute', bottom: '10%', left: '39%' }}>Veto Selection</Button>}
 
 
                         </Box>
