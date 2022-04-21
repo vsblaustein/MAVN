@@ -37,7 +37,7 @@ export default class MovieRoom extends React.Component {
     membersSeen: false,
     pSeen: false,
     movieMaster: "",
-    roomCode: "123456", // get this from wherever needed
+    roomCode: window.location.href.split('/')[4], // get the movie room from url
     chart: true,
     members: [],
     // state variables for the selection algo, 50% defaut
@@ -52,7 +52,8 @@ export default class MovieRoom extends React.Component {
   };
 
 
-  componentDidMount() { //ONLOAD
+  async componentDidMount() { //ONLOAD
+
     const code = this.state.roomCode;
     console.log(code);
     // get movie master
