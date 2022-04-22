@@ -23,7 +23,7 @@ const ResponsiveAppBar = (currentUser) => {
   //console.log("current user: ", currentUser);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  console.log("current user: %o", currentUser.currentUser);
+  //console.log("current user: %o", currentUser.currentUser);
   const letter = currentUser.currentUser.charAt(0);
 
   const handleOpenNavMenu = (event) => {

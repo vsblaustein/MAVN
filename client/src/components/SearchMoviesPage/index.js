@@ -387,10 +387,8 @@ export default function SearchMoviesPage() {
             //iterate over movie ids. for each movie id, we need to query and receive:
             //title, year, length, image, rating, plot, genre(s), all actors' names, all actor dobs
             // results will hold the title/year pair of a movie for display purposes
-
             for (var id of movie_ids) {
                 var res = await getAndSetMovieData(id);
-                //console.log("res: ", res);
                 results.push(res);
             }
         }
@@ -440,7 +438,6 @@ export default function SearchMoviesPage() {
             //iterate over IDs and push to results
             for (var id of movie_ids) {
                 var res = await getAndSetMovieData(id);
-                //console.log("res: ", res);
                 results.push(res);
             }
         }
