@@ -169,6 +169,7 @@ export default class MovieRoom extends React.Component {
   // pass in the values stored as state variables to compute
   generateSelection = async (prefs) => {
     //step 1: select all movies from db given the genre and rating (and sliders ofc)
+    this.toggleMS(null);
     var big_pref_list = [];
     const group_members = this.state.members;
 
@@ -219,8 +220,9 @@ export default class MovieRoom extends React.Component {
       , this.state.ry_pref, this.state.a_pref, big_pref_list, mm_pref_list);
 
     // set the movie list state variable to use in selection
-
+    this.toggleMS(null);
     this.toggleMS(movie);
+    
 
   }
 

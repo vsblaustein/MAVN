@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import { roomMaster, rCode } from '.';
 import Axios from 'axios';
 import { TextField } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 
 export default class MovieSelectionPopUp extends React.Component {
@@ -104,16 +106,17 @@ export default class MovieSelectionPopUp extends React.Component {
                 <form>
                     <Box className="modal">
                         <Box className="mr-modal_content">
-                            <Typography
-                                variant="h6"
-                                noWrap
-                                component="div"
-                                sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
-                            >
-                                Movie Selection
-                            </Typography>
-                            {this.state.currentTitle !== "" &&
+
+                            {(this.state.movies && this.state.movies.size > 0) &&
                                 <React.Fragment>
+                                    <Typography
+                                        variant="h6"
+                                        noWrap
+                                        component="div"
+                                        sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
+                                    >
+                                        Movie Selection
+                                    </Typography>
                                     <span className="close" onClick={this.handleExit}>
                                         <Button>
                                             Select Movie
@@ -139,8 +142,16 @@ export default class MovieSelectionPopUp extends React.Component {
                                     {show && <Button onClick={this.vetoSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Veto Selection</Button>}
                                 </React.Fragment>
                             }
-                            {this.state.currentTitle === "" &&
+                            {(this.state.movies && this.state.movies.size <= 0) &&
                                 <React.Fragment>
+                                    <Typography
+                                        variant="h6"
+                                        noWrap
+                                        component="div"
+                                        sx={{ mt: "5px", display: { xs: 'none', md: 'flex' } }}
+                                    >
+                                        Movie Selection
+                                    </Typography>
                                     <span className="close" onClick={this.handleExit}>
                                         <Button>
                                             Close
@@ -152,6 +163,25 @@ export default class MovieSelectionPopUp extends React.Component {
                                         sx={{ width: '100%', mt: '85px' }}
                                         variant='standard' value={"No movie selection found. Consider a more lenient preference bias!"} />
                                 </React.Fragment>
+                            }
+                            {this.state.movies === null &&
+                                <React.Fragment>
+                                    <TextField id="title"
+                                        inputProps={{ style: { textAlign: 'center', fontSize: 20 }, readOnly: true }}
+                                        InputProps={{ disableUnderline: true }}
+                                        sx={{ width: '100%', mt: '50px' }}
+                                        variant='standard' value={"Loading..."} />
+                                    <Typography
+                                        variant="h6"
+                                        noWrap
+                                        component="div"
+                                        sx={{ mt: "10px", mr: "85px", ml: "185px", display: { xs: 'none', md: 'flex' } }}
+                                    >
+                                        <CircularProgress size={200} />
+                                    </Typography>
+
+                                </React.Fragment>
+
                             }
 
 
