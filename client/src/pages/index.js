@@ -14,7 +14,6 @@ import CreateForm from '../components/CreatePage/CreateForm';
 
 
 function Home() {
-
   const curr_user = JSON.parse(localStorage.getItem('user'));
   console.log("curent user after loading pages/index.js", curr_user);
 
