@@ -3,7 +3,7 @@ import './GroupPrefPopUp.css';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { roomMaster, rCode} from '.';
+import { roomMaster, rCode } from '.';
 import Axios from 'axios';
 import { TextField } from '@mui/material';
 
@@ -26,7 +26,7 @@ export default class MovieSelectionPopUp extends React.Component {
     async componentDidMount() {
         // get the movie images
         var images = [];
-        var key =Array.from(this.state.movies.keys())[this.state.index];
+        var key = Array.from(this.state.movies.keys())[this.state.index];
 
         console.log(this.state.movies);
         this.state.movies.forEach(function (value, key) {
@@ -39,10 +39,10 @@ export default class MovieSelectionPopUp extends React.Component {
         })
 
         console.log("movie images:" + this.state.movieImages);
-      
-      const currUser = JSON.parse(localStorage.getItem('user'));
-        if (currUser == roomMaster){
-            this.setState({showMasterButtons: true})
+
+        const currUser = JSON.parse(localStorage.getItem('user'));
+        if (currUser == roomMaster) {
+            this.setState({ showMasterButtons: true })
         }
 
     }
@@ -53,20 +53,20 @@ export default class MovieSelectionPopUp extends React.Component {
 
     voteAgainstSelection = () => {
         let i = this.state.groupVotes;
-        i +=1;
+        i += 1;
         console.log("gorup votes: " + i)
-        this.setState({groupVotes: i})
+        this.setState({ groupVotes: i })
         //get members of group
         const c = rCode;
         console.log(rCode);
         Axios.get('http://localhost:3001/getMembersList', {
-            params: { room_code: c}
+            params: { room_code: c }
         }).then((response) => {
-          const numMembers = response.data.length;
-          //if more than half of members vote, remove selection
-          if (i > (numMembers/2)){
-              this.newSelection();
-          }
+            const numMembers = response.data.length;
+            //if more than half of members vote, remove selection
+            if (i > (numMembers / 2)) {
+                this.newSelection();
+            }
             console.log(response);
         }).catch(err => {
             console.log(err);
@@ -78,8 +78,8 @@ export default class MovieSelectionPopUp extends React.Component {
         this.newSelection();
     }
 
-     // goes to next best movie in list
-     newSelection = () => {
+    // goes to next best movie in list
+    newSelection = () => {
         let i = this.state.index;
         console.log("index: " + i)
         i = i + 1;
@@ -112,32 +112,49 @@ export default class MovieSelectionPopUp extends React.Component {
                             >
                                 Movie Selection
                             </Typography>
-                            <span className="close" onClick={this.handleExit}>
-                                <Button>
-                                    Select Movie
-                                </Button>
-                            </span>
+                            {this.state.currentTitle !== "" &&
+                                <React.Fragment>
+                                    <span className="close" onClick={this.handleExit}>
+                                        <Button>
+                                            Select Movie
+                                        </Button>
+                                    </span>
+                                    <TextField id="title"
+                                        inputProps={{ style: { textAlign: 'center', fontSize: 20 }, readOnly: true }}
+                                        InputProps={{ disableUnderline: true }}
+                                        sx={{ width: '100%', mt: '5px' }}
+                                        variant='standard' value={this.state.currentTitle} />
 
-                            <TextField id="title"
-                                inputProps={{ style: { textAlign: 'center', fontSize: 20 }, readOnly: true }}
-                                InputProps={{ disableUnderline: true }}
-                                sx={{ width: '100%', mt: '5px' }}
-                                variant='standard' value={this.state.currentTitle} />
+                                    <Box
+                                        component="img"
+                                        class='center-screen'
+                                        sx={{
+                                            maxHeight: { xs: 250, md: 167 },
+                                            maxWidth: { xs: 350, md: 250 },
+                                        }}
+                                        alt="No movie image"
+                                        src={currentSelectionImage}
+                                    />
+                                    {!show && <Button onClick={this.voteAgainstSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Vote against Selection</Button>}
+                                    {show && <Button onClick={this.vetoSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Veto Selection</Button>}
+                                </React.Fragment>
+                            }
+                            {this.state.currentTitle === "" &&
+                                <React.Fragment>
+                                    <span className="close" onClick={this.handleExit}>
+                                        <Button>
+                                            Close
+                                        </Button>
+                                    </span>
+                                    <TextField id="title"
+                                        inputProps={{ style: { textAlign: 'center', fontSize: 15 }, readOnly: true }}
+                                        InputProps={{ disableUnderline: true }}
+                                        sx={{ width: '100%', mt: '85px' }}
+                                        variant='standard' value={"No movie selection found. Consider a more lenient preference bias!"} />
+                                </React.Fragment>
+                            }
 
-                            <Box
-                                component="img"
-                                class='center-screen'
-                                sx={{
-                                    maxHeight: { xs: 250, md: 167 },
-                                    maxWidth: { xs: 350, md: 250 },
-                                }}
-                                alt="No movie image"
-                                src={currentSelectionImage}
-                            />
 
-
-                            {!show && <Button onClick={this.voteAgainstSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Vote against Selection</Button>}
-                            {show && <Button onClick={this.vetoSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Veto Selection</Button>}
 
 
                         </Box>
