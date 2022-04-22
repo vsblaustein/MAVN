@@ -36,6 +36,8 @@ const theme = createTheme();
 export default function SignIn() {
   const [loginStatus, setLoginStatus] = React.useState("");
   let navigate = useNavigate();
+  localStorage.clear();
+  console.log("cleared storage");
 
   
 
@@ -81,7 +83,7 @@ export default function SignIn() {
           for (const c in actors) {
             arr.push(actors[c].full_name);
           }
-          console.log("list of actors: [" + arr + "]");
+          //console.log("list of actors: [" + arr + "]");
           localStorage.setItem('actors', JSON.stringify(arr));
 
         }).catch(err => {
@@ -98,7 +100,7 @@ export default function SignIn() {
           for (const c in JSON.parse(genres)) {
             arr.push(JSON.parse(genres)[c].genre);
           }
-          console.log("list of genre: [" + arr + "]");
+          //console.log("list of genre: [" + arr + "]");
           localStorage.setItem('genres', arr);
 
         }).catch(err => {
@@ -117,8 +119,8 @@ export default function SignIn() {
             title.push(movies[c].title);
             image.push(movies[c].image_path);
           }
-          console.log("list of title: [" + title + "]");
-          console.log("list of image: [" + image + "]");
+          //console.log("list of title: [" + title + "]");
+          //console.log("list of image: [" + image + "]");
 
           localStorage.setItem('movie_title', JSON.stringify(title));
           localStorage.setItem('movie_image', JSON.stringify(image));

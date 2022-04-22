@@ -6,16 +6,17 @@ import Autocomplete from '@mui/material/Autocomplete';
 const genres = localStorage.getItem('genres');
 
 export default function MultipleSelectChip(props) {
-    const names = [];
     if (genres !== null) {
-        names = genres.split(',');
+        const names = genres.split(',');
+    } else {
+        const names = [];
     }
     return (
         <>
             <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                options={names}
+                options={genres !== null && genres.split(',')}
                 multiple
                 sx={{ width: '80%' }}
                 onChange={(event, value) => props.action(value)}
