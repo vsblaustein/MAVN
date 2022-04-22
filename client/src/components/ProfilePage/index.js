@@ -17,7 +17,7 @@ const flexContainer = {
   flexDirection: 'row',
   padding: 0,
 };
-const curr_user = JSON.parse(localStorage.getItem('user'));
+
 
 
 export default class profile extends React.Component {
@@ -55,6 +55,7 @@ export default class profile extends React.Component {
 
 
   render() {
+    const curr_user = JSON.parse(localStorage.getItem('user'));
     return (
       <Box>
         <ResponsiveAppBar currentUser = {curr_user} />

@@ -37,9 +37,8 @@ const base_image_url = "https://image.tmdb.org/t/p/w500";
 
 const theme = createTheme();
 
-const curr_user = JSON.parse(localStorage.getItem('user'));
-
 export default function SearchMoviesPage() {
+    const curr_user = JSON.parse(localStorage.getItem('user'));
     //iconpopup
     const [isOpen, setIsOpen] = React.useState(false);
 

@@ -26,7 +26,7 @@ var roomMaster = "";
 var rCode = "";
 var movieImgPath = "";
 
-const curr_user = JSON.parse(localStorage.getItem('user'));
+
 
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
@@ -315,6 +315,7 @@ export default class MovieRoom extends React.Component {
   }
 
   render() {
+    const curr_user = JSON.parse(localStorage.getItem('user'));
     var currentMaster = this.state.movieMaster;
     var show = this.state.showMasterButtons;
     const check = this.state.url_check;
