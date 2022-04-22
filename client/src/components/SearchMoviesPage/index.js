@@ -30,6 +30,7 @@ import './SearchMoviesPage.css';
 import GenreDropdown from './GenreDropdown';
 import { genres } from './GenreDropdown';
 import IconPopUp from './IconPopUp';
+import { LoadingButton } from '@mui/lab';
 
 const api_key = "76e275f04f332f92388a49a0a1ad92ee";
 const base_image_url = "https://image.tmdb.org/t/p/w500";
@@ -46,7 +47,10 @@ export default function SearchMoviesPage() {
     const [filteredResults, setFilteredResults] = React.useState([]);
     const [genres, setGenres] = React.useState([]);
 
-    const [title, setTitle] = React.useState('')
+    const [title, setTitle] = React.useState('');
+
+    //used for loading animation
+    const [loading, setLoading] = React.useState(false);
 
 
     const setValue = (g) => {
@@ -341,11 +345,16 @@ export default function SearchMoviesPage() {
     }
 
     const handleTitleSubmit = async (event) => {
+        setLoading(true);
 
         event.preventDefault();
 
         const data = new FormData(event.currentTarget);
         const title_search = data.get('title_search');
+        if (title_search === "") {
+            setLoading(false);
+            return;
+        }
         //console.log("title button pressed...");
         //console.log("title: ", title_search);
         /*
@@ -387,12 +396,18 @@ export default function SearchMoviesPage() {
 
         //after everything, set searchResults to results.
         setSearchResults(results);
+        setLoading(false);
     };
 
     const handleActorSubmit = async (event) => {
+        setLoading(true);
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const actor_search = data.get('actor_search');
+        if (actor_search === "") {
+            setLoading(false);
+            return;
+        }
         //console.log("actor button pressed...");
         //console.log("actor: ", actor_search);
         var results = [];
@@ -429,11 +444,12 @@ export default function SearchMoviesPage() {
         }
         //console.log("final results: ", results);
         setSearchResults(results);
+        setLoading(false);
     };
 
     return (
         <React.Fragment>
-            <ResponsiveAppBar currentUser = {curr_user}/>
+            <ResponsiveAppBar currentUser={curr_user} />
 
             <ThemeProvider theme={theme}>
                 <Container component="main" maxWidth="xl">
@@ -466,14 +482,15 @@ export default function SearchMoviesPage() {
                                         />
                                     </Grid>
                                 </Grid>
-                                <Button
+                                <LoadingButton
                                     type="submit"
+                                    loading={loading}
                                     fullWidth
                                     variant="contained"
                                     sx={{ mt: 2, mb: 2 }}
                                 >
                                     Search Titles
-                                </Button>
+                                </LoadingButton>
                             </Box>
                         </Grid>
                         <Grid item xs={3} sm={6}>
@@ -500,24 +517,17 @@ export default function SearchMoviesPage() {
                                 </Button>
                             </Box>
                         </Grid>
-                    </Box>
-                </Container>
-
-                <div class="box">
-                    <div>
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <SearchIcon />
-                        </Avatar>
-                    </div>
-                    <div>
                         <Typography component="h1" variant="h5">
                             Filter Results
                         </Typography>
-                    </div>
-                    <div>
-                        <GenreDropdown action={setValue} />
-                    </div>
-                </div>
+                        <Grid item xs={3} sm = {6}>
+                            <div>
+                                <GenreDropdown action={setValue} />
+                            </div>
+                        </Grid>
+                    </Box>
+                </Container>
+
 
 
 
@@ -548,26 +558,26 @@ export default function SearchMoviesPage() {
                                         subtitle={item.year}
                                         actionIcon={
                                             <IconButton
-                                                onClick={()=>togglePopup(item)}
+                                                onClick={() => togglePopup(item)}
                                                 sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
                                                 aria-label={`info about ${item.title}`}
                                             >
                                                 <InfoIcon />
-                                                
+
 
                                             </IconButton>
-                                            
+
 
                                         }
                                     />
-                                
+
                                 </ImageListItem>
                             ))}
 
                         </ImageList>
-                        
+
                     }
-                    {isOpen && <IconPopUp title={title} toggle={()=> togglePopup()}/>}
+                    {isOpen && <IconPopUp title={title} toggle={() => togglePopup()} />}
                     {genres.length > 0 &&
                         <ImageList sx={{ width: 1135, height: 450 }} cols={5} rowHeight={'auto'} gap={8}>
                             {filteredResults.map((item, idx) => (
