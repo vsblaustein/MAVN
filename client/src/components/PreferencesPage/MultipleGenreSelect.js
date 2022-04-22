@@ -3,10 +3,13 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
 // get genres from DB
-const names = localStorage.getItem('genres').split(',');
+const genres = localStorage.getItem('genres');
 
 export default function MultipleSelectChip(props) {
-
+    const names = [];
+    if (genres !== null) {
+        names = genres.split(',');
+    }
     return (
         <>
             <Autocomplete

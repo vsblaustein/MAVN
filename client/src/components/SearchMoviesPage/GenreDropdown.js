@@ -22,7 +22,7 @@ const MenuProps = {
 };
 
 // get genres from DB
-const names = localStorage.getItem('genres').split(',');
+const storage_genres = localStorage.getItem('genres');
 
 function getStyles(name, personName, theme) {
     return {
@@ -33,10 +33,9 @@ function getStyles(name, personName, theme) {
     };
 }
 
-export default function MultipleSelectChip(props){
+export default function MultipleSelectChip(props) {
     const theme = useTheme();
     const [genres, setGenres] = React.useState([]);
-    
 
     const handleChange = (event) => {
         const {
@@ -56,7 +55,8 @@ export default function MultipleSelectChip(props){
             []
         );
         props.action([]);
-      }
+    }
+
 
     return (
         <>
@@ -78,7 +78,8 @@ export default function MultipleSelectChip(props){
                     )}
                     MenuProps={MenuProps}
                 >
-                    {names.map((name) => (
+                    {storage_genres !== null &&
+                    storage_genres.split(',').map((name) => (
                         <MenuItem
                             key={name}
                             value={name}

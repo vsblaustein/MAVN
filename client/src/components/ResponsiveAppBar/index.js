@@ -13,14 +13,17 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 
-
+const base_url = "http://localhost:3000/";
 
 const pages = [ 'Search Movies'];
 const settings = ['Profile', 'My Preferences', 'Logout'];
+const currentUser = JSON.parse(localStorage.getItem('user'));
+const letter = currentUser.charAt(0);
+
 
 const ResponsiveAppBar = () => {
-
-
+  
+  //console.log("current user: ", currentUser);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -123,7 +126,7 @@ const ResponsiveAppBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar>{letter}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu
