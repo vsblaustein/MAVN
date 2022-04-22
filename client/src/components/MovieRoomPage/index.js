@@ -52,7 +52,7 @@ export default class MovieRoom extends React.Component {
   };
 
 
-  componentDidMount() { //ONLOAD
+  async componentDidMount() { //ONLOAD
     const code = this.state.roomCode;
     console.log(code);
     // get movie master
@@ -320,37 +320,37 @@ export default class MovieRoom extends React.Component {
     return (
       <>
         <ResponsiveAppBar />
-          {check
-            ? <Box position="static">
+        {check
+          ? <Box position="static">
 
-          {/* generate selection button */}
-          {show && <Button
-            onClick={this.generateSelection}
-            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
-          >
-            Generate Selection
-          </Button>}
-          {show && <Button
-            onClick={this.toggleP}
-            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
-          >
-            Bias Movie Selection
-          </Button>}
-          <Button
-            onClick={this.copyToClipboard}
-            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
-          >
-            Copy Room Link
-          </Button>
+            {/* generate selection button */}
+            {show && <Button
+              onClick={this.generateSelection}
+              sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+            >
+              Generate Selection
+            </Button>}
+            {show && <Button
+              onClick={this.toggleP}
+              sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
+            >
+              Bias Movie Selection
+            </Button>}
+            <Button
+              onClick={this.copyToClipboard}
+              sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+            >
+              Copy Room Link
+            </Button>
 
-          {show && <Button
-            onClick={this.toggleMembers}
-            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
-          >
-            Remove Group Members
-          </Button>}
+            {show && <Button
+              onClick={this.toggleMembers}
+              sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+            >
+              Remove Group Members
+            </Button>}
 
-          {/* generate selection button
+            {/* generate selection button
           {show && <Button
             onClick={this.onClick}
             sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
@@ -386,7 +386,7 @@ export default class MovieRoom extends React.Component {
             Copy Room Link
           </Button> */}
 
-          {/* <Button
+            {/* <Button
             onClick={this.toggleMembers}
             sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
           >
@@ -394,52 +394,52 @@ export default class MovieRoom extends React.Component {
           </Button> */}
 
 
-          {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
-          {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
-          {this.state.membersSeen ? <MembersPop code={this.state.roomCode}
-            mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
+            {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
+            {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
+            {this.state.membersSeen ? <MembersPop code={this.state.roomCode}
+              mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
 
-          <Typography
+            <Typography
 
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+            >
 
-            Room {this.state.roomCode} Movie Master: {this.state.movieMaster}
+              Room {this.state.roomCode} Movie Master: {this.state.movieMaster}
 
-          </Typography>
+            </Typography>
 
-          {/* group member icons section */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Group Members
-          </Typography>
+            {/* group member icons section */}
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+            >
+              Group Members
+            </Typography>
 
-          <GroupMembers mem={this.state.members} code={this.state.roomCode}
-            style={flexContainer} class='center-screen' />
+            <GroupMembers mem={this.state.members} code={this.state.roomCode}
+              style={flexContainer} class='center-screen' />
 
-          {/* saved preferences section */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Group Preferences
-          </Typography>
+            {/* saved preferences section */}
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+            >
+              Group Preferences
+            </Typography>
 
-          {this.state.chart ? <PreferencesStats
-            code={this.state.roomCode} style={flexContainer}
-            class='center-screen' /> : null}
+            {this.state.chart ? <PreferencesStats
+              code={this.state.roomCode} style={flexContainer}
+              class='center-screen' /> : null}
 
-        </Box> 
-        : <ReturnButton />
+          </Box>
+          : <ReturnButton />
         }
       </>
     );

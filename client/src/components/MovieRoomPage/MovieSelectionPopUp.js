@@ -94,24 +94,6 @@ export default class MovieSelectionPopUp extends React.Component {
         this.setState({ index: i, currentTitle: key.title });
     }
 
-    newSelection = () => {
-        const c = rCode;
-        const t = "The Avengers: A Visual Journey";
-        const y = 2012;
-        const img = "https://image.tmdb.org/t/p/w500/2kBT7KONKQTIhkMc2ZtPU11E8Ky.jpg";
-        console.log("params: " + c + " " + t + " " + y);
-        Axios.post('http://localhost:3001/movieSelection', {
-            code: c, title: t, year: y, imagePath: img
-        }).then((response) => {
-            this.setState({imgPath: img});
-            movieImgPath = img;
-            this.togglePQ();
-            console.log(response);
-        }).catch(err => {
-            console.log(err);
-        });
-    }
-
     // add a "are you sure you want to leave?"
     render() {
         var show = this.state.showMasterButtons;
