@@ -195,8 +195,11 @@ export default function SearchMoviesPage() {
         }
         //console.log("data.genres: ", data.genres);
         const movie_cast = res_json.credits.cast;
-        //var actor_ct = 0;
+        var actor_limit = 0;
         for (var actor of movie_cast) {
+            if (actor_limit > 10) {
+                break;
+            }
             var actor_id = actor.id;
             data.actors.push(actor);
             //get actor DOB using actor id
@@ -204,7 +207,7 @@ export default function SearchMoviesPage() {
             var actor_json = await axiosCall(actor_id_json_url);
             //console.log("actor info: ", actor_json);
             data.actor_dobs.push(actor_json.birthday);
-            //actor_ct += 1;
+            actor_limit++;
         }
         //console.log("movie_data: ", data);
 
@@ -506,14 +509,15 @@ export default function SearchMoviesPage() {
                                         />
                                     </Grid>
                                 </Grid>
-                                <Button
+                                <LoadingButton
                                     type="submit"
+                                    loading={loading}
                                     fullWidth
                                     variant="contained"
                                     sx={{ mt: 2, mb: 2 }}
                                 >
-                                    Search Titles for Actor
-                                </Button>
+                                    Search Titles With Actor
+                                </LoadingButton>
                             </Box>
                         </Grid>
                         <Typography component="h1" variant="h5">
