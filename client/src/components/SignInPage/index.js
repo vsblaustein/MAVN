@@ -71,7 +71,10 @@ export default function SignIn() {
         //valid login!
         console.log("Login successful")
         // stores the current user in local storage
-        localStorage.setItem('user', JSON.stringify(user))
+        localStorage.removeItem('user');
+        localStorage.setItem('user', JSON.stringify(user));
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+        console.log("current user after sign in: ", currentUser);
 
         // store the list of actors in local storage
         Axios.get('http://localhost:3001/getActors', {

@@ -26,6 +26,8 @@ var roomMaster = "";
 var rCode = "";
 var movieImgPath = "";
 
+const curr_user = JSON.parse(localStorage.getItem('user'));
+
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
   // determines if either state has been seen
@@ -319,7 +321,7 @@ export default class MovieRoom extends React.Component {
     console.log("url check in render: ", check);
     return (
       <>
-        <ResponsiveAppBar />
+        <ResponsiveAppBar currentUser = {curr_user} />
         {check
           ? <Box position="static">
 

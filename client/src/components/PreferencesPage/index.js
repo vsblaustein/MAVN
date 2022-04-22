@@ -15,6 +15,7 @@ const flexContainer = {
   padding: 0,
 };
 
+const curr_user = JSON.parse(localStorage.getItem('user'));
 
 // display current preferences at the bottom of the page
 export default class Preferences extends React.Component {
@@ -56,7 +57,7 @@ export default class Preferences extends React.Component {
   render() {
     return (
       <>
-        <ResponsiveAppBar />
+        <ResponsiveAppBar currentUser = {curr_user} />
         <Box position="static">
           {/* preference quiz button */}
           <Button

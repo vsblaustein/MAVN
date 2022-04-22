@@ -17,21 +17,14 @@ const base_url = "http://localhost:3000/";
 
 const pages = [ 'Search Movies'];
 const settings = ['Profile', 'My Preferences', 'Logout'];
-var letter = "";
 
-const ResponsiveAppBar = () => {
+const ResponsiveAppBar = (currentUser) => {
   
   //console.log("current user: ", currentUser);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [currentUser, setCurrentUser] = React.useState("");
-  const user = localStorage.getItem('user');
-  setCurrentUser(user);
-
-  React.useEffect(() => {
-    console.log("current user after useeffect: ", currentUser);
-    letter = currentUser.charAt(0);
-}, [currentUser]);
+  console.log("current user: %o", currentUser.currentUser);
+  const letter = currentUser.currentUser.charAt(0);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);

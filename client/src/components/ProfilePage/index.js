@@ -17,6 +17,7 @@ const flexContainer = {
   flexDirection: 'row',
   padding: 0,
 };
+const curr_user = JSON.parse(localStorage.getItem('user'));
 
 
 export default class profile extends React.Component {
@@ -33,11 +34,11 @@ export default class profile extends React.Component {
   
   // load user information
   componentDidMount() {
-    const currentUser = JSON.parse(localStorage.getItem('user'));
+    const curr_user = JSON.parse(localStorage.getItem('user'));
 
     // store the user in local storage
     Axios.get('http://localhost:3001/getProfile', {
-      params: { name: currentUser }
+      params: { name: curr_user }
     }).then((response) => {
 
 
@@ -56,7 +57,7 @@ export default class profile extends React.Component {
   render() {
     return (
       <Box>
-        <ResponsiveAppBar />
+        <ResponsiveAppBar currentUser = {curr_user} />
         <Box class="content" >
           <Typography
             variant="h2"

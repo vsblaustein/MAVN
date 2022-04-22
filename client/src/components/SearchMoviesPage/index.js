@@ -36,7 +36,7 @@ const base_image_url = "https://image.tmdb.org/t/p/w500";
 
 const theme = createTheme();
 
-
+const curr_user = JSON.parse(localStorage.getItem('user'));
 
 export default function SearchMoviesPage() {
     //iconpopup
@@ -433,7 +433,7 @@ export default function SearchMoviesPage() {
 
     return (
         <React.Fragment>
-            <ResponsiveAppBar />
+            <ResponsiveAppBar currentUser = {curr_user}/>
 
             <ThemeProvider theme={theme}>
                 <Container component="main" maxWidth="xl">
