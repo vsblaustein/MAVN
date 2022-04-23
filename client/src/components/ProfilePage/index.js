@@ -45,8 +45,6 @@ export default class profile extends React.Component {
     }).catch(err => {
       console.log(err);
     });
-
-    console.log("imge for user is: " + this.state.profile_img);
   }
 
 

@@ -40,6 +40,7 @@ export default class MovieRoom extends React.Component {
     roomCode: window.location.href.split('/')[4], // get the movie room from url
     chart: true,
     members: [],
+    member_images: [],
     // state variables for the selection algo, 50% defaut
 
     l_pref: 0.5,
@@ -85,8 +86,16 @@ export default class MovieRoom extends React.Component {
       group_members.push(gm[curr_gm].username);
     }
 
+    // get the member profile photos
+    const mem_img = await this.fetchImages(group_members);
+    const member_profiles = [];
+    for(const i in mem_img){
+      member_profiles.push(mem_img[i]);
+    }
+
     this.setState({
       members: group_members,
+      member_images: member_profiles,
     });
 
     //check if a new selection has been inserted in database
@@ -137,6 +146,27 @@ export default class MovieRoom extends React.Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  // get the list of images
+  fetchImages = async (mems) => {
+    var images = [];
+    try {
+      for (const m in mems) {
+        // store the user in local storage
+
+        const response = await Axios.get('http://localhost:3001/getProfile', {
+          params: { name: mems[m] }
+        });
+
+        console.log(response.data[0].image_path);
+        images.push(response.data[0].image_path);
+      }
+      return images;
+    } catch (err) {
+      console.log(err);
+    }
+
   }
 
   //get group prefs for all members in room
@@ -321,82 +351,82 @@ export default class MovieRoom extends React.Component {
     return (
       <>
         <ResponsiveAppBar />
-          {check
-            ? <Box position="static">
+        {check
+          ? <Box position="static">
 
-          {/* generate selection button */}
-          {show && <Button
-            onClick={this.generateSelection}
-            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
-          >
-            Generate Selection
-          </Button>}
-          {show && <Button
-            onClick={this.toggleP}
-            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
-          >
-            Bias Movie Selection
-          </Button>}
-          <Button
-            onClick={this.copyToClipboard}
-            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
-          >
-            Copy Room Link
-          </Button>
+            {/* generate selection button */}
+            {show && <Button
+              onClick={this.generateSelection}
+              sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+            >
+              Generate Selection
+            </Button>}
+            {show && <Button
+              onClick={this.toggleP}
+              sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
+            >
+              Bias Movie Selection
+            </Button>}
+            <Button
+              onClick={this.copyToClipboard}
+              sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+            >
+              Copy Room Link
+            </Button>
 
-          {show && <Button
-            onClick={this.toggleMembers}
-            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
-          >
-            Remove Group Members
-          </Button>}
+            {show && <Button
+              onClick={this.toggleMembers}
+              sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+            >
+              Remove Group Members
+            </Button>}
 
-          {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
-          {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
-          {this.state.membersSeen ? <MembersPop code={this.state.roomCode}
-            mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
+            {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
+            {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
+            {this.state.membersSeen ? <MembersPop code={this.state.roomCode}
+              mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
 
-          <Typography
+            <Typography
 
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+            >
 
-            Room {this.state.roomCode} Movie Master: {this.state.movieMaster}
+              Room {this.state.roomCode} Movie Master: {this.state.movieMaster}
 
-          </Typography>
+            </Typography>
 
-          {/* group member icons section */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Group Members
-          </Typography>
+            {/* group member icons section */}
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+            >
+              Group Members
+            </Typography>
 
-          <GroupMembers mem={this.state.members} code={this.state.roomCode}
-            style={flexContainer} class='center-screen' />
+            <GroupMembers mem={this.state.members} code={this.state.roomCode} images={this.state.member_images}
+              style={flexContainer} class='center-screen' />
 
-          {/* saved preferences section */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-          >
-            Group Preferences
-          </Typography>
+            {/* saved preferences section */}
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+            >
+              Group Preferences
+            </Typography>
 
-          {this.state.chart ? <PreferencesStats
-            code={this.state.roomCode} style={flexContainer}
-            class='center-screen' /> : null}
+            {this.state.chart ? <PreferencesStats
+              code={this.state.roomCode} style={flexContainer}
+              class='center-screen' /> : null}
 
-        </Box> 
-        : <ReturnButton />
+          </Box>
+          : <ReturnButton />
         }
       </>
     );
