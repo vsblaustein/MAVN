@@ -351,50 +351,6 @@ export default class MovieRoom extends React.Component {
             Remove Group Members
           </Button>}
 
-          {/* generate selection button
-          {show && <Button
-            onClick={this.onClick}
-            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
-          >
-            Generate Movie Selection
-          </Button>}
-          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
-          
-
-          {show && <Button
-            onClick={this.toggleGP}
-            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
-          >
-            Edit Group Preferences
-          </Button>}
-          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
-          {show && <Button
-            onClick={this.generateSelection}
-            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
-          >
-            Generate Selection
-          </Button> }
-          <Button
-            onClick={this.toggleP}
-            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
-          >
-            Bias Movie Selection
-          </Button>
-          <Button
-            onClick={this.copyToClipboard}
-            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
-          >
-            Copy Room Link
-          </Button> */}
-
-          {/* <Button
-            onClick={this.toggleMembers}
-            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
-          >
-            Remove Group Members
-          </Button> */}
-
-
           {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
           {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
           {this.state.membersSeen ? <MembersPop code={this.state.roomCode}

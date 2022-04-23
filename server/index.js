@@ -28,10 +28,11 @@ app.post('/register', async (req, res) => {
   const full_name = req.body.full_name;
   const email = req.body.email;
   const dob = req.body.dob;
+  const img = req.body.img;
   try {
     const result = await db.query(
-      "INSERT INTO users (username, name, password, email, dob, image_path) VALUES (?, ?, ?, ?, ?, NULL)",
-      [username, full_name, password, email, dob]);
+      "INSERT INTO users (username, name, password, email, dob, image_path) VALUES (?, ?, ?, ?, ?, ?)",
+      [username, full_name, password, email, dob, img]);
     res.send(req.body);
   } catch (err) {
     throw err;

@@ -66,8 +66,6 @@ export default function MembersPopUp(props) {
             >
               Room {props.code} Members
             </Typography>
-            {/* movie genre */}
-            {/* <GroupMemberIcons onClick={handleClick} mem={props.mem}/> */}
             <label> Select Members You Want to Remove</label> <br/>
             <Autocomplete
               disablePortal
