@@ -48,6 +48,21 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
+
+  // to={setting.toLowerCase() === 'logout' ? '/' : `/${setting.toLowerCase()}`}
+  const linkSettings = (link) => {
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    if(link === 'Logout'){
+      return '/';
+    }
+    else if(link === "Profile"){
+      return '/'+ link.toLowerCase() + '/' + currentUser; // also add the name of the current user
+    }
+    else {
+      return '/' + link.toLowerCase();
+    }
+  }
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -144,7 +159,7 @@ const ResponsiveAppBar = () => {
             >
               {/* dynamic buttons for const settings links here */}
               {settings.map((setting) => (
-                <Link key={setting} to={setting.toLowerCase() === 'logout' ? '/' : `/${setting.toLowerCase()}`} style={{ textDecoration: 'none' }} replace="True">
+                <Link key={setting} to={linkSettings(setting)} style={{ textDecoration: 'none' }} replace="True">
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>

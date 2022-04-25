@@ -63,31 +63,31 @@ export default function ProfileChange(props) {
         }
 
         // submit these values
-        console.log("birthday: " + dob);
-        console.log("email: " + email);
-        console.log("username :" + username);
-        console.log("photo: " + profile_img);
+        // console.log("birthday: " + dob);
+        // console.log("email: " + email);
+        // console.log("username :" + username);
+        // console.log("photo: " + profile_img);
 
-        // Axios.post('http://localhost:3001/updateUser', {
-        //     username: username,
-        //     email: email,
-        //     dob: dob,
-        //     img: profile_img,
-        //     curr_user: currentUser,
-        //   }).then((response)=> {
-        //     console.log(response);
-        //     console.log(response.data);
-        //     if(response.data === "bad username"){
-        //         alert("That username is already taken.");
-        //     }
-        //     else {
-        //         // update the local storage user
-        //         localStorage.setItem('user', JSON.stringify(username));
-        //         window.location.reload();
-        //     }
-        //   }).catch(err => {
-        //     console.log(err);
-        //   });
+        Axios.post('http://localhost:3001/updateUser', {
+            username: username,
+            email: email,
+            dob: dob,
+            img: profile_img,
+            curr_user: currentUser,
+          }).then((response)=> {
+            console.log(response);
+            console.log(response.data);
+            if(response.data === "bad username"){
+                alert("That username is already taken.");
+            }
+            else {
+                // update the local storage user
+                localStorage.setItem('user', JSON.stringify(username));
+                window.location.reload();
+            }
+          }).catch(err => {
+            console.log(err);
+          });
 
         handleExit();
     }
