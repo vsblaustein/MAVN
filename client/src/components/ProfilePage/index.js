@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import ProfilePopUp from './editProfile.js';
 import Button from '@mui/material/Button';
 
-
+const currentUser = JSON.parse(localStorage.getItem('user'));
 export default class profile extends React.Component {
   constructor() {
     super();
@@ -23,11 +23,9 @@ export default class profile extends React.Component {
 
   // load user information
   componentDidMount() {
-    const currentUser = JSON.parse(localStorage.getItem('user'));
-
     // store the user in local storage
     Axios.get('http://localhost:3001/getProfile', {
-      params: { name: currentUser }
+      params: { name: window.location.href.split('/')[4] }
     }).then((response) => {
       this.setState({
         username: response.data[0].username,
@@ -35,10 +33,13 @@ export default class profile extends React.Component {
         birthday: response.data[0].dob.substring(0, response.data[0].dob.toString().indexOf("T")),
         email: response.data[0].email,
         profile_img: response.data[0].image_path,
-      })
+      });
     }).catch(err => {
       console.log(err);
     });
+
+    console.log("current user:" + currentUser);
+    console.log("browser: " + window.location.href.split('/')[4]);
   }
 
   toggleProfile = () => {
@@ -56,7 +57,7 @@ export default class profile extends React.Component {
     return (
       <Box>
         <ResponsiveAppBar />
-        {/* toggle the pop up to edit */}
+        {/* toggle the pop up to edit, only allow edit if is the user */}
         {this.state.editProfile ? <ProfilePopUp username={this.state.username}
         birthday={this.state.birthday} email={this.state.email} 
         photo={this.state.profile_img} toggle={this.toggleProfile} /> : null}
@@ -106,9 +107,9 @@ export default class profile extends React.Component {
             Birthday: {this.state.birthday}
           </Typography>
           <br />
-          <Button onClick={this.toggleProfile}>
+          {currentUser === window.location.href.split('/')[4] && <Button onClick={this.toggleProfile}>
             Edit Information
-          </Button>
+          </Button> }
         </Box>
       </Box>
     );

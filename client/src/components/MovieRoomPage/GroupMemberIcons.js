@@ -2,11 +2,24 @@ import * as React from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import { ImageListItemBar } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+
 
 // get the member icons from the database
 export default function GroupMemberIcons(props) {
 
   const memProfiles = props.images;
+  let navigate = useNavigate();
+
+
+  // navigate to their user page
+  const handleClick = (name) =>{
+    console.log(name);
+    <Link key={'profile'} to={'/profile/' + name.toLowerCase()} replace="True"></Link>
+    navigate('/profile/' + name.toLowerCase(), { replace: true });
+  }
 
   return (
     <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={5}>
@@ -21,6 +34,7 @@ export default function GroupMemberIcons(props) {
             alt={props.mem[idx]}
             loading="lazy"
             style={{ width: '100%' }}
+            onClick={() => handleClick(props.mem[idx])}
           />
 
           <ImageListItemBar

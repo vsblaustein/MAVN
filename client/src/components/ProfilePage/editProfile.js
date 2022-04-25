@@ -22,10 +22,6 @@ export default function ProfileChange(props) {
     const [profile_img, setProfileImg] = React.useState(props.photo);
     const currentUser = JSON.parse(localStorage.getItem('user'));
 
-    React.useEffect(() => {
-        console.log("dob: " + dob);
-    });
-
     //changes the profile_img to selected
     const handleChange = (event) => {
         const {
