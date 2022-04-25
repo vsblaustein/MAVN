@@ -39,6 +39,24 @@ app.post('/register', async (req, res) => {
   }
 });
 
+//POST: update user request, MAKE THIS ERROR CHECK
+app.post('/updateUser', async (req, res) => {
+
+  const username = req.body.username;
+  const email = req.body.email;
+  const dob = req.body.dob;
+  const img = req.body.img;
+  const curr_user = req.body.curr_user;
+  try {
+    const result = await db.query(
+      "UPDATE users SET username = ?, email = ?, dob = ?, image_path = ? WHERE username = ?",
+      [username, email, dob, img, curr_user]);
+    res.send(req.body);
+  } catch (err) {
+    res.send("bad username");
+  }
+});
+
 //POST: login request
 app.post('/login', async (req, res) => {
 

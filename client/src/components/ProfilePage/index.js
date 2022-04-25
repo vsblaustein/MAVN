@@ -1,18 +1,11 @@
 import React from 'react';
 import ResponsiveAppBar from '../ResponsiveAppBar/index'
 import Typography from '@mui/material/Typography';
-import ProfileIcon from './ProfileIcon';
 import './ProfilePage.css';
 import Axios from 'axios';
 import Box from '@mui/material/Box';
-
-
-// styling for horizontal list
-const flexContainer = {
-  display: 'flex',
-  flexDirection: 'row',
-  padding: 0,
-};
+import ProfilePopUp from './editProfile.js';
+import Button from '@mui/material/Button';
 
 
 export default class profile extends React.Component {
@@ -24,6 +17,7 @@ export default class profile extends React.Component {
       birthday: "",
       email: "",
       profile_img: "",
+      editProfile: false,
     };
   }
 
@@ -47,12 +41,27 @@ export default class profile extends React.Component {
     });
   }
 
+  toggleProfile = () => {
+    this.setState({
+      editProfile: !this.state.editProfile,
+    });
+    // show a drop down for all the avatars
+    // get the index of the one the user clicks
+    // print avatar[idx]
+    // update query
+    // reload the window
+  }
 
   render() {
     return (
       <Box>
         <ResponsiveAppBar />
-        <Box class="content" >
+        {/* toggle the pop up to edit */}
+        {this.state.editProfile ? <ProfilePopUp username={this.state.username}
+        birthday={this.state.birthday} email={this.state.email} 
+        photo={this.state.profile_img} toggle={this.toggleProfile} /> : null}
+
+        <Box className="content" >
           <Typography
             variant="h2"
             noWrap
@@ -61,7 +70,6 @@ export default class profile extends React.Component {
           >
             <b > Profile Page </b>
           </Typography>
-          {/* <ProfileIcon style={flexContainer}></ProfileIcon> */}
           <Box
             component="img"
             sx={{
@@ -70,8 +78,8 @@ export default class profile extends React.Component {
               maxHeight: { xs: '35vh', md: '35vh' },
               maxWidth: { xs: '35vh', md: '35vh' },
             }}
-            alt= {this.state.username}
-            src= {this.state.profile_img}
+            alt={this.state.username}
+            src={this.state.profile_img}
           />
           <Typography
             variant="h5"
@@ -97,9 +105,14 @@ export default class profile extends React.Component {
           >
             Birthday: {this.state.birthday}
           </Typography>
-
+          <br />
+          <Button onClick={this.toggleProfile}>
+            Edit Information
+          </Button>
         </Box>
       </Box>
     );
   }
 }
+
+

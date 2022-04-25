@@ -2,10 +2,8 @@ import * as React from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import { ImageListItemBar } from '@mui/material';
-import Axios from 'axios';
-// this document will generate the charts from the db and display them
 
-
+// get the member icons from the database
 export default function GroupMemberIcons(props) {
 
   const memProfiles = props.images;

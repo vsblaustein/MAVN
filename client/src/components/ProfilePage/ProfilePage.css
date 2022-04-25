@@ -35,3 +35,29 @@
       max-width: 50%;
       max-height: 50%;
   }
+
+  .modal {
+    position: absolute;
+    z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.25);
+  }
+  
+  .modal_content {
+    background-color: white;
+    position: relative;
+    top: 5vh;
+    left: 30vw;
+    width: 40vw;
+    height: 60vh;
+    padding: 4vh;
+    border-radius: 5px;
+    border: 2px solid black;
+    overflow-y:auto;
+  }
+
+  .icon{
+    max-width: 7vh;
+    max-height:7vh;
+  }
