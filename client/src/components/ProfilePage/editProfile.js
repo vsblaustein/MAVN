@@ -16,11 +16,15 @@ import Grid from '@mui/material/Grid';
 export default function ProfileChange(props) {
 
     // weird escaping gets correct date
-    const [dob, setDOB] = React.useState(new Date(props.birthday.replace(/-/g, '\/')).toJSON().slice(0, 10));
+    const [dob, setDOB] = React.useState(new Date(props.birthday).toJSON().slice(0, 10));
     const [username, setUsername] = React.useState(props.username);
     const [email, setEmail] = React.useState(props.email);
     const [profile_img, setProfileImg] = React.useState(props.photo);
     const currentUser = JSON.parse(localStorage.getItem('user'));
+
+    React.useEffect(() => {
+        console.log("dob: " + dob);
+    });
 
     //changes the profile_img to selected
     const handleChange = (event) => {
@@ -64,26 +68,26 @@ export default function ProfileChange(props) {
         console.log("username :" + username);
         console.log("photo: " + profile_img);
 
-        Axios.post('http://localhost:3001/updateUser', {
-            username: username,
-            email: email,
-            dob: dob,
-            img: profile_img,
-            curr_user: currentUser,
-          }).then((response)=> {
-            console.log(response);
-            console.log(response.data);
-            if(response.data === "bad username"){
-                alert("That username is already taken.");
-            }
-            else {
-                // update the local storage user
-                localStorage.setItem('user', JSON.stringify(username));
-                window.location.reload();
-            }
-          }).catch(err => {
-            console.log(err);
-          });
+        // Axios.post('http://localhost:3001/updateUser', {
+        //     username: username,
+        //     email: email,
+        //     dob: dob,
+        //     img: profile_img,
+        //     curr_user: currentUser,
+        //   }).then((response)=> {
+        //     console.log(response);
+        //     console.log(response.data);
+        //     if(response.data === "bad username"){
+        //         alert("That username is already taken.");
+        //     }
+        //     else {
+        //         // update the local storage user
+        //         localStorage.setItem('user', JSON.stringify(username));
+        //         window.location.reload();
+        //     }
+        //   }).catch(err => {
+        //     console.log(err);
+        //   });
 
         handleExit();
     }
@@ -170,7 +174,7 @@ export default function ProfileChange(props) {
                                     onChange={(newValue) => {
                                         handleBirthday(newValue);
                                     }}
-                                    value={dob}
+                                    value={new Date(dob.toString().replace(/-/g, '\/'))}
                                     renderInput={(params) => <TextField {...params} />}
                                 />
                             </LocalizationProvider>
