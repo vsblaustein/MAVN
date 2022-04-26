@@ -39,9 +39,10 @@ export default class MovieRoom extends React.Component {
     membersSeen: false,
     pSeen: false,
     movieMaster: "",
-    roomCode: "123456", // get this from wherever needed
+    roomCode: window.location.href.split('/')[4], // get the movie room from url
     chart: true,
     members: [],
+    member_images: [],
     // state variables for the selection algo, 50% defaut
 
     l_pref: 0.5,
@@ -86,8 +87,16 @@ export default class MovieRoom extends React.Component {
       group_members.push(gm[curr_gm].username);
     }
 
+    // get the member profile photos
+    const mem_img = await this.fetchImages(group_members);
+    const member_profiles = [];
+    for(const i in mem_img){
+      member_profiles.push(mem_img[i]);
+    }
+
     this.setState({
       members: group_members,
+      member_images: member_profiles,
     });
 
     //check if a new selection has been inserted in database
@@ -138,6 +147,27 @@ export default class MovieRoom extends React.Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  // get the list of images
+  fetchImages = async (mems) => {
+    var images = [];
+    try {
+      for (const m in mems) {
+        // store the user in local storage
+
+        const response = await Axios.get('http://localhost:3001/getProfile', {
+          params: { name: mems[m] }
+        });
+
+        console.log(response.data[0].image_path);
+        images.push(response.data[0].image_path);
+      }
+      return images;
+    } catch (err) {
+      console.log(err);
+    }
+
   }
 
   //get group prefs for all members in room
@@ -325,6 +355,7 @@ export default class MovieRoom extends React.Component {
     return (
       <>
         <ResponsiveAppBar currentUser = {curr_user} />
+
         {check
           ? <Box position="static">
 
@@ -426,8 +457,10 @@ export default class MovieRoom extends React.Component {
               Group Members
             </Typography>
 
-            <GroupMembers mem={this.state.members} code={this.state.roomCode}
-              style={flexContainer} class='center-screen' />
+
+            <GroupMembers mem={this.state.members} code={this.state.roomCode} images={this.state.member_images}
+
+            style={flexContainer} class='center-screen' />
 
             {/* saved preferences section */}
             <Typography

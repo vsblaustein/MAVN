@@ -42,9 +42,10 @@ export default class MovieSelectionPopUp extends React.Component {
 
         console.log("movie images:" + this.state.movieImages);
 
-        const currUser = JSON.parse(localStorage.getItem('user'));
-        if (currUser == roomMaster) {
-            this.setState({ showMasterButtons: true })
+      
+      const currUser = JSON.parse(localStorage.getItem('user'));
+        if (currUser === roomMaster){
+            this.setState({showMasterButtons: true})
         }
 
     }

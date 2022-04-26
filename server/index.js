@@ -28,13 +28,32 @@ app.post('/register', async (req, res) => {
   const full_name = req.body.full_name;
   const email = req.body.email;
   const dob = req.body.dob;
+  const img = req.body.img;
   try {
     const result = await db.query(
-      "INSERT INTO users (username, name, password, email, dob, image_path) VALUES (?, ?, ?, ?, ?, NULL)",
-      [username, full_name, password, email, dob]);
+      "INSERT INTO users (username, name, password, email, dob, image_path) VALUES (?, ?, ?, ?, ?, ?)",
+      [username, full_name, password, email, dob, img]);
     res.send(req.body);
   } catch (err) {
     throw err;
+  }
+});
+
+//POST: update user request, MAKE THIS ERROR CHECK
+app.post('/updateUser', async (req, res) => {
+
+  const username = req.body.username;
+  const email = req.body.email;
+  const dob = req.body.dob;
+  const img = req.body.img;
+  const curr_user = req.body.curr_user;
+  try {
+    const result = await db.query(
+      "UPDATE users SET username = ?, email = ?, dob = ?, image_path = ? WHERE username = ?",
+      [username, email, dob, img, curr_user]);
+    res.send(req.body);
+  } catch (err) {
+    res.send("bad username");
   }
 });
 
