@@ -2,7 +2,6 @@ import * as React from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import { ImageListItemBar } from '@mui/material';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -17,7 +16,6 @@ export default function GroupMemberIcons(props) {
   // navigate to their user page
   const handleClick = (name) =>{
     console.log(name);
-    <Link key={'profile'} to={'/profile/' + name.toLowerCase()} replace="True"></Link>
     navigate('/profile/' + name.toLowerCase(), { replace: true });
   }
 

@@ -24,7 +24,9 @@ function App() {
         <Route path="/my%20preferences" element={<Preferences />} />
         <Route path='/logout' element={<SignIn />} />
         <Route path="/movie%20room" element={<MovieRoomPage/>}/>
-        <Route path="/profile/:user" element={<ProfilePage/>}/>
+        <Route path="/profile/:user" element={<ProfilePage params={window.location.href.split('/')[4]}/>}/>
+        {/* <Route path="/myprofile/:user" element={<ProfilePage />}/> */}
+
         <Route path="/create" element={<CreatePage/>}/>
         <Route path="/join" element={<JoinPage/>}/>
         <Route path="/search%20movies" element ={<SearchMoviesPage/>}/>

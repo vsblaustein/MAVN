@@ -40,14 +40,9 @@ const ResponsiveAppBar = () => {
     console.log("u clicked a button: " + page);
   }
 
-  const handleSettingsClick = (setting) => {
-    console.log("u clicked a setting button: " + setting);
-  }
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
 
   // to={setting.toLowerCase() === 'logout' ? '/' : `/${setting.toLowerCase()}`}
   const linkSettings = (link) => {
