@@ -54,9 +54,10 @@ export default class Preferences extends React.Component {
 
  
   render() {
+    const curr_user = JSON.parse(localStorage.getItem('user'));
     return (
       <>
-        <ResponsiveAppBar />
+        <ResponsiveAppBar currentUser = {curr_user} />
         <Box position="static">
           {/* preference quiz button */}
           <Button

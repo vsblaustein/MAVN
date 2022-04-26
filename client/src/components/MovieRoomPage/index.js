@@ -26,6 +26,8 @@ var roomMaster = "";
 var rCode = "";
 var movieImgPath = "";
 
+
+
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
   // determines if either state has been seen
@@ -54,7 +56,6 @@ export default class MovieRoom extends React.Component {
 
 
   async componentDidMount() { //ONLOAD
-
     const code = this.state.roomCode;
     console.log(code);
     // get movie master
@@ -198,6 +199,7 @@ export default class MovieRoom extends React.Component {
   // pass in the values stored as state variables to compute
   generateSelection = async (prefs) => {
     //step 1: select all movies from db given the genre and rating (and sliders ofc)
+    this.toggleMS(null);
     var big_pref_list = [];
     const group_members = this.state.members;
 
@@ -248,8 +250,9 @@ export default class MovieRoom extends React.Component {
       , this.state.ry_pref, this.state.a_pref, big_pref_list, mm_pref_list);
 
     // set the movie list state variable to use in selection
-
+    this.toggleMS(null);
     this.toggleMS(movie);
+    
 
   }
 
@@ -344,13 +347,15 @@ export default class MovieRoom extends React.Component {
   }
 
   render() {
+    const curr_user = JSON.parse(localStorage.getItem('user'));
     var currentMaster = this.state.movieMaster;
     var show = this.state.showMasterButtons;
     const check = this.state.url_check;
     console.log("url check in render: ", check);
     return (
       <>
-        <ResponsiveAppBar />
+        <ResponsiveAppBar currentUser = {curr_user} />
+
         {check
           ? <Box position="static">
 
@@ -381,6 +386,50 @@ export default class MovieRoom extends React.Component {
               Remove Group Members
             </Button>}
 
+            {/* generate selection button
+          {show && <Button
+            onClick={this.onClick}
+            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+          >
+            Generate Movie Selection
+          </Button>}
+          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
+          
+
+          {show && <Button
+            onClick={this.toggleGP}
+            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+          >
+            Edit Group Preferences
+          </Button>}
+          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
+          {show && <Button
+            onClick={this.generateSelection}
+            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+          >
+            Generate Selection
+          </Button> }
+          <Button
+            onClick={this.toggleP}
+            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
+          >
+            Bias Movie Selection
+          </Button>
+          <Button
+            onClick={this.copyToClipboard}
+            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+          >
+            Copy Room Link
+          </Button> */}
+
+            {/* <Button
+            onClick={this.toggleMembers}
+            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+          >
+            Remove Group Members
+          </Button> */}
+
+
             {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
             {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
             {this.state.membersSeen ? <MembersPop code={this.state.roomCode}
@@ -408,8 +457,10 @@ export default class MovieRoom extends React.Component {
               Group Members
             </Typography>
 
+
             <GroupMembers mem={this.state.members} code={this.state.roomCode} images={this.state.member_images}
-              style={flexContainer} class='center-screen' />
+
+            style={flexContainer} class='center-screen' />
 
             {/* saved preferences section */}
             <Typography

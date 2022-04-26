@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 
 const currentUser = JSON.parse(localStorage.getItem('user'));
 
+
 export default class profile extends React.Component {
   constructor(props) {
     super(props);
@@ -60,9 +61,11 @@ export default class profile extends React.Component {
   }
 
   render() {
+    const curr_user = JSON.parse(localStorage.getItem('user'));
     return (
       <Box>
-        <ResponsiveAppBar />
+        <ResponsiveAppBar currentUser = {curr_user} />
+
         {/* toggle the pop up to edit, only allow edit if is the user */}
         {this.state.editProfile ? <ProfilePopUp username={this.state.username}
         birthday={this.state.birthday} email={this.state.email} 
