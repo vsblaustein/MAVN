@@ -24,18 +24,7 @@ export default class profile extends React.Component {
     console.log(props);
   }
 
-  componentDidUpdate(prevProps){
-    console.log("username:" + this.state.username);
-    console.log("prev: " + prevProps.params);
-    console.log("prosp: ");
-    console.log(this.props.params);
-  //   if(this.props.match.params.user !== prevProps.props.match.params.user){
-  //     console.log("boo");
-  //   }
-  //   else {
-  //     console.log.apply("yay");
-  //   }
-  }
+ 
 
   // load user information
   componentDidMount() {
