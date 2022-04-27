@@ -5,13 +5,6 @@ import CreatePopUp from './CreatePopUp';
 import './CreatePopUp.css';
 import Button from '@mui/material/Button';
 
-
-
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from "react-router-dom";
   
 export default class create extends React.Component {
   state = {
@@ -21,6 +14,7 @@ export default class create extends React.Component {
    this.setState({
     seen: !this.state.seen
    });
+   this.props.setBtn(this.state.seen);
   };
 render() {
   return (

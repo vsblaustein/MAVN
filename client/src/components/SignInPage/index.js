@@ -44,14 +44,6 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    /*setUsername(data.get('username'));
-    setPassword(data.get('password'));
-    console.log({
-      changed_username: username,
-      changed_password: password
-    });*/
-
     console.log("beginning axios.get")
     const user = data.get('username');
     const pass = data.get('password');
@@ -139,12 +131,6 @@ export default function SignIn() {
     }).catch(err => {
       console.log(err);
     });
-
-
-
-
-
-
   };
 
   return (
