@@ -28,6 +28,8 @@ export default function Profile() {
     Axios.get('http://localhost:3001/getProfile', {
       params: { name: window.location.href.split('/')[4] }
     }).then((response) => {
+      console.log(response.data[0].username);
+      console.log(currentUser);
       setUsername(response.data[0].username);
       // make the birthday a prettier thing
       setBirthday(response.data[0].dob.substring(0, response.data[0].dob.toString().indexOf("T")));

@@ -35,20 +35,20 @@ export default class Preferences extends React.Component {
   togglePQ = () => {
     this.setState({
       pqSeen: !this.state.pqSeen,
-      chart: this.state.pqSeen
     });
+    this.toggleChart();
   };
 
   toggleMR = () => {
     this.setState({
       mrSeen: !this.state.mrSeen,
-      chart: this.state.mrSeen
     });
+    this.toggleChart();
   };
 
   toggleChart = () => {
     this.setState({
-      chart: !this.state.chart
+      chart: !this.state.chart,
     });
   };
 
@@ -87,7 +87,8 @@ export default class Preferences extends React.Component {
             My Current Preferences
           </Typography>
           
-          {this.state.chart ? <PreferencesStats style={flexContainer} class='center-screen'/> : null}
+          {this.state.chart ? <PreferencesStats 
+          style={flexContainer} className='center-screen'/> : null}
           
           {/* if agree should wipe if not just exit */}
           <ClearConfirm class='center-screen' clear={this.clear}/>
