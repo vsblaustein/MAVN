@@ -10,6 +10,8 @@ export default class create extends React.Component {
   state = {
    seen: false
    };
+
+  // toggles so the pop up is visible and opposite button is not
   togglePop = () => {
    this.setState({
     seen: !this.state.seen
