@@ -6,53 +6,61 @@ import Axios from 'axios';
 import Box from '@mui/material/Box';
 import ProfilePopUp from './editProfile.js';
 import Button from '@mui/material/Button';
+import { useLocation } from 'react-router-dom';
 
 const currentUser = JSON.parse(localStorage.getItem('user'));
 
 
-export default class profile extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      seen: false,
-      username: "",
-      birthday: "",
-      email: "",
-      profile_img: "",
-      editProfile: false,
-    };
-    console.log("here");
-    console.log(props);
-  }
+export default function Profile() {
+  const location = useLocation();
+  const [seen, setSeen] = React.useState(false);
+  const [username, setUsername] = React.useState("");
+  const [birthday, setBirthday] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [profile_img, setProfileImg] = React.useState("");
+  const [editProfile, setEditProfile] = React.useState(false);
+  const [url, setUrl] = React.useState("");
 
- 
-
-  // load user information
-  componentDidMount() {
+  React.useEffect(() => {
     console.log("loading this");
+    console.log("location: ", location);
     // store the user in local storage
     Axios.get('http://localhost:3001/getProfile', {
       params: { name: window.location.href.split('/')[4] }
     }).then((response) => {
-      this.setState({
-        username: response.data[0].username,
-        // make the birthday a prettier thing
-        birthday: response.data[0].dob.substring(0, response.data[0].dob.toString().indexOf("T")),
-        email: response.data[0].email,
-        profile_img: response.data[0].image_path,
-      });
+      setUsername(response.data[0].username);
+      // make the birthday a prettier thing
+      setBirthday(response.data[0].dob.substring(0, response.data[0].dob.toString().indexOf("T")));
+      setEmail(response.data[0].email);
+      setProfileImg(response.data[0].image_path);
     }).catch(err => {
       console.log(err);
     });
 
     console.log("current user:" + currentUser);
     console.log("browser: " + window.location.href.split('/')[4]);
-  }
+  }, []);
 
-  toggleProfile = () => {
-    this.setState({
-      editProfile: !this.state.editProfile,
+  React.useEffect(() => {
+    console.log("location changed");
+    Axios.get('http://localhost:3001/getProfile', {
+      params: { name: window.location.href.split('/')[4] }
+    }).then((response) => {
+      setUsername(response.data[0].username);
+      // make the birthday a prettier thing
+      setBirthday(response.data[0].dob.substring(0, response.data[0].dob.toString().indexOf("T")));
+      setEmail(response.data[0].email);
+      setProfileImg(response.data[0].image_path);
+    }).catch(err => {
+      console.log(err);
     });
+    renderDOM();
+  }, [location]);
+
+
+
+  const toggleProfile = () => {
+    setEditProfile(!editProfile);
     // show a drop down for all the avatars
     // get the index of the one the user clicks
     // print avatar[idx]
@@ -60,16 +68,15 @@ export default class profile extends React.Component {
     // reload the window
   }
 
-  render() {
-    const curr_user = JSON.parse(localStorage.getItem('user'));
+  const renderDOM = () => {
     return (
       <Box>
-        <ResponsiveAppBar currentUser = {curr_user} />
+        <ResponsiveAppBar currentUser={currentUser} />
 
         {/* toggle the pop up to edit, only allow edit if is the user */}
-        {this.state.editProfile ? <ProfilePopUp username={this.state.username}
-        birthday={this.state.birthday} email={this.state.email} 
-        photo={this.state.profile_img} toggle={this.toggleProfile} /> : null}
+        {editProfile ? <ProfilePopUp username={username}
+          birthday={birthday} email={email}
+          photo={profile_img} toggle={toggleProfile} /> : null}
 
         <Box className="content" >
           <Typography
@@ -88,8 +95,8 @@ export default class profile extends React.Component {
               maxHeight: { xs: '35vh', md: '35vh' },
               maxWidth: { xs: '35vh', md: '35vh' },
             }}
-            alt={this.state.username}
-            src={this.state.profile_img}
+            alt={username}
+            src={profile_img}
           />
           <Typography
             variant="h5"
@@ -97,7 +104,7 @@ export default class profile extends React.Component {
             component="div"
             sx={{ ml: "10px", mt: "15px", display: { xs: 'none', md: 'flex' } }}
           >
-            Username: {this.state.username}
+            Username: {username}
           </Typography>
           <Typography
             variant="h5"
@@ -105,7 +112,7 @@ export default class profile extends React.Component {
             component="div"
             sx={{ ml: "10px", mt: "15px", display: { xs: 'none', md: 'flex' } }}
           >
-            Email: {this.state.email}
+            Email: {email}
           </Typography>
           <Typography
             variant="h5"
@@ -113,16 +120,25 @@ export default class profile extends React.Component {
             component="div"
             sx={{ ml: "10px", mt: "15px", display: { xs: 'none', md: 'flex' } }}
           >
-            Birthday: {this.state.birthday}
+            Birthday: {birthday}
           </Typography>
           <br />
-          {currentUser === window.location.href.split('/')[4] && <Button onClick={this.toggleProfile}>
+          {currentUser === window.location.href.split('/')[4] && <Button onClick={toggleProfile}>
             Edit Information
-          </Button> }
+          </Button>}
         </Box>
       </Box>
     );
   }
+
+  return (
+    <>
+      {renderDOM()}
+    </>
+  );
+
+
 }
+
 
 
