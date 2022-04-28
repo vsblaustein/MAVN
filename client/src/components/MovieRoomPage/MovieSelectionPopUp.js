@@ -33,12 +33,12 @@ export default class MovieSelectionPopUp extends React.Component {
     async componentDidMount() {
 
         const currUser = JSON.parse(localStorage.getItem('user'));
-        if (currUser === this.state.movieMaster){
+        if (currUser === this.state.movieMaster) {
             // get the movie images
             var images = [];
             console.log("yer:", this.state.movies);
             var key = Array.from(this.state.movies.keys())[this.state.index];
-            
+
             this.state.movies.forEach(function (value, key) {
                 images.push(key.image_path);
             })
@@ -49,8 +49,8 @@ export default class MovieSelectionPopUp extends React.Component {
                 currentYear: key.year,
             })
 
-            console.log("movie images:" + this.state.movieImages[0]);            
-            this.setState({showMasterButtons: true})
+            console.log("movie images:" + this.state.movieImages[0]);
+            this.setState({ showMasterButtons: true })
             this.createAlerts(key.title, key.year, key.image_path);
         }
     }
@@ -65,30 +65,32 @@ export default class MovieSelectionPopUp extends React.Component {
         this.props.toggle();
     }
 
-    selectMovie = () => {
+    selectMovie = async () => {
         this.removeAlert();
 
         const img = this.state.movieImages[this.state.index];
         //add movie to movie_selection table
         const t = this.state.currentTitle;
         const y = this.state.currentYear;
-        Axios.post('http://localhost:3001/movieSelection', {
+
+        await Axios.post('http://localhost:3001/movieSelection', {
             code: this.state.roomCode,
             title: t,
             year: y,
             imagePath: img,
         }).then((response) => {
             console.log(response);
+            console.log("abcdef");
         }).catch(err => {
             console.log(err);
         });
 
         //add selection alerts
-        for (const i in this.state.memberList){
+        for (const i in this.state.memberList) {
             const user = this.state.memberList[i];
             console.log("user: " + this.state.memberList[user]);
-            if (user != this.state.movieMaster){ //don't add extra alert for master
-                Axios.post('http://localhost:3001/addSelectionAlert', {
+            if (user !== this.state.movieMaster) { //don't add extra alert for master
+                await Axios.post('http://localhost:3001/addSelectionAlert', {
                     code: this.state.roomCode,
                     title: t,
                     year: y,
@@ -103,14 +105,16 @@ export default class MovieSelectionPopUp extends React.Component {
         }
     }
 
-    createAlerts = (t, y , img) => {
+
+
+    createAlerts = (t, y, img) => {
         console.log("in alerts")
         //add alert to alert table for each member in a room 
         console.log(this.state.memberList);
-        for (const i in this.state.memberList){
+        for (const i in this.state.memberList) {
             const user = this.state.memberList[i];
             console.log("user: " + this.state.memberList[user]);
-            if (user != this.state.movieMaster){ //don't add extra alert for master
+            if (user != this.state.movieMaster) { //don't add extra alert for master
                 Axios.post('http://localhost:3001/addAlert', {
                     code: this.state.roomCode,
                     title: t,
@@ -127,10 +131,10 @@ export default class MovieSelectionPopUp extends React.Component {
     };
 
     removeAlert = () => {
-        for (const i in this.state.memberList){
+        for (const i in this.state.memberList) {
             const user = this.state.memberList[i];
             console.log(user);
-            if (user != this.state.movieMaster){
+            if (user != this.state.movieMaster) {
                 Axios.post('http://localhost:3001/removeAlert', {
                     code: this.state.roomCode,
                     username: user,
@@ -145,18 +149,18 @@ export default class MovieSelectionPopUp extends React.Component {
 
     voteAgainstSelection = () => {
         let i = this.state.groupVotes;
-        i +=1;
+        i += 1;
         console.log("group votes: " + i)
-        this.setState({groupVotes: i})
+        this.setState({ groupVotes: i })
         const numMembers = this.state.memberList.length;
         //if more than half of members vote, remove selection
-        if (i > (numMembers/2)){
+        if (i > (numMembers / 2)) {
             this.newSelection();
-        }else{   
-            this.handleExit();  
-        } 
+        } else {
+            this.handleExit();
+        }
     };
-          
+
 
     vetoSelection = () => {
         //if master doesn't like movie, remove selection
@@ -177,7 +181,7 @@ export default class MovieSelectionPopUp extends React.Component {
 
         // set the title and index
         var key = Array.from(this.state.movies.keys())[this.state.index + 1];
-        this.setState({ index: i, currentTitle: key.title, currentYear: key.year});
+        this.setState({ index: i, currentTitle: key.title, currentYear: key.year });
         this.removeAlert();
         this.createAlerts(key.title, key.year, key.image_path);
     }
@@ -204,7 +208,7 @@ export default class MovieSelectionPopUp extends React.Component {
                                     >
                                         Movie Selection
                                     </Typography>
-                                    <span className="close" onClick={this.handleExit}>
+                                    <span className="close" onClick={this.handleExitMaster}>
                                         <Button>
                                             Select Movie
                                         </Button>
