@@ -37,7 +37,7 @@ export default class MovieSelectionPopUp extends React.Component {
             const user = this.state.memberList[i];
             console.log("in remove alert");
             console.log(user);
-            if (user != this.state.movieMaster){
+            if (user !== this.state.movieMaster){
                 Axios.post('http://localhost:3001/removeSelectionAlert', {
                     code: this.state.roomCode,
                     username: user,
@@ -87,8 +87,6 @@ export default class MovieSelectionPopUp extends React.Component {
                                 alt="No movie image"
                                 src={currentSelectionImage}
                             />
-
-
                         </Box>
                     </Box>
                 </form>

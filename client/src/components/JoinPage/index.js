@@ -4,8 +4,6 @@ import './PopUp.css';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
-
-
 export default class joinPopUp extends React.Component {
   constructor(props) {
     super(props);
@@ -13,6 +11,7 @@ export default class joinPopUp extends React.Component {
       seen: false,
     };
   }
+
   // toggles so the pop up is visible and opposite button is not
   togglePop = () => {
     this.setState({
@@ -21,11 +20,9 @@ export default class joinPopUp extends React.Component {
     this.props.setBtn(this.state.seen);
   };
 
-
   render() {
     return (
       <Box>
-
         <Box className="centered">
           <Box className="btn" onClick={this.togglePop} >
             <Button id="big-btn">Join New Room</Button >

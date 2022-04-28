@@ -1,15 +1,11 @@
 
 import * as React from 'react';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-import { useHistory, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { Button } from '@mui/material';
 import { Paper } from '@mui/material';
-// this document will generate the charts from the db and display them
-
 
 function ReturnButton() {
     const navigate = useNavigate()
@@ -42,11 +38,9 @@ function ReturnButton() {
                         >
                             Return to Home
                         </Button>
-
                     </Box>
                 </Box>
             </Grid>
-
         </>
     );
 }

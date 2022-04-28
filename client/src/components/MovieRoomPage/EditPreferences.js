@@ -14,7 +14,6 @@ export default function GQPopUp(props) {
     const [year, setYear] = React.useState(50);
 
     // current user should be a LIST of all users in the movie room?
-    // const currentUser = JSON.parse(localStorage.getItem('user'));
 
     // makes the pop up disappear
     const handleExit = () => {
@@ -22,12 +21,10 @@ export default function GQPopUp(props) {
     };
 
     // submits the form to the DB
-    // store as state variables to index prop? when generate movie selection multiply by these at the end?
     const handleSubmit = async (event) => {
-        console.log("updating preference weights");
         // write info to the database and continue
-        console.log("new weights: (genre: " + genre + ") (release years, " +
-         year + ") (length, " + length + ") (rating: "+ rating + ") (actors: " + actors + ")");
+        // console.log("new weights: (genre: " + genre + ") (release years, " +
+        //  year + ") (length, " + length + ") (rating: "+ rating + ") (actors: " + actors + ")");
 
         // set the values in the previous componenet to use in SelectionAlgo
         props.update('g_pref', genre);

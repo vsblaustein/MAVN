@@ -24,7 +24,6 @@ export default function MembersPopUp(props) {
     setMList(mems);
   },[props.mem, props.master]);
 
-
   // makes the pop up disappear
   const handleExit = () => {
     props.toggle();
@@ -45,7 +44,6 @@ export default function MembersPopUp(props) {
       console.log(err);
     });
   }
-
 
   // add a "are you sure you want to leave?"
   return (
@@ -73,9 +71,7 @@ export default function MembersPopUp(props) {
               multiple
               sx={{ width: 300 }}
               onChange={handleChange}
-              renderInput={(params) => <TextField {...params} label="Members" />}
-            />
-
+              renderInput={(params) => <TextField {...params} label="Members" />}/>
             <RemoveConfirm action={() => confirmRemove()} class='center-screen' />
           </Box >
         </Box>

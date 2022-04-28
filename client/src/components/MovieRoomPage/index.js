@@ -11,9 +11,7 @@ import PreferencesStats from './GroupPrefStat';
 import GroupMembers from './GroupMemberIcons';
 import Axios from 'axios';
 import { selectMovie } from "./SelectionAlgo.js";
-import { useNavigate } from 'react-router';
 import ReturnButton from './ReturnButton';
-import MovieSelectionPopUp from './MovieSelectionPopUp';
 
 
 // styling for horizontal list
@@ -57,7 +55,6 @@ export default class MovieRoom extends React.Component {
 
   async componentDidMount() { //ONLOAD
     const code = this.state.roomCode;
-    console.log(code);
     // get movie master
     this.CheckCode();
     const currUser = JSON.parse(localStorage.getItem('user'));
@@ -65,12 +62,11 @@ export default class MovieRoom extends React.Component {
       params: { c: code }
     }
     ).then((response) => {
-      console.log("movie master is: " + response.data[0].username);
+      // console.log("movie master is: " + response.data[0].username);
       this.setState({
         movieMaster: response.data[0].username,
       })
-      console.log("Master: " + this.state.movieMaster);
-      console.log("user: " + currUser);
+      // toggle for master vs general user ui
       if (currUser === this.state.movieMaster) {
         this.setState({ showMasterButtons: true });
       }
@@ -89,7 +85,7 @@ export default class MovieRoom extends React.Component {
     // get the member profile photos
     const mem_img = await this.fetchImages(group_members);
     const member_profiles = [];
-    for(const i in mem_img){
+    for (const i in mem_img) {
       member_profiles.push(mem_img[i]);
     }
 
@@ -103,21 +99,23 @@ export default class MovieRoom extends React.Component {
       params: { code: code, user: currUser }
     }).then((response) => {
       console.log(response.data[0].cnt === '0');
-      if (response.data[0].cnt != '0'){
-        Axios.get('http://localhost:3001/getAlert',{
+      if (response.data[0].cnt !== '0') {
+        Axios.get('http://localhost:3001/getAlert', {
           params: { code: code, user: currUser }
         }).then((response) => {
           if (response.data.length !== 0) {
-    
-            this.setState({alert_img: response.data[0].image_path,
-                          alert_title: response.data[0].title});
+
+            this.setState({
+              alert_img: response.data[0].image_path,
+              alert_title: response.data[0].title
+            });
             this.toggleMSAlert();
           }
           console.log(response);
         }).catch(err => {
           console.log(err);
         })
-      }   
+      }
     }).catch(err => {
       console.log(err);
     });
@@ -125,22 +123,24 @@ export default class MovieRoom extends React.Component {
     Axios.get('http://localhost:3001/checkSelectionAlert', {
       params: { code: code, user: currUser }
     }).then((response) => {
-      console.log(response.data[0].cnt === '0');
-      if (response.data[0].cnt != '0'){
-        Axios.get('http://localhost:3001/getSelectionAlert',{
+      // console.log(response.data[0].cnt === '0');
+      if (response.data[0].cnt !== '0') {
+        Axios.get('http://localhost:3001/getSelectionAlert', {
           params: { code: code, user: currUser }
         }).then((response) => {
           if (response.data.length !== 0) {
-    
-            this.setState({alert_img: response.data[0].image_path,
-                          alert_title: response.data[0].title});
+
+            this.setState({
+              alert_img: response.data[0].image_path,
+              alert_title: response.data[0].title
+            });
             this.toggleMAlert();
           }
           console.log(response);
         }).catch(err => {
           console.log(err);
         })
-      }   
+      }
     }).catch(err => {
       console.log(err);
     });
@@ -149,8 +149,7 @@ export default class MovieRoom extends React.Component {
   }
 
   CheckCode = () => {
-    let code =window.location.href.split('/')[4];
-    console.log("code is " + code);
+    let code = window.location.href.split('/')[4];
     //Check if url code exists in db
     Axios.get('http://localhost:3001/checkMovieRoomCode', {
       params: { c: code }
@@ -161,8 +160,9 @@ export default class MovieRoom extends React.Component {
     }).catch(err => {
       console.log("movie room doesnt exist");
       //load alert saying you dont have access to this room
-      //MyFunction();
-      this.state.url_check = false;
+      this.setState({
+        url_check: false,
+      })
       console.log("url check after CheckCode catch: ", this.state.url_check);
       this.forceUpdate();
     });
@@ -189,12 +189,10 @@ export default class MovieRoom extends React.Component {
     try {
       for (const m in mems) {
         // store the user in local storage
-
         const response = await Axios.get('http://localhost:3001/getProfile', {
           params: { name: mems[m] }
         });
 
-        console.log(response.data[0].image_path);
         images.push(response.data[0].image_path);
       }
       return images;
@@ -210,7 +208,6 @@ export default class MovieRoom extends React.Component {
       const resp = await Axios.get('http://localhost:3001/getGroupPrefChart', {
         params: { username: user, table: table }
       });
-      //console.log("fetch group prefs returned", resp.data);
       return resp.data;
     } catch (err) {
       console.error(err);
@@ -238,7 +235,8 @@ export default class MovieRoom extends React.Component {
     const group_members = this.state.members;
 
     //console.log("group members", group_members);
-    const tables = ["genre_pref", "rating_pref", "length_pref", "actor_pref", "start_year_pref", "end_year_pref"];
+    const tables =
+      ["genre_pref", "rating_pref", "length_pref", "actor_pref", "start_year_pref", "end_year_pref"];
     //iterate over every table and store them in a list.
     //current user is member.username
     console.log("members:" + group_members);
@@ -259,7 +257,7 @@ export default class MovieRoom extends React.Component {
       big_pref_list.push(json);
     }
 
-    console.log("group prefs: ", big_pref_list);
+    // console.log("group prefs: ", big_pref_list);
 
     var mm_pref_list = [];
     for (var table of tables) {
@@ -274,21 +272,15 @@ export default class MovieRoom extends React.Component {
         ));
       mm_pref_list.push(json);
     }
-    console.log("movie master prefs: ", mm_pref_list);
-    //big pref list holds everyones shit
-    //mm_pref_list holds only movie masters shit
-
+    // console.log("movie master prefs: ", mm_pref_list);
 
     // calls the selectMovie function in the SelectionAlgo class
     const movie = await selectMovie(this.state.l_pref, this.state.r_pref, this.state.g_pref
       , this.state.ry_pref, this.state.a_pref, big_pref_list, mm_pref_list);
 
-      console.log("moooovie:", movie);
-    // set the movie list state variable to use in selection
-
+    // show the movie selection pop up
     this.toggleMS(null);
     this.toggleMS(movie);
-
   }
 
   toggleMSAlert = () => {
@@ -313,7 +305,6 @@ export default class MovieRoom extends React.Component {
   };
 
   onClick = () => {
-    //this.togglePQ();
     this.setSelection();
   };
 
@@ -371,99 +362,90 @@ export default class MovieRoom extends React.Component {
     else {
       console.log("Cannot find preference rating trying to update");
     }
-    console.log("set " + name + " to: " + val / 100);
+    // console.log("set " + name + " to: " + val / 100);
   }
 
   render() {
     const curr_user = JSON.parse(localStorage.getItem('user'));
-    var currentMaster = this.state.movieMaster;
     var show = this.state.showMasterButtons;
     const check = this.state.url_check;
     console.log("url check in render: ", check);
     return (
       <>
-        <ResponsiveAppBar currentUser = {curr_user} />
+        <ResponsiveAppBar currentUser={curr_user} />
 
-        {check
-          ? <Box position="static">
+        {check ? <Box position="static">
 
-            {/* generate selection button */}
-            {show && <Button
-              onClick={this.generateSelection}
-              sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
-            >
-              Generate Selection
-            </Button>}
-            {show && <Button
-              onClick={this.toggleP}
-              sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
-            >
-              Bias Movie Selection
-            </Button>}
-            <Button
-              onClick={this.copyToClipboard}
-              sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
-            >
-              Copy Room Link
-            </Button>
+          {/* generate selection button */}
+          {show && <Button
+            onClick={this.generateSelection}
+            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
+          >
+            Generate Selection
+          </Button>}
+          {show && <Button
+            onClick={this.toggleP}
+            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
+          >
+            Bias Movie Selection
+          </Button>}
+          <Button
+            onClick={this.copyToClipboard}
+            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
+          >
+            Copy Room Link
+          </Button>
 
-            {show && <Button
-              onClick={this.toggleMembers}
-              sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
-            >
-              Remove Group Members
-            </Button>}          
+          {show && <Button
+            onClick={this.toggleMembers}
+            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
+          >
+            Remove Group Members
+          </Button>}
 
+          {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} alertImg={this.state.alert_img} alertTitle={this.state.alert_title} mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMS} /> : null}
+          {this.state.mSeen ? <MPopUp selectList={this.state.movie_list} alertImg={this.state.alert_img} alertTitle={this.state.alert_title} mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMAlert} /> : null}
+          {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
+          {this.state.membersSeen ? <MembersPop code={this.state.roomCode}
+            mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
 
-            {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} alertImg={this.state.alert_img} alertTitle={this.state.alert_title} mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMS} /> : null}
-            {this.state.mSeen ? <MPopUp selectList={this.state.movie_list} alertImg={this.state.alert_img} alertTitle={this.state.alert_title} mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMAlert} /> : null}
-            {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
-            {this.state.membersSeen ? <MembersPop code={this.state.roomCode}
-              mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+          >
+            Room {this.state.roomCode} Movie Master: {this.state.movieMaster}
 
-            <Typography
+          </Typography>
+          {/* group member icons section */}
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+          >
+            Group Members
+          </Typography>
 
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-            >
-
-              Room {this.state.roomCode} Movie Master: {this.state.movieMaster}
-
-            </Typography>
-
-            {/* group member icons section */}
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-            >
-              Group Members
-            </Typography>
-
-
-            <GroupMembers mem={this.state.members} code={this.state.roomCode} images={this.state.member_images}
+          <GroupMembers mem={this.state.members} code={this.state.roomCode} images={this.state.member_images}
 
             style={flexContainer} class='center-screen' />
 
-            {/* saved preferences section */}
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
-            >
-              Group Preferences
-            </Typography>
+          {/* saved preferences section */}
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ ml: "15px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
+          >
+            Group Preferences
+          </Typography>
 
-            {this.state.chart ? <PreferencesStats
-              code={this.state.roomCode} style={flexContainer}
-              class='center-screen' /> : null}
-
-          </Box>
-          : <ReturnButton />
+          {this.state.chart ? <PreferencesStats
+            code={this.state.roomCode} style={flexContainer}
+            class='center-screen' /> : null}
+        </Box> : <ReturnButton />
         }
       </>
     );

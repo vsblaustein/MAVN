@@ -6,7 +6,6 @@ import StatChart from './chart';
 import Axios from 'axios';
 
 // this document will generate the charts from the db and display them
-
 export default class PreferencesStats extends React.Component {
   constructor(props) {
     super(props);
@@ -85,7 +84,7 @@ export default class PreferencesStats extends React.Component {
           for (const m in response.data) {
             members.push(response.data[m].username);
           }
-          console.log("members for room " + this.state.roomCode + ": " + members);
+          // console.log("members for room " + this.state.roomCode + ": " + members);
 
         }).catch(err => {
           console.log(err);
@@ -104,8 +103,6 @@ export default class PreferencesStats extends React.Component {
               console.log(err);
             });
         });
-
-
     }
   }
 

@@ -7,8 +7,6 @@ import Axios from 'axios';
 import { TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
-
-
 export default class MovieSelectionPopUp extends React.Component {
 
     constructor(props) {
@@ -27,7 +25,6 @@ export default class MovieSelectionPopUp extends React.Component {
             groupVotes: 0,
             roomCode: window.location.href.split('/')[4],
         };
-
     }
 
     async componentDidMount() {
@@ -36,7 +33,6 @@ export default class MovieSelectionPopUp extends React.Component {
         if (currUser === this.state.movieMaster) {
             // get the movie images
             var images = [];
-            console.log("yer:", this.state.movies);
             var key = Array.from(this.state.movies.keys())[this.state.index];
 
             this.state.movies.forEach(function (value, key) {
@@ -49,7 +45,6 @@ export default class MovieSelectionPopUp extends React.Component {
                 currentYear: key.year,
             })
 
-            console.log("movie images:" + this.state.movieImages[0]);
             this.setState({ showMasterButtons: true })
             this.createAlerts(key.title, key.year, key.image_path);
         }
@@ -80,7 +75,6 @@ export default class MovieSelectionPopUp extends React.Component {
             imagePath: img,
         }).then((response) => {
             console.log(response);
-            console.log("abcdef");
         }).catch(err => {
             console.log(err);
         });
@@ -88,7 +82,7 @@ export default class MovieSelectionPopUp extends React.Component {
         //add selection alerts
         for (const i in this.state.memberList) {
             const user = this.state.memberList[i];
-            console.log("user: " + this.state.memberList[user]);
+            // console.log("user: " + this.state.memberList[user]);
             if (user !== this.state.movieMaster) { //don't add extra alert for master
                 await Axios.post('http://localhost:3001/addSelectionAlert', {
                     code: this.state.roomCode,
@@ -105,16 +99,13 @@ export default class MovieSelectionPopUp extends React.Component {
         }
     }
 
-
-
     createAlerts = (t, y, img) => {
-        console.log("in alerts")
         //add alert to alert table for each member in a room 
         console.log(this.state.memberList);
         for (const i in this.state.memberList) {
             const user = this.state.memberList[i];
             console.log("user: " + this.state.memberList[user]);
-            if (user != this.state.movieMaster) { //don't add extra alert for master
+            if (user !== this.state.movieMaster) { //don't add extra alert for master
                 Axios.post('http://localhost:3001/addAlert', {
                     code: this.state.roomCode,
                     title: t,
@@ -133,8 +124,7 @@ export default class MovieSelectionPopUp extends React.Component {
     removeAlert = () => {
         for (const i in this.state.memberList) {
             const user = this.state.memberList[i];
-            console.log(user);
-            if (user != this.state.movieMaster) {
+            if (user !== this.state.movieMaster) {
                 Axios.post('http://localhost:3001/removeAlert', {
                     code: this.state.roomCode,
                     username: user,
@@ -150,7 +140,6 @@ export default class MovieSelectionPopUp extends React.Component {
     voteAgainstSelection = () => {
         let i = this.state.groupVotes;
         i += 1;
-        console.log("group votes: " + i)
         this.setState({ groupVotes: i })
         const numMembers = this.state.memberList.length;
         //if more than half of members vote, remove selection
@@ -161,7 +150,6 @@ export default class MovieSelectionPopUp extends React.Component {
         }
     };
 
-
     vetoSelection = () => {
         //if master doesn't like movie, remove selection
         this.newSelection();
@@ -170,7 +158,6 @@ export default class MovieSelectionPopUp extends React.Component {
     // goes to next best movie in list
     newSelection = () => {
         let i = this.state.index;
-        console.log("index: " + i)
         i = i + 1;
         // alert that went through all movies
         if (i === this.state.movies.size) {
@@ -191,7 +178,7 @@ export default class MovieSelectionPopUp extends React.Component {
         var show = this.state.showMasterButtons;
 
         var currentSelectionImage = show ? this.state.movieImages[this.state.index] : this.state.alert_img;
-        var currentSelectionTitle = show ? this.state.currentTitle : this.state.alert_title;
+        // var currentSelectionTitle = show ? this.state.currentTitle : this.state.alert_title;
         return (
             <>
                 <form>
@@ -213,6 +200,7 @@ export default class MovieSelectionPopUp extends React.Component {
                                             Select Movie
                                         </Button>
                                     </span>
+
                                     <TextField id="title"
                                         inputProps={{ style: { textAlign: 'center', fontSize: 20 }, readOnly: true }}
                                         InputProps={{ disableUnderline: true }}
@@ -229,8 +217,16 @@ export default class MovieSelectionPopUp extends React.Component {
                                         alt="No movie image"
                                         src={currentSelectionImage}
                                     />
-                                    {!show && <Button onClick={this.voteAgainstSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Vote against Selection</Button>}
-                                    {show && <Button onClick={this.vetoSelection} sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Veto Selection</Button>}
+
+                                    {!show && <Button onClick={this.voteAgainstSelection}
+                                        sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Vote against Selection</Button>}
+                                    {show && <Button onClick={this.vetoSelection}
+                                        sx={{ position: 'absolute', bottom: '10%', left: '30%' }}>Veto Selection</Button>}
+
+                                    <Button onClick={this.handleExit}
+                                        sx={{ position: 'absolute', bottom: '10%', right: '30%' }}>
+                                        Exit
+                                    </Button>
                                 </React.Fragment>
                             }
                             {(this.state.movies && this.state.movies.size <= 0) &&
@@ -270,13 +266,8 @@ export default class MovieSelectionPopUp extends React.Component {
                                     >
                                         <CircularProgress size={200} />
                                     </Typography>
-
                                 </React.Fragment>
-
                             }
-
-
-
                         </Box>
                     </Box>
                 </form>
