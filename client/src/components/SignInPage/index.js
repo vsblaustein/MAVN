@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
+import Image from '../../assets/logo.png';
 
 
 function Copyright(props) {
@@ -35,20 +36,14 @@ const theme = createTheme();
 export default function SignIn() {
   const [loginStatus, setLoginStatus] = React.useState("");
   let navigate = useNavigate();
+  localStorage.clear();
+  console.log("cleared storage");
 
   
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    /*setUsername(data.get('username'));
-    setPassword(data.get('password'));
-    console.log({
-      changed_username: username,
-      changed_password: password
-    });*/
-
     console.log("beginning axios.get")
     const user = data.get('username');
     const pass = data.get('password');
@@ -68,7 +63,10 @@ export default function SignIn() {
         //valid login!
         console.log("Login successful")
         // stores the current user in local storage
-        localStorage.setItem('user', JSON.stringify(user))
+        localStorage.removeItem('user');
+        localStorage.setItem('user', JSON.stringify(user));
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+        console.log("current user after sign in: ", currentUser);
 
         // store the list of actors in local storage
         Axios.get('http://localhost:3001/getActors', {
@@ -80,7 +78,7 @@ export default function SignIn() {
           for (const c in actors) {
             arr.push(actors[c].full_name);
           }
-          console.log("list of actors: [" + arr + "]");
+          //console.log("list of actors: [" + arr + "]");
           localStorage.setItem('actors', JSON.stringify(arr));
 
         }).catch(err => {
@@ -97,7 +95,7 @@ export default function SignIn() {
           for (const c in JSON.parse(genres)) {
             arr.push(JSON.parse(genres)[c].genre);
           }
-          console.log("list of genre: [" + arr + "]");
+          //console.log("list of genre: [" + arr + "]");
           localStorage.setItem('genres', arr);
 
         }).catch(err => {
@@ -116,8 +114,8 @@ export default function SignIn() {
             title.push(movies[c].title);
             image.push(movies[c].image_path);
           }
-          console.log("list of title: [" + title + "]");
-          console.log("list of image: [" + image + "]");
+          //console.log("list of title: [" + title + "]");
+          //console.log("list of image: [" + image + "]");
 
           localStorage.setItem('movie_title', JSON.stringify(title));
           localStorage.setItem('movie_image', JSON.stringify(image));
@@ -133,12 +131,6 @@ export default function SignIn() {
     }).catch(err => {
       console.log(err);
     });
-
-
-
-
-
-
   };
 
   return (
@@ -151,11 +143,11 @@ export default function SignIn() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random)',
+            backgroundImage: `url(${Image})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            backgroundSize: 'cover',
+            backgroundSize: '100% 100%',
             backgroundPosition: 'center',
           }}
         />

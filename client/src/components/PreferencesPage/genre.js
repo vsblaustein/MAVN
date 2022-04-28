@@ -16,7 +16,6 @@ export default function Genre(props) {
   let navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem('user'));
 
-
   const handleExit = () => {
     props.toggle();
   };

@@ -29,6 +29,7 @@ export default class PreferencesStats extends React.Component {
       rating_pref: [],
       released_after_pref: [],
       released_before_pref: [],
+      showChart: true,
     };
 
   }
@@ -60,31 +61,35 @@ export default class PreferencesStats extends React.Component {
   toggleGenre = () => {
     this.setState({
       genre: !this.state.genre,
+      showChart: !this.state.showChart,
     });
-    
   };
 
   toggleLength = () => {
     this.setState({
       length: !this.state.length,
+      showChart: !this.state.showChart,
     });
   };
 
   toggleYear = () => {
     this.setState({
       year: !this.state.year,
+      showChart: !this.state.showChart,
     });
   };
 
   toggleActors = () => {
     this.setState({
       actors: !this.state.actors,
+      showChart: !this.state.showChart,
     });
   };
 
   toggleRating = () => {
     this.setState({
       rating: !this.state.rating,
+      showChart: !this.state.showChart,
     });
   };
 
@@ -159,18 +164,18 @@ export default class PreferencesStats extends React.Component {
   render() {
     return (
       <>
-      {this.state.genre ? <Genre toggle={this.toggleGenre} /> : null}
-          {this.state.actors ? <Actors toggle={this.toggleActors} /> : null}
-          {this.state.length ? <Length toggle={this.toggleLength} /> : null}
-          {this.state.year ? <ReleaseYear toggle={this.toggleYear} /> : null}
-          {this.state.rating ? <Rating toggle={this.toggleRating} /> : null}
+        {this.state.genre ? <Genre tc={this.props.toggleChart} toggle={this.toggleGenre} /> : null}
+        {this.state.actors ? <Actors toggle={this.toggleActors} /> : null}
+        {this.state.length ? <Length toggle={this.toggleLength} /> : null}
+        {this.state.year ? <ReleaseYear toggle={this.toggleYear} /> : null}
+        {this.state.rating ? <Rating toggle={this.toggleRating} /> : null}
         <ImageList sx={{
           width: '100%', height: '100%', padding: 0,
           alignItems: "center", justifyContent: "center", justify: 'center'
         }} cols={6} rowHeight={270}>
           {preferences.map((preference, index) => (
             <ImageListItem key={index} sx={{ width: '150px', height: '100%', left: 40, m: '10px', objectFit: 'cover' }}>
-              <StatChart chartRes={this.getChart(index)} />
+              {this.state.showChart && <StatChart chartRes={this.getChart(index)} />}
               <ImageListItemBar
                 title={preference.title}
                 align='center'
@@ -178,12 +183,12 @@ export default class PreferencesStats extends React.Component {
                 fontWeight='bold'
               />
               <Button id={preference.title + '_button'}
-                onClick={() => this.handleClick(preference.title)}>
+                onClick={() => this.handleClick(preference.title)} >
                 Edit
               </Button>
             </ImageListItem>
           ))}
-          
+
 
 
         </ImageList>

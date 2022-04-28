@@ -412,12 +412,6 @@ const getProonList = async (master_list, num_genres, rating) => {
 
 export const selectMovie = async (l, r, g, ry, a, group_list, master_list) => {
 
-    // console.log("length:" + l);
-    // console.log("rating:" + r);
-    // console.log("genre: " + g);
-    // console.log("year:" + ry);
-    // console.log("actors: " + a);
-
     // need to enumerate values from the group preferences
     console.log("attempting to get group pref");
     console.log("group: %o", group_list);
@@ -445,12 +439,10 @@ export const selectMovie = async (l, r, g, ry, a, group_list, master_list) => {
     const lower_range = res[0];
     const upper_range = res[1];
 
-    // print the resulting values
-    // console.log("ranges: " + lower_range + " to " + upper_range);
-    // console.log("rating: " + rating_val + " length: " + length_val + " genre: " + num_genres);
-
     //lets proon the list. we'll first target movies that are within the rating buffer, then run it through genre filtering using master_list.
     const prooned_list = await getProonList(master_list, num_genres, rating_val);
+
+    console.log("prooned list:", prooned_list);
 
 
     // 4) Actors servers as the “order by” once the “prooned” list is computed, 

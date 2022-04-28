@@ -7,8 +7,10 @@ import JoinForm from './JoinForm';
 
 
 export default class JoinPopUp extends React.Component {
+
+
   handleClick = () => {
-   this.props.toggle();
+    this.props.toggle();
   };
 
   handleExit = () => {
@@ -37,4 +39,5 @@ render() {
 </>
   );
  }
+
 }

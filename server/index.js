@@ -28,13 +28,32 @@ app.post('/register', async (req, res) => {
   const full_name = req.body.full_name;
   const email = req.body.email;
   const dob = req.body.dob;
+  const img = req.body.img;
   try {
     const result = await db.query(
-      "INSERT INTO users (username, name, password, email, dob, image_path) VALUES (?, ?, ?, ?, ?, NULL)",
-      [username, full_name, password, email, dob]);
+      "INSERT INTO users (username, name, password, email, dob, image_path) VALUES (?, ?, ?, ?, ?, ?)",
+      [username, full_name, password, email, dob, img]);
     res.send(req.body);
   } catch (err) {
     throw err;
+  }
+});
+
+//POST: update user request, MAKE THIS ERROR CHECK
+app.post('/updateUser', async (req, res) => {
+
+  const username = req.body.username;
+  const email = req.body.email;
+  const dob = req.body.dob;
+  const img = req.body.img;
+  const curr_user = req.body.curr_user;
+  try {
+    const result = await db.query(
+      "UPDATE users SET username = ?, email = ?, dob = ?, image_path = ? WHERE username = ?",
+      [username, email, dob, img, curr_user]);
+    res.send(req.body);
+  } catch (err) {
+    res.send("bad username");
   }
 });
 
@@ -486,6 +505,120 @@ app.post('/movieSelection', async (req, res) => {
       "INSERT INTO movie_selection (code, title, year, image_path) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE image_path = ? ",
       [code, title, year, imagePath, imagePath]);
     res.send(req.body);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.post('/addAlert', async (req, res) => {
+  const code = req.body.code;
+  const title = req.body.title;
+  const year = req.body.year;
+  const imagePath = req.body.imagePath;
+  const username = req.body.username;
+  try{
+    const result = await db.query(
+      "INSERT INTO alerts (code, title, year, image_path, username) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE image_path = ? ",
+      [code, title, year, imagePath, username, imagePath]);
+      res.send(req.body);
+
+  } catch (err){
+    throw err;
+  }
+});
+
+app.post('/addSelectionAlert', async (req, res) => {
+  const code = req.body.code;
+  const title = req.body.title;
+  const year = req.body.year;
+  const imagePath = req.body.imagePath;
+  const username = req.body.username;
+  try{
+    const result = await db.query(
+      "INSERT INTO selectionAlert (code, title, year, image_path, username) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE image_path = ? ",
+      [code, title, year, imagePath, username, imagePath]);
+      res.send(req.body);
+
+  } catch (err){
+    throw err;
+  }
+});
+
+// removes alert
+app.post('/removeAlert', async (req, res) => {
+  const code = req.body.code;
+  const user = req.body.username;
+  try {
+    const result = await db.query(
+      "DELETE FROM alerts WHERE code = (?) AND username = (?)",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// removes alert
+app.post('/removeSelectionAlert', async (req, res) => {
+  const code = req.body.code;
+  const user = req.body.username;
+  try {
+    const result = await db.query(
+      "DELETE FROM selectionAlert WHERE code = (?) AND username = (?)",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get('/checkAlert', async (req, res) => {
+  const code = req.query.code;
+  const user = req.query.user;
+  try {
+    const result = await db.query(
+      "SELECT count(*) AS cnt FROM alerts WHERE code = ? AND username = ?",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get('/checkSelectionAlert', async (req, res) => {
+  const code = req.query.code;
+  const user = req.query.user;
+  try {
+    const result = await db.query(
+      "SELECT count(*) AS cnt FROM selectionAlert WHERE code = ? AND username = ?",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get('/getSelectionAlert', async (req, res) => {
+  const code = req.query.code;
+  const user = req.query.user;
+  try {
+    const result = await db.query(
+      "SELECT title, image_path FROM selectionAlert WHERE code = ? AND username = ?",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get('/getAlert', async (req, res) => {
+  const code = req.query.code;
+  const user = req.query.user;
+  try {
+    const result = await db.query(
+      "SELECT title, image_path FROM alerts WHERE code = ? AND username = ?",
+      [code, user]);
+    res.send(result);
   } catch (err) {
     throw err;
   }

@@ -13,16 +13,18 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 
-
+const base_url = "http://localhost:3000/";
 
 const pages = [ 'Search Movies'];
 const settings = ['Profile', 'My Preferences', 'Logout'];
 
-const ResponsiveAppBar = () => {
-
-
+const ResponsiveAppBar = (currentUser) => {
+  
+  //console.log("current user: ", currentUser);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  //console.log("current user: %o", currentUser.currentUser);
+  const letter = currentUser.currentUser.charAt(0);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -40,13 +42,23 @@ const ResponsiveAppBar = () => {
     console.log("u clicked a button: " + page);
   }
 
-  const handleSettingsClick = (setting) => {
-    console.log("u clicked a setting button: " + setting);
-  }
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  // to={setting.toLowerCase() === 'logout' ? '/' : `/${setting.toLowerCase()}`}
+  const linkSettings = (link) => {
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    if(link === 'Logout'){
+      return '/';
+    }
+    else if(link === "Profile"){
+      return '/'+ link.toLowerCase() + '/' + currentUser; // also add the name of the current user
+    }
+    else {
+      return '/' + link.toLowerCase();
+    }
+  }
 
   return (
     <AppBar position="static">
@@ -123,7 +135,7 @@ const ResponsiveAppBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar>{letter}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu
@@ -144,7 +156,7 @@ const ResponsiveAppBar = () => {
             >
               {/* dynamic buttons for const settings links here */}
               {settings.map((setting) => (
-                <Link key={setting} to={setting.toLowerCase() === 'logout' ? '/' : `/${setting.toLowerCase()}`} style={{ textDecoration: 'none' }} replace="True">
+                <Link key={setting} to={linkSettings(setting)} style={{ textDecoration: 'none' }} replace="True">
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
