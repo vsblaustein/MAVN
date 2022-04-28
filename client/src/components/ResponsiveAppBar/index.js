@@ -13,13 +13,13 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 
-const base_url = "http://localhost:3000/";
+// const base_url = "http://localhost:3000/";
 
-const pages = [ 'Search Movies'];
+const pages = ['Search Movies'];
 const settings = ['Profile', 'My Preferences', 'Logout'];
 
 const ResponsiveAppBar = (currentUser) => {
-  
+
   //console.log("current user: ", currentUser);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -49,11 +49,11 @@ const ResponsiveAppBar = (currentUser) => {
   // to={setting.toLowerCase() === 'logout' ? '/' : `/${setting.toLowerCase()}`}
   const linkSettings = (link) => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    if(link === 'Logout'){
+    if (link === 'Logout') {
       return '/';
     }
-    else if(link === "Profile"){
-      return '/'+ link.toLowerCase() + '/' + currentUser; // also add the name of the current user
+    else if (link === "Profile") {
+      return '/' + link.toLowerCase() + '/' + currentUser; // also add the name of the current user
     }
     else {
       return '/' + link.toLowerCase();

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import './PopUp.css';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconMetadata from './IconMetadata';
 
@@ -23,10 +22,8 @@ export default class IconPopUp extends React.Component {
                     <Box className="mr-modal_content" sx={{zIndex:99, width: 700, height: 500, }} >
                         {this.props.content}
                         <IconMetadata title={this.props.title}></IconMetadata>
-
                         <span className="close" onClick={this.handleExit}>
                             <Button>
-
                                 Close
                             </Button>
                         </span>

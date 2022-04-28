@@ -1,26 +1,16 @@
 import * as React from 'react';
 import ResponsiveAppBar from '../ResponsiveAppBar';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import { Link as RouterLink } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import { DatePicker } from '@mui/lab';
 import Axios from 'axios';
-import SearchResultsGrid from '../SearchResultsGrid/SearchResultsGrid';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
@@ -28,7 +18,6 @@ import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 import './SearchMoviesPage.css';
 import GenreDropdown from './GenreDropdown';
-import { genres } from './GenreDropdown';
 import IconPopUp from './IconPopUp';
 import { LoadingButton } from '@mui/lab';
 
@@ -60,7 +49,7 @@ export default function SearchMoviesPage() {
     const togglePopup = (item) => {
         console.log('press')
         setIsOpen(!isOpen);
-        title == '' ? setTitle(item.title) : setTitle('')
+        title === '' ? setTitle(item.title) : setTitle('')
     }
 
     function filterMovies() {
@@ -77,14 +66,10 @@ export default function SearchMoviesPage() {
         for (var movie of searchResults) {
             //iterate over each movie here
             //each movie will have a list of genres. This list must contain ALL of whatever is in the genre filter.
-            //in other words, genre filter must be a subset of movie_genres.
-            //console.log("movie genres: ", movie.genres);
             if (checker(movie.genres, genres)) {
-                //console.log("found a match");
                 results.push(movie);
             }
         }
-        //console.log("after filtering results: ", results);
         //at the end, set filtered results.
         setFilteredResults(results);
     }
@@ -150,11 +135,9 @@ export default function SearchMoviesPage() {
         };
         //query movie data along with credits
         const JSON_URL = `https://api.themoviedb.org/3/movie/${id}?api_key=${api_key}&language=en-US&append_to_response=credits`;
-        //console.log("URL", JSON_URL);
 
         //call axios api to get a json
         var res_json = await axiosCall(JSON_URL);
-        // console.log("movie_query_result: ", res_json);
 
         //set movie_data to whatever we can off of this singular query.
         const data = Object.create(movie_data);
@@ -209,7 +192,6 @@ export default function SearchMoviesPage() {
             data.actor_dobs.push(actor_json.birthday);
             actor_limit++;
         }
-        //console.log("movie_data: ", data);
 
         // GUARDS FOR DUPLICATE INSERTS
         // get the list of previously added movies, commas make split
@@ -245,7 +227,6 @@ export default function SearchMoviesPage() {
                 console.log(err);
             }).finally(() => {
                 // FOREIGN KEY INSERTS MUST WAIT ON THE PREVIOUS
-
                 // add to movie_genres table
                 for (const g in data.genres) {
                     Axios.post('http://localhost:3001/addMovieGenre', {
@@ -308,13 +289,6 @@ export default function SearchMoviesPage() {
             //console.log("already inserted " + data.title);
         }
 
-        //console.log("movie_data: ", data);
-        //here's where im supposed to create queries to insert into the respective tables.
-        //query for movies table
-        //query for genres table
-        //query for cast_members table
-        //query for actors table
-
         var result_json = JSON.parse(
             JSON.stringify(
                 {
@@ -325,7 +299,6 @@ export default function SearchMoviesPage() {
                 }
             )
         );
-        //console.log("result_json: ", result_json);
         return result_json;
     }
 
@@ -357,8 +330,7 @@ export default function SearchMoviesPage() {
             setLoading(false);
             return;
         }
-        //console.log("title button pressed...");
-        //console.log("title: ", title_search);
+
         /*
         What needs to be done here?
         1. get ALL movies that contain title_search as a substring
@@ -369,7 +341,6 @@ export default function SearchMoviesPage() {
 
         //create JSON url for HTTP request
         const JSON_URL = `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${title_search.replace(' ', '+')}`;
-        //console.log("JSON URL: ", JSON_URL);
         //call API using axios, get results
         var title_api_data = await axiosCall(JSON_URL);
         var results = [];
@@ -392,8 +363,6 @@ export default function SearchMoviesPage() {
                 results.push(res);
             }
         }
-        // console.log("final movie title/year results: ", results);
-
         //after everything, set searchResults to results.
         setSearchResults(results);
         setLoading(false);
@@ -408,15 +377,12 @@ export default function SearchMoviesPage() {
             setLoading(false);
             return;
         }
-        //console.log("actor button pressed...");
-        //console.log("actor: ", actor_search);
+
         var results = [];
 
         //get actor id
         const actor_id_json_url = `https://api.themoviedb.org/3/search/person?api_key=${api_key}&language=en-US&query=${actor_search.replaceAll(' ', '%20')}`;
-        //console.log("actor id json url: ", actor_id_json_url);
         var actor_id_json = await axiosCall(actor_id_json_url);
-        //console.log("actor_id json: ", actor_id_json);
         if (actor_id_json.results.length <= 0) {
             //throw an error here? or display nothing?
             console.log("no actor found");
@@ -424,16 +390,13 @@ export default function SearchMoviesPage() {
 
             //actor found
             var actor_id = actor_id_json.results[0].id;
-            //console.log("actor_id: ", actor_id);
 
             //get all movies actor appears in- store in list of IDs
             const actor_credits_json_url =
                 `https://api.themoviedb.org/3/person/${actor_id}?api_key=${api_key}&language=en-US&append_to_response=movie_credits`;
             var actor_json = await axiosCall(actor_credits_json_url);
             var actor_movies = actor_json.movie_credits.cast;
-            //console.log("actor movies: ", actor_movies);
             var movie_ids = getMovieIDs(actor_movies);
-            //console.log("movie ids: ", movie_ids);
 
             //iterate over IDs and push to results
             for (var id of movie_ids) {
@@ -441,7 +404,6 @@ export default function SearchMoviesPage() {
                 results.push(res);
             }
         }
-        //console.log("final results: ", results);
         setSearchResults(results);
         setLoading(false);
     };
@@ -520,16 +482,13 @@ export default function SearchMoviesPage() {
                         <Typography component="h1" variant="h5">
                             Filter Results
                         </Typography>
-                        <Grid item xs={3} sm = {6}>
+                        <Grid item xs={3} sm={6}>
                             <div>
                                 <GenreDropdown action={setValue} />
                             </div>
                         </Grid>
                     </Box>
                 </Container>
-
-
-
 
                 <Container maxWidth="lg">
                     {(genres.length === 0 && searchResults) &&
@@ -563,11 +522,7 @@ export default function SearchMoviesPage() {
                                                 aria-label={`info about ${item.title}`}
                                             >
                                                 <InfoIcon />
-
-
                                             </IconButton>
-
-
                                         }
                                     />
 
@@ -575,7 +530,6 @@ export default function SearchMoviesPage() {
                             ))}
 
                         </ImageList>
-
                     }
                     {isOpen && <IconPopUp title={title} toggle={() => togglePopup()} />}
                     {genres.length > 0 &&
@@ -613,14 +567,9 @@ export default function SearchMoviesPage() {
                                     />
                                 </ImageListItem>
                             ))}
-
                         </ImageList>
-
                     }
                 </Container>
-
-
-
             </ThemeProvider>
         </React.Fragment>
     );

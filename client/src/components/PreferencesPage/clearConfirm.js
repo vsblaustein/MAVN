@@ -25,13 +25,13 @@ export default function AlertDialog() {
   };
 
   // query to clear the database, need the user id
-  const handleConfirm = async(event) => {
+  const handleConfirm = async (event) => {
     console.log("clear the preference databases for " + currentUser);
     event.preventDefault();
     Axios.post('http://localhost:3001/clearPref', {
       username: currentUser,
     }).then((response) => {
-      console.log(response);
+      // console.log(response);
       navigate("/my%20preferences", { replace: true });
     }).catch(err => {
       console.log(err);

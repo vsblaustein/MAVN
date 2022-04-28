@@ -9,8 +9,8 @@ import './PQPopUp.css';
 
 // pop up for individual length preferences
 
-const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, { value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
-
+const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' },
+{ value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
 
 export default function Length(props) {
   const [value, setValue] = React.useState(120);
@@ -30,7 +30,7 @@ export default function Length(props) {
       username: currentUser,
       length: value,
     }).then((response) => {
-      console.log(response);
+      // console.log(response);
       navigate("/my%20preferences", { replace: true });
     }).catch(err => {
       console.log(err);

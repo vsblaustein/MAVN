@@ -1,5 +1,4 @@
 import React from 'react';
-import "./styles.css";
 import "react-slideshow-image/dist/styles.css";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -30,14 +29,11 @@ export default class slides extends React.Component {
         this.swipeRight = this.swipeRight.bind(this);
         this.state = {
             index: 0,
-            movie_titles:JSON.parse(localStorage.getItem('movie_title')),
+            movie_titles: JSON.parse(localStorage.getItem('movie_title')),
             movie_posters: JSON.parse(localStorage.getItem('movie_image')),
         }
-        // movie_titles = localStorage.getItem('movie_title');
-        // movie_posters = localStorage.getItem('movie_image');
         console.log(this.state.movie_titles + " : " + this.state.movie_posters);
 
-        const x = Math.floor(Math.random() * movie_posters.length) % movie_posters.length;
         currentImage = this.state.movie_posters[0];
         currentTitle = this.state.movie_titles[0];
     }
@@ -58,53 +54,44 @@ export default class slides extends React.Component {
 
     // change the image of the movie tinder
     swipeRight() {
-        
-         // insert into preferences
-         // get the movie genre(s)
+        // insert movie metaddatainto preferences
         Axios.get('http://localhost:3001/getMovieGenres', {
             params: { movie_title: currentTitle }
         }).then((response) => {
-            // list of movie genres
-            const data = response.data;
-            console.log("movie genres: " + JSON.stringify(data));
             // this.setState({ genreList: response.data });
             genreList = response.data;
             for (const g in genreList) {
                 console.log("current genre: " + genreList[g].genre + " " + g);
                 Axios.post('http://localhost:3001/genrePref', {
-                  username: currentUser,
-                  genre: genreList[g].genre,
+                    username: currentUser,
+                    genre: genreList[g].genre,
                 }).then((response) => {
-                  console.log(response);
+                    console.log(response);
                 }).catch(err => {
-                  console.log(err);
+                    console.log(err);
                 });
             }
         }).catch(err => {
             console.log(err);
         });
-        
+
 
         // get the movie cast(s) and insert into db
-        Axios.get('http://localhost:3001/getMovieCast',{
+        Axios.get('http://localhost:3001/getMovieCast', {
             params: { movie_title: currentTitle }
         }).then((response) => {
-            // list of movie genres
-            const data = response.data;
-            console.log("movie cast: " + JSON.stringify(data));
-            // this.setState({ castList: response.data });
             castList = response.data;
             // insert into preferences
             console.log("current cast list : " + castList);
             for (const c in castList) {
                 console.log("current cast list: " + castList[c].actor);
                 Axios.post('http://localhost:3001/actorPref', {
-                username: currentUser,
-                actors: castList[c].actor,
+                    username: currentUser,
+                    actors: castList[c].actor,
                 }).then((response) => {
-                console.log(response);
+                    console.log(response);
                 }).catch(err => {
-                console.log(err);
+                    console.log(err);
                 });
             }
         }).catch(err => {
@@ -117,13 +104,10 @@ export default class slides extends React.Component {
                 params: { movie_title: currentTitle }
             }).then((response) => {
                 const data = response.data;
-                console.log("movie metadata: " + JSON.stringify(data));
                 // get and set the data for year length and rating to insert in to pref
                 year = data[0].year;
                 length = data[0].length;
                 rating = data[0].rating;
-                
-                // make the inserts
                 // insert into rating
                 Axios.post('http://localhost:3001/ratingPref', {
                     username: currentUser,
@@ -144,8 +128,6 @@ export default class slides extends React.Component {
                 }).catch(err => {
                     console.log(err);
                 });
-
-
                 // insert into length
                 Axios.post('http://localhost:3001/lengthPref', {
                     username: currentUser,
@@ -155,13 +137,11 @@ export default class slides extends React.Component {
                 }).catch(err => {
                     console.log(err);
                 });
-                    }).catch(err => {
-                        console.log(err);
-                    });
-        
+            }).catch(err => {
+                console.log(err);
+            });
+
         this.nextImage();
-
-
     }
 
     render() {
@@ -170,19 +150,18 @@ export default class slides extends React.Component {
                 <TextField id="title"
                     inputProps={{ style: { textAlign: 'center', fontSize: 20 }, readOnly: true }}
                     InputProps={{ disableUnderline: true }}
-                    sx={{ width: '100%', mt:'5px'}}
+                    sx={{ width: '100%', mt: '5px' }}
                     variant='standard' value={currentTitle} /> <br /> <br />
 
-                    <Box >
-                        <img className="photo" src={currentImage} alt="No movie poster available" />
-                    </Box>
+                <Box >
+                    <img className="photo" src={currentImage} alt="No movie poster available" />
+                </Box>
 
                 {/* change button watch adds to db, skip does nothing, both advance forward */}
                 <Box className="slide-container buttons">
                     <Button onClick={this.nextImage} sx={{ position: 'absolute', bottom: '5%', left: '13%' }}>
                         Would Skip
                     </Button>
-                                
                     <Button onClick={this.swipeRight} sx={{ position: 'absolute', bottom: '5%', right: '10%' }}>
                         Would Watch
                     </Button>

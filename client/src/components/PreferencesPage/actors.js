@@ -34,7 +34,7 @@ export default function Actors(props) {
         username: currentUser,
         actors: actors[a],
       }).then((response) => {
-        console.log(response);
+        // console.log(response);
         navigate("/my%20preferences", { replace: true });
       }).catch(err => {
         console.log(err);
@@ -69,7 +69,6 @@ export default function Actors(props) {
             <Button type="submit" sx={{ mt: '10px' }}>
               Submit
             </Button>
-
           </Box >
         </Box>
       </Box>

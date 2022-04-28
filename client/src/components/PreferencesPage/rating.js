@@ -7,7 +7,6 @@ import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './PQPopUp.css';
 
-
 // pop up for individual rating preferences
 const rating = [{ value: 0.0, label: '0.0' }, { value: 2.0, label: '2.0' },
 { value: 4.0, label: '4.0' }, { value: 6.0, label: '6.0' },
@@ -32,7 +31,6 @@ export default function Rating(props) {
       username: currentUser,
       rating: value,
     }).then((response) => {
-      console.log(response);
       navigate("/my%20preferences", { replace: true });
     }).catch(err => {
       console.log(err);

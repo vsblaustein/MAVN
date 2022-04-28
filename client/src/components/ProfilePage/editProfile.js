@@ -12,7 +12,6 @@ import { InputLabel } from '@mui/material';
 import { Select } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
-
 export default function ProfileChange(props) {
 
     // weird escaping gets correct date
@@ -39,30 +38,20 @@ export default function ProfileChange(props) {
 
     // if null values set them to the props vals
     const handleSubmit = () => {
-        console.log("update the database");
-        
+
         // check for null values, reset to database value
-        if(email.length === 0){
-            console.log("empty email");
+        if (email.length === 0) {
             setEmail(props.email);
         }
-        if(username.length === 0){
-            console.log("empty username");
+        if (username.length === 0) {
             setUsername(props.username);
         }
-        if(profile_img.length === 0){
-            console.log("empty profile");
+        if (profile_img.length === 0) {
             setProfileImg(props.photo);
         }
-        if(dob.length === 0){
+        if (dob.length === 0) {
             setDOB(props.birthday);
         }
-
-        // submit these values
-        // console.log("birthday: " + dob);
-        // console.log("email: " + email);
-        // console.log("username :" + username);
-        // console.log("photo: " + profile_img);
 
         Axios.post('http://localhost:3001/updateUser', {
             username: username,
@@ -70,10 +59,8 @@ export default function ProfileChange(props) {
             dob: dob,
             img: profile_img,
             curr_user: currentUser,
-          }).then((response)=> {
-            console.log(response);
-            console.log(response.data);
-            if(response.data === "bad username"){
+        }).then((response) => {
+            if (response.data === "bad username") {
                 alert("That username is already taken.");
             }
             else {
@@ -81,9 +68,9 @@ export default function ProfileChange(props) {
                 localStorage.setItem('user', JSON.stringify(username));
                 window.location.reload();
             }
-          }).catch(err => {
+        }).catch(err => {
             console.log(err);
-          });
+        });
 
         handleExit();
     }
@@ -94,7 +81,7 @@ export default function ProfileChange(props) {
         var t = newValue.toJSON().slice(0, 10);
         var updatedDOB = (new Date(t.toString().replace(/-/g, '\/')));
         // set date in yyyy-mm-dd
-        setDOB(updatedDOB.toJSON().slice(0, 10)); 
+        setDOB(updatedDOB.toJSON().slice(0, 10));
     }
 
     // add a "are you sure you want to leave?"
@@ -174,16 +161,13 @@ export default function ProfileChange(props) {
                                     renderInput={(params) => <TextField {...params} />}
                                 />
                             </LocalizationProvider>
-
                         </Box>
-
                     </Box><br />
                     <Button type="submit" onClick={handleSubmit}>
                         Submit
                     </Button>
                 </Box >
             </Box>
-
         </>
     );
 }

@@ -57,7 +57,6 @@ export default function MultipleSelectChip(props) {
         props.action([]);
     }
 
-
     return (
         <>
             <FormControl sx={{ m: 1, width: 300 }}>
@@ -79,15 +78,15 @@ export default function MultipleSelectChip(props) {
                     MenuProps={MenuProps}
                 >
                     {storage_genres !== null &&
-                    storage_genres.split(',').map((name) => (
-                        <MenuItem
-                            key={name}
-                            value={name}
-                            style={getStyles(name, genres, theme)}
-                        >
-                            {name}
-                        </MenuItem>
-                    ))}
+                        storage_genres.split(',').map((name) => (
+                            <MenuItem
+                                key={name}
+                                value={name}
+                                style={getStyles(name, genres, theme)}
+                            >
+                                {name}
+                            </MenuItem>
+                        ))}
                 </Select>
                 <Button onClick={handleClearGenre}>Clear Genres</Button>
 

@@ -36,23 +36,18 @@ export default class PreferencesStats extends React.Component {
 
   handleClick = (title) => {
     if (title === "Genre") {
-      console.log("genre");
       this.toggleGenre();
     }
     else if (title === "Length (minutes)") {
-      console.log("length");
       this.toggleLength();
     }
     else if (title === "Released Before" || title === 'Released After') {
-      console.log("year");
       this.toggleYear();
     }
     else if (title === "Actors") {
-      console.log("actors");
       this.toggleActors();
     }
     else {
-      console.log("rating");
       this.toggleRating();
     }
   }
@@ -145,7 +140,6 @@ export default class PreferencesStats extends React.Component {
 
     // for each chart get the stats from the query
     for (const c in chart) {
-      console.log("preferred chart: " + chart[c]);
       Axios.get('http://localhost:3001/getPrefChart',
         {
           params: { username: currentUser, table: chart[c] }
@@ -154,7 +148,7 @@ export default class PreferencesStats extends React.Component {
           const currChart = chart[c];
           this.setChart(currChart, response.data);
           this.setState({ currChart: response.data });
-          console.log(currChart + " " + JSON.stringify(this.state.currChart));
+          // console.log(currChart + " " + JSON.stringify(this.state.currChart));
         }).catch(err => {
           console.log(err);
         });
@@ -188,11 +182,7 @@ export default class PreferencesStats extends React.Component {
               </Button>
             </ImageListItem>
           ))}
-
-
-
         </ImageList>
-
       </>
     );
   }

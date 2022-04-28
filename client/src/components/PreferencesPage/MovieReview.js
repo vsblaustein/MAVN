@@ -20,7 +20,6 @@ export default class MovieSearch extends React.Component {
         this.props.toggle();
     };
 
-
     // add a "are you sure you want to leave?"
     render() {
         return (

@@ -10,7 +10,8 @@ import MultipleGenreSelect from './MultipleGenreSelect';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, { value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
+const lengthMarks = [{ value: 0, label: '0 minutes' }, { value: 60, label: '60 minutes' }, 
+{ value: 120, label: '120 minutes' }, { value: 180, label: '180 minutes' }];
 
 export default function PQPopUp(props) {
 
@@ -31,20 +32,16 @@ export default function PQPopUp(props) {
 
   // submits the form to the DB
   const handleSubmit = async(event) => {
-    console.log("submitting rapid preference quiz for " + currentUser);
-    // write info to the database and continue
-    console.log("submitting: (actors, " + actors + ") (genres, " + genre
-    + ") (release years, " + s_year + " " + e_year + ") (length, " + length + ")");
 
     event.preventDefault();
     // actors
     for (const a in actors) {
-      console.log("current actor: " + actors[a]);
+      // console.log("current actor: " + actors[a]);
       Axios.post('http://localhost:3001/actorPref', {
         username: currentUser,
         actors: actors[a],
       }).then((response) => {
-        console.log(response);
+        // console.log(response);
         navigate("/my%20preferences", { replace: true });
       }).catch(err => {
         console.log(err);
@@ -53,12 +50,12 @@ export default function PQPopUp(props) {
 
     // genre
     for (const g in genre) {
-      console.log("current genre: " + genre[g]);
+      // console.log("current genre: " + genre[g]);
       Axios.post('http://localhost:3001/genrePref', {
         username: currentUser,
         genre: genre[g],
       }).then((response) => {
-        console.log(response);
+        // console.log(response);
         navigate("/my%20preferences", { replace: true });
       }).catch(err => {
         console.log(err);

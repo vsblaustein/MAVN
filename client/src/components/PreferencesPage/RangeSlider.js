@@ -11,7 +11,6 @@ export default function RangeSlider(props) {
         setValue(newValue);
         // new value has both values, first is start
         props.action(newValue[0], newValue[1]);
-
     };
 
     return (

@@ -1,10 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
-import Button from '@mui/material/Button';
-import Axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import './MembersPopUp';
 
 // pop up for individual length preferences
@@ -17,12 +13,10 @@ const lengthMarks = [
     { value: 80, label: '80%' },
     { value: 100, label: '100%' }];
 
-
 export default function Length(props) {
-    
+
     return (
         <>
-
             <Box width='80%' ml='30px'>
                 <Slider
                     id='length'
@@ -36,7 +30,6 @@ export default function Length(props) {
                     onChange={(event, value) => props.action(value)}
                 />
             </Box>
-
         </>
     );
 }

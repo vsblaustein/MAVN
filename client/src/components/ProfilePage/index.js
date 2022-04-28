@@ -10,7 +10,6 @@ import { useLocation } from 'react-router-dom';
 
 const currentUser = JSON.parse(localStorage.getItem('user'));
 
-
 export default function Profile() {
   const location = useLocation();
   const [username, setUsername] = React.useState("");
@@ -18,28 +17,6 @@ export default function Profile() {
   const [email, setEmail] = React.useState("");
   const [profile_img, setProfileImg] = React.useState("");
   const [editProfile, setEditProfile] = React.useState(false);
-
-  React.useEffect(() => {
-    console.log("loading this");
-    console.log("location: ", location);
-    // store the user in local storage
-    Axios.get('http://localhost:3001/getProfile', {
-      params: { name: window.location.href.split('/')[4] }
-    }).then((response) => {
-      console.log(response.data[0].username);
-      console.log("current user:" ,currentUser);
-      setUsername(response.data[0].username);
-      // make the birthday a prettier thing
-      setBirthday(response.data[0].dob.substring(0, response.data[0].dob.toString().indexOf("T")));
-      setEmail(response.data[0].email);
-      setProfileImg(response.data[0].image_path);
-    }).catch(err => {
-      console.log(err);
-    });
-
-    console.log("current user:" + currentUser);
-    console.log("browser: " + window.location.href.split('/')[4]);
-  }, []);
 
   React.useEffect(() => {
     console.log("location changed");
@@ -57,22 +34,14 @@ export default function Profile() {
     renderDOM();
   }, [location]);
 
-
-
   const toggleProfile = () => {
     setEditProfile(!editProfile);
-    // show a drop down for all the avatars
-    // get the index of the one the user clicks
-    // print avatar[idx]
-    // update query
-    // reload the window
   }
 
   const renderDOM = () => {
     return (
       <Box>
         <ResponsiveAppBar currentUser={currentUser} />
-
         {/* toggle the pop up to edit, only allow edit if is the user */}
         {editProfile ? <ProfilePopUp username={username}
           birthday={birthday} email={email}
@@ -136,8 +105,6 @@ export default function Profile() {
       {renderDOM()}
     </>
   );
-
-
 }
 
 

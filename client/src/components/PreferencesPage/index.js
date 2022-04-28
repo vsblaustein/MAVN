@@ -28,8 +28,6 @@ export default class Preferences extends React.Component {
       
     };
   }
-  // determines if either state has been seen
-  // may need to add user to the state    
 
   // methods to toggle pop ups
   togglePQ = () => {

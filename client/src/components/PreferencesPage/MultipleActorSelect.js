@@ -9,7 +9,6 @@ for (const c in ea) {
     existingActors.push(ea[c]);
 }
 
-
 export default function MultipleSelectChip(props) {
     // current value and function that lets us update this value
     return (

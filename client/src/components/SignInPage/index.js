@@ -37,19 +37,14 @@ export default function SignIn() {
   const [loginStatus, setLoginStatus] = React.useState("");
   let navigate = useNavigate();
   localStorage.clear();
-  console.log("cleared storage");
-
-  
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log("beginning axios.get")
     const user = data.get('username');
     const pass = data.get('password');
 
     console.log("user: " + user + " pass: " + pass);
-
 
     Axios.post('http://localhost:3001/login', {
       username: user,
@@ -114,16 +109,12 @@ export default function SignIn() {
             title.push(movies[c].title);
             image.push(movies[c].image_path);
           }
-          //console.log("list of title: [" + title + "]");
-          //console.log("list of image: [" + image + "]");
-
           localStorage.setItem('movie_title', JSON.stringify(title));
           localStorage.setItem('movie_image', JSON.stringify(image));
 
         }).catch(err => {
           console.log(err);
         });
-
 
         //route to home
         navigate("/home", { replace: true });

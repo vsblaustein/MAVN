@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './PopUp.css';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { Navigate } from 'react-router-dom';
-import { useHistory, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
-import TextField from '@mui/material/TextField';
 
 export default class IconMetadata extends React.Component {
-
     state = {
         rating: "",
         year: "",
@@ -49,25 +44,18 @@ export default class IconMetadata extends React.Component {
             console.log(err);
         });
 
-
         this.forceUpdate();
         this.render();
         console.log(this.state.plot);
 
     }
 
-
     render() {
         return (
-
             <Box className="App">
                 <h6>{this.props.title}</h6>
-
                 <Typography
-
-                    variant="h9"
-
-                    component="div"
+                    variant="h9" component="div"
                     sx={{ ml: "10px", mt: "20px", display: { xs: 'none', md: 'flex' } }}
                 >
                     plot: {this.state.plot}
@@ -94,7 +82,6 @@ export default class IconMetadata extends React.Component {
                 >
                     Cast: {this.state.actors}
                 </Typography>
-
             </Box>
         );
     }
