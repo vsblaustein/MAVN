@@ -117,7 +117,7 @@ function CreateForm() {
           {/*when user submit the form , handleSubmit()
           function will be called .*/}
           <h2> Create a New Movie Room! </h2>
-          <img src="https://cdn2.iconfinder.com/data/icons/scenarium-vol-4/128/030_group_team_meeting_crowd_people_employee-512.png" class="centered" />
+          <img className = "imgSize" src="https://cdn2.iconfinder.com/data/icons/scenarium-vol-4/128/030_group_team_meeting_crowd_people_employee-512.png" class="centered" />
           <label >
             Room Name:
           </label><br />

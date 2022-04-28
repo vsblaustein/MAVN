@@ -15,28 +15,29 @@ export default class JoinPopUp extends React.Component {
 
   handleExit = () => {
     this.props.toggle();
-  };
+};
 
-  render() {
-    return (
-      <>
-        <div>
-          <Box className="modal" class="centered">
-            <Box className="mr-modal_content" sx={{ width: 600, height: 400, }} >
+render() {
+  return (
+    <>
+    <div>
+        <Box className="modal" class = "centered">
+            <Box className="mr-modal_content"  sx={{zIndex:99, width: 600,height: 400,}} >
+                
+                
+                <JoinForm></JoinForm>
 
+                <span className="close" onClick={this.handleExit}>
+                    <Button>
+                        Exit
+                    </Button>
+                </span>
 
-              <JoinForm></JoinForm>
+                           </Box >
+        </Box>
+    </div>
+</>
+  );
+ }
 
-              <span className="close" onClick={this.handleExit}>
-                <Button>
-                  Exit
-                </Button>
-              </span>
-
-            </Box >
-          </Box>
-        </div>
-      </>
-    );
-  }
 }

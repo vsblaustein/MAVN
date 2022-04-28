@@ -19,7 +19,7 @@ render() {
     <>
     <div>
         <Box className="modal" class = "centered">
-            <Box className="mr-modal_content">
+            <Box className="the_modal_content">
                 
                 
                 <CreateForm></CreateForm>

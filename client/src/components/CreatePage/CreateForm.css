@@ -23,3 +23,8 @@ form {
 
   padding: 5px;
 }
+
+.imgSize {
+  margin:auto;
+  width: 60%;
+}

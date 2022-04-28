@@ -75,3 +75,17 @@
   width: 200px;
   margin: 0 auto;
   display: inline;}
+
+  .the_modal_content {
+    background-color: white;
+    position: absolute;
+    top: 2vh;
+    left: 30vw;
+    width: 40vw;
+    height: 90vh;
+    padding: 4vh;
+    border-radius: 5px;
+    border: 2px solid black;
+    overflow-y:auto;
+  }
+  
