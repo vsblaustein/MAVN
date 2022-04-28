@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import MSPopUp from './MovieSelectionPopUp';
+import MPopUp from './SelectedMoviePopUp';
 import MembersPop from './MembersPopUp';
 import * as React from 'react';
 import PPopUp from './EditPreferences.js';
@@ -12,6 +13,7 @@ import Axios from 'axios';
 import { selectMovie } from "./SelectionAlgo.js";
 import { useNavigate } from 'react-router';
 import ReturnButton from './ReturnButton';
+import MovieSelectionPopUp from './MovieSelectionPopUp';
 
 
 // styling for horizontal list
@@ -21,13 +23,6 @@ const flexContainer = {
   padding: 0,
 };
 
-
-var roomMaster = "";
-var rCode = "";
-var movieImgPath = "";
-
-
-
 // display current preferences at the bottom of the page
 export default class MovieRoom extends React.Component {
   // determines if either state has been seen
@@ -36,10 +31,12 @@ export default class MovieRoom extends React.Component {
     gpSeen: false,
     showMasterButtons: false,
     msSeen: false,
+    mSeen: false,
     membersSeen: false,
     pSeen: false,
     movieMaster: "",
     roomCode: window.location.href.split('/')[4], // get the movie room from url
+
     chart: true,
     members: [],
     member_images: [],
@@ -51,7 +48,10 @@ export default class MovieRoom extends React.Component {
     ry_pref: 0.5,
     a_pref: 0.5,
     movie_list: [],
-    url_check: true
+    url_check: true,
+
+    alert_img: "",
+    alert_title: "",
   };
 
 
@@ -60,6 +60,7 @@ export default class MovieRoom extends React.Component {
     console.log(code);
     // get movie master
     this.CheckCode();
+    const currUser = JSON.parse(localStorage.getItem('user'));
     Axios.get('http://localhost:3001/getMovieMaster', {
       params: { c: code }
     }
@@ -69,8 +70,6 @@ export default class MovieRoom extends React.Component {
         movieMaster: response.data[0].username,
       })
       console.log("Master: " + this.state.movieMaster);
-      roomMaster = this.state.movieMaster;
-      const currUser = JSON.parse(localStorage.getItem('user'));
       console.log("user: " + currUser);
       if (currUser === this.state.movieMaster) {
         this.setState({ showMasterButtons: true });
@@ -99,23 +98,58 @@ export default class MovieRoom extends React.Component {
       member_images: member_profiles,
     });
 
-    //check if a new selection has been inserted in database
-    Axios.get('http://localhost:3001/getSelection', {
-      params: { code: code }
+    //check if there is an alert for the currUser
+    Axios.get('http://localhost:3001/checkAlert', {
+      params: { code: code, user: currUser }
     }).then((response) => {
-      if (response.data.length > 0) {
-        movieImgPath = response.data[0].image_path;
-        this.togglePQ();
-      }
-      console.log(response);
+      console.log(response.data[0].cnt == '0');
+      if (response.data[0].cnt != '0'){
+        Axios.get('http://localhost:3001/getAlert',{
+          params: { code: code, user: currUser }
+        }).then((response) => {
+          if (response.data.length != 0) {
+    
+            this.setState({alert_img: response.data[0].image_path,
+                          alert_title: response.data[0].title});
+            this.toggleMSAlert();
+          }
+          console.log(response);
+        }).catch(err => {
+          console.log(err);
+        })
+      }   
     }).catch(err => {
       console.log(err);
     });
+
+    Axios.get('http://localhost:3001/checkSelectionAlert', {
+      params: { code: code, user: currUser }
+    }).then((response) => {
+      console.log(response.data[0].cnt == '0');
+      if (response.data[0].cnt != '0'){
+        Axios.get('http://localhost:3001/getSelectionAlert',{
+          params: { code: code, user: currUser }
+        }).then((response) => {
+          if (response.data.length != 0) {
+    
+            this.setState({alert_img: response.data[0].image_path,
+                          alert_title: response.data[0].title});
+            this.toggleMAlert();
+          }
+          console.log(response);
+        }).catch(err => {
+          console.log(err);
+        })
+      }   
+    }).catch(err => {
+      console.log(err);
+    });
+
     this.render();
   }
 
   CheckCode = () => {
-    let code = window.location.href.substring(35);
+    let code =window.location.href.split('/')[4];
     console.log("code is " + code);
     //Check if url code exists in db
     Axios.get('http://localhost:3001/checkMovieRoomCode', {
@@ -250,11 +284,22 @@ export default class MovieRoom extends React.Component {
       , this.state.ry_pref, this.state.a_pref, big_pref_list, mm_pref_list);
 
     // set the movie list state variable to use in selection
-    this.toggleMS(null);
+
     this.toggleMS(movie);
-    
 
   }
+
+  toggleMSAlert = () => {
+    this.setState({
+      msSeen: !this.state.msSeen
+    });
+  };
+
+  toggleMAlert = () => {
+    this.setState({
+      mSeen: !this.state.mSeen
+    });
+  };
 
   // methods to toggle pop ups
   toggleMS = (movie) => {
@@ -268,25 +313,6 @@ export default class MovieRoom extends React.Component {
   onClick = () => {
     //this.togglePQ();
     this.setSelection();
-  };
-
-  // may not need this - double check
-  setSelection = () => {
-    //insert selection into database 
-    const c = this.state.roomCode;
-    const t = "The Avengers";
-    const y = 2012;
-    const img = "https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg";
-    console.log("params: " + c + " " + t + " " + y);
-    Axios.post('http://localhost:3001/movieSelection', {
-      code: c, title: t, year: y, imagePath: img
-    }).then((response) => {
-      movieImgPath = img;
-      this.togglePQ();
-      console.log(response);
-    }).catch(err => {
-      console.log(err);
-    });
   };
 
   toggleMembers = () => {
@@ -430,7 +456,8 @@ export default class MovieRoom extends React.Component {
           </Button> */}
 
 
-            {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} toggle={this.toggleMS} /> : null}
+            {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} alertImg={this.state.alert_img} alertTitle={this.state.alert_title} mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMS} /> : null}
+            {this.state.mSeen ? <MPopUp selectList={this.state.movie_list} alertImg={this.state.alert_img} alertTitle={this.state.alert_title} mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMAlert} /> : null}
             {this.state.pSeen ? <PPopUp update={this.setValues} toggle={this.toggleP} /> : null}
             {this.state.membersSeen ? <MembersPop code={this.state.roomCode}
               mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMembers} /> : null}
@@ -483,7 +510,3 @@ export default class MovieRoom extends React.Component {
     );
   }
 }
-
-export { movieImgPath };
-export { roomMaster };
-export { rCode };

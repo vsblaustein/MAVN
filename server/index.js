@@ -497,6 +497,120 @@ app.post('/movieSelection', async (req, res) => {
   }
 });
 
+app.post('/addAlert', async (req, res) => {
+  const code = req.body.code;
+  const title = req.body.title;
+  const year = req.body.year;
+  const imagePath = req.body.imagePath;
+  const username = req.body.username;
+  try{
+    const result = await db.query(
+      "INSERT INTO alerts (code, title, year, image_path, username) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE image_path = ? ",
+      [code, title, year, imagePath, username, imagePath]);
+      res.send(req.body);
+
+  } catch (err){
+    throw err;
+  }
+});
+
+app.post('/addSelectionAlert', async (req, res) => {
+  const code = req.body.code;
+  const title = req.body.title;
+  const year = req.body.year;
+  const imagePath = req.body.imagePath;
+  const username = req.body.username;
+  try{
+    const result = await db.query(
+      "INSERT INTO selectionAlert (code, title, year, image_path, username) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE image_path = ? ",
+      [code, title, year, imagePath, username, imagePath]);
+      res.send(req.body);
+
+  } catch (err){
+    throw err;
+  }
+});
+
+// removes alert
+app.post('/removeAlert', async (req, res) => {
+  const code = req.body.code;
+  const user = req.body.username;
+  try {
+    const result = await db.query(
+      "DELETE FROM alerts WHERE code = (?) AND username = (?)",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+// removes alert
+app.post('/removeSelectionAlert', async (req, res) => {
+  const code = req.body.code;
+  const user = req.body.username;
+  try {
+    const result = await db.query(
+      "DELETE FROM selectionAlert WHERE code = (?) AND username = (?)",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get('/checkAlert', async (req, res) => {
+  const code = req.query.code;
+  const user = req.query.user;
+  try {
+    const result = await db.query(
+      "SELECT count(*) AS cnt FROM alerts WHERE code = ? AND username = ?",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get('/checkSelectionAlert', async (req, res) => {
+  const code = req.query.code;
+  const user = req.query.user;
+  try {
+    const result = await db.query(
+      "SELECT count(*) AS cnt FROM selectionAlert WHERE code = ? AND username = ?",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get('/getSelectionAlert', async (req, res) => {
+  const code = req.query.code;
+  const user = req.query.user;
+  try {
+    const result = await db.query(
+      "SELECT title, image_path FROM selectionAlert WHERE code = ? AND username = ?",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get('/getAlert', async (req, res) => {
+  const code = req.query.code;
+  const user = req.query.user;
+  try {
+    const result = await db.query(
+      "SELECT title, image_path FROM alerts WHERE code = ? AND username = ?",
+      [code, user]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 // GET: all the genres for a given movie
 app.get('/getMovieGenres', async (req, res) => {
   const movie_title = req.query.movie_title;
