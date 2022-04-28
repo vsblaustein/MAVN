@@ -33,10 +33,11 @@ export default class MovieSelectionPopUp extends React.Component {
     async componentDidMount() {
 
         const currUser = JSON.parse(localStorage.getItem('user'));
-        if (currUser == this.state.movieMaster){
+        if (currUser === this.state.movieMaster){
             // get the movie images
             var images = [];
-            var key =Array.from(this.state.movies.keys())[this.state.index];
+            console.log("yer:", this.state.movies);
+            var key = Array.from(this.state.movies.keys())[this.state.index];
             
             this.state.movies.forEach(function (value, key) {
                 images.push(key.image_path);

@@ -22,7 +22,7 @@ export default function GroupMemberIcons(props) {
   return (
     <ImageList sx={{ width: '100%', height: '100%', padding: 0 }} cols={5}>
       {memProfiles.map((item, idx) => (
-        <ImageListItem key={idx} y
+        <ImageListItem key={idx}
           sx={{ maxHeight: { xs: '50vh', md: '50vh' },
           maxWidth: { xs: '35vh', md: '35vh' }, width: '100%', height: '100%', 
           left: '5%', m: '10px', objectFit: 'contain' }}>

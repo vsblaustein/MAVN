@@ -102,12 +102,12 @@ export default class MovieRoom extends React.Component {
     Axios.get('http://localhost:3001/checkAlert', {
       params: { code: code, user: currUser }
     }).then((response) => {
-      console.log(response.data[0].cnt == '0');
+      console.log(response.data[0].cnt === '0');
       if (response.data[0].cnt != '0'){
         Axios.get('http://localhost:3001/getAlert',{
           params: { code: code, user: currUser }
         }).then((response) => {
-          if (response.data.length != 0) {
+          if (response.data.length !== 0) {
     
             this.setState({alert_img: response.data[0].image_path,
                           alert_title: response.data[0].title});
@@ -125,12 +125,12 @@ export default class MovieRoom extends React.Component {
     Axios.get('http://localhost:3001/checkSelectionAlert', {
       params: { code: code, user: currUser }
     }).then((response) => {
-      console.log(response.data[0].cnt == '0');
+      console.log(response.data[0].cnt === '0');
       if (response.data[0].cnt != '0'){
         Axios.get('http://localhost:3001/getSelectionAlert',{
           params: { code: code, user: currUser }
         }).then((response) => {
-          if (response.data.length != 0) {
+          if (response.data.length !== 0) {
     
             this.setState({alert_img: response.data[0].image_path,
                           alert_title: response.data[0].title});
@@ -283,8 +283,10 @@ export default class MovieRoom extends React.Component {
     const movie = await selectMovie(this.state.l_pref, this.state.r_pref, this.state.g_pref
       , this.state.ry_pref, this.state.a_pref, big_pref_list, mm_pref_list);
 
+      console.log("moooovie:", movie);
     // set the movie list state variable to use in selection
 
+    this.toggleMS(null);
     this.toggleMS(movie);
 
   }
@@ -410,50 +412,7 @@ export default class MovieRoom extends React.Component {
               sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
             >
               Remove Group Members
-            </Button>}
-
-            {/* generate selection button
-          {show && <Button
-            onClick={this.onClick}
-            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
-          >
-            Generate Movie Selection
-          </Button>}
-          {this.state.pqSeen ? <PQPopUp toggle={this.togglePQ} /> : null}
-          
-
-          {show && <Button
-            onClick={this.toggleGP}
-            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
-          >
-            Edit Group Preferences
-          </Button>}
-          {this.state.gpSeen ? <GPPopUp toggle={this.toggleGP} /> : null}
-          {show && <Button
-            onClick={this.generateSelection}
-            sx={{ ml: "15px", mt: "40px", position: 'absolute', right: 50 }}
-          >
-            Generate Selection
-          </Button> }
-          <Button
-            onClick={this.toggleP}
-            sx={{ ml: "15px", mt: "100px", position: 'absolute', right: 50 }}
-          >
-            Bias Movie Selection
-          </Button>
-          <Button
-            onClick={this.copyToClipboard}
-            sx={{ ml: "15px", mt: "10px", position: 'absolute', right: 50 }}
-          >
-            Copy Room Link
-          </Button> */}
-
-            {/* <Button
-            onClick={this.toggleMembers}
-            sx={{ ml: "15px", mt: "70px", position: 'absolute', right: 50 }}
-          >
-            Remove Group Members
-          </Button> */}
+            </Button>}          
 
 
             {this.state.msSeen ? <MSPopUp selectList={this.state.movie_list} alertImg={this.state.alert_img} alertTitle={this.state.alert_title} mem={this.state.members} master={this.state.movieMaster} toggle={this.toggleMS} /> : null}
