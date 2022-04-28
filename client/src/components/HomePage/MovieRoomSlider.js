@@ -13,34 +13,25 @@ export default class MovieRoomSlider extends React.Component {
     roomNames: []
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    //get movie rooms
-    Axios.get('http://localhost:3001/getMovieRooms', {
+    // get movie rooms and codes
+    await Axios.get('http://localhost:3001/getCodeAndName', {
       params: { name: currentUser }
     }).then((response) => {// gives a list of json objects
-
-      //go through every code
-      for (let i = 0; i < response.data.length; i++) {
-        this.setState(prevState => ({
-          roomCodes: [...prevState.roomCodes, response.data[i].code]
-        }))
-
-        const tempCode = response.data[i].code;
-
-        //get the name based on the code of a movie room
-        Axios.get('http://localhost:3001/getMovieRoomName', {
-          params: { code: tempCode }
-        }).then((response) => {
-
-          this.setState(prevState => ({
-            roomNames: [...prevState.roomNames, response.data[0].name]
-          }))
-
-        }).catch(err => {
-          console.log(err);
-        });
+      console.log(response);
+      console.log(response.data);
+      var roomCodes = [];
+      var roomNames =[];
+      for(const d in response.data){
+        roomCodes.push(response.data[d].code);
+        roomNames.push(response.data[d].name);
       }
+
+      this.setState({
+        roomCodes: roomCodes,
+        roomNames:roomNames,
+      })
     }).catch(err => {
       console.log(err);
     });
@@ -61,9 +52,9 @@ export default class MovieRoomSlider extends React.Component {
               <ul>
                 {
                   this.state.roomNames
-                    .map((roomNames, index) =>
+                    .map((roomName, index) =>
                       <ListItemButton key={this.state.roomCodes[index]}>
-                        <Link to={`/movie%20room/${this.state.roomCodes[index]}`}>{roomNames}
+                        <Link to={`/movie%20room/${this.state.roomCodes[index]}`}>{roomName}
                         </Link>
                       </ListItemButton>
                     )

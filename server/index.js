@@ -200,11 +200,27 @@ app.get('/getProfile', async (req, res) => {
 });
 
 // GET: user's movie rooms
+app.get('/getCodeAndName', async (req, res) => {
+  const name = req.query.name;
+  try {
+    const result = await db.query(
+      "SELECT p.code, movie_room.name FROM part_of p \
+      INNER JOIN movie_room  on p.code = movie_room.code \
+      WHERE p.username = ? ORDER BY p.code ASC;",
+      [name]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+
+// GET: user's movie rooms
 app.get('/getMovieRooms', async (req, res) => {
   const name = req.query.name;
   try {
     const result = await db.query(
-      "SELECT * FROM part_of WHERE username = ?",
+      "SELECT * FROM part_of WHERE username = ? ORDER BY code ASC;",
       [name]);
     res.send(result);
   } catch (err) {
