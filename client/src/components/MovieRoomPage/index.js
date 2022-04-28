@@ -35,7 +35,7 @@ export default class MovieRoom extends React.Component {
     membersSeen: false,
     pSeen: false,
     movieMaster: "",
-    roomCode: window.location.href.substring(36), // get this from wherever needed
+    roomCode: window.location.href.split('/')[4], // get this from wherever needed
     chart: true,
     members: [],
     // state variables for the selection algo, 50% defaut
@@ -139,7 +139,7 @@ export default class MovieRoom extends React.Component {
   }
 
   CheckCode = () => {
-    let code = window.location.href.substring(36);
+    let code =window.location.href.split('/')[4];
     console.log("code is " + code);
     //Check if url code exists in db
     Axios.get('http://localhost:3001/checkMovieRoomCode', {

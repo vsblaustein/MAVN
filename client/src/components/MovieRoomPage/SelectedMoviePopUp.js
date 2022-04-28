@@ -22,7 +22,7 @@ export default class MovieSelectionPopUp extends React.Component {
             currentYear: 0,
             showMasterButtons: false,
             groupVotes: 0,
-            roomCode: window.location.href.substring(36),
+            roomCode: window.location.href.split('/')[4],
         };
 
     }

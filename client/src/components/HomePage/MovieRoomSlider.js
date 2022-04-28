@@ -44,11 +44,11 @@ export default class MovieRoomSlider extends React.Component {
         <div>
 
           <Box sx={{
-                            marginTop: 1,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}>
+            marginTop: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}>
             <>
               <Typography component="h1" variant="h3">Movie Rooms</Typography>
               <ul>
@@ -58,8 +58,8 @@ export default class MovieRoomSlider extends React.Component {
                       <ListItemButton key={room.id}>
                         <Link to={`/movie%20room/${room}`}>{room}
                         </Link>
-                        
-                        </ListItemButton>
+
+                      </ListItemButton>
                     )
                 }
               </ul>
