@@ -11,6 +11,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { InputLabel } from '@mui/material';
 import { Select } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function ProfileChange(props) {
 
@@ -20,6 +22,7 @@ export default function ProfileChange(props) {
     const [email, setEmail] = React.useState(props.email);
     const [profile_img, setProfileImg] = React.useState(props.photo);
     const currentUser = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate()
 
     //changes the profile_img to selected
     const handleChange = (event) => {
@@ -66,7 +69,8 @@ export default function ProfileChange(props) {
             else {
                 // update the local storage user
                 localStorage.setItem('user', JSON.stringify(username));
-                window.location.reload();
+                navigate(`/profile/${username}`);
+                // window.location.reload();
             }
         }).catch(err => {
             console.log(err);

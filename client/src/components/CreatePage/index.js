@@ -20,7 +20,7 @@ export default class create extends React.Component {
     return (
       <Box>
 
-        <Box class="centered">
+        <Box className="centered">
           <Box className="btn" onClick={this.togglePop} >
             <Button id="big-btn">Create Room</Button >
           </Box>

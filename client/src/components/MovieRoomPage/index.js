@@ -444,7 +444,7 @@ export default class MovieRoom extends React.Component {
 
           {this.state.chart ? <PreferencesStats
             code={this.state.roomCode} style={flexContainer}
-            class='center-screen' /> : null}
+            className='center-screen' /> : null}
         </Box> : <ReturnButton />
         }
       </>

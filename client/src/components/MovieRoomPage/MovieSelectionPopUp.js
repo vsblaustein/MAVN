@@ -209,7 +209,7 @@ export default class MovieSelectionPopUp extends React.Component {
 
                                     <Box
                                         component="img"
-                                        class='center-screen'
+                                        className='center-screen'
                                         sx={{
                                             maxHeight: { xs: 250, md: 167 },
                                             maxWidth: { xs: 350, md: 250 },

@@ -88,7 +88,7 @@ export default class Preferences extends React.Component {
           {this.state.chart ? <PreferencesStats style={flexContainer} className='center-screen'/> : null}
           
           {/* if agree should wipe if not just exit */}
-          <ClearConfirm class='center-screen' clear={this.clear}/>
+          <ClearConfirm className='center-screen' clear={this.clear}/>
           
         </Box>
 

@@ -72,7 +72,7 @@ export default function MembersPopUp(props) {
               sx={{ width: 300 }}
               onChange={handleChange}
               renderInput={(params) => <TextField {...params} label="Members" />}/>
-            <RemoveConfirm action={() => confirmRemove()} class='center-screen' />
+            <RemoveConfirm action={() => confirmRemove()} className='center-screen' />
           </Box >
         </Box>
       </Box>

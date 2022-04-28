@@ -8,7 +8,7 @@ import ProfilePopUp from './editProfile.js';
 import Button from '@mui/material/Button';
 import { useLocation } from 'react-router-dom';
 
-const currentUser = JSON.parse(localStorage.getItem('user'));
+var currentUser = JSON.parse(localStorage.getItem('user'));
 
 export default function Profile() {
   const location = useLocation();
@@ -18,8 +18,10 @@ export default function Profile() {
   const [profile_img, setProfileImg] = React.useState("");
   const [editProfile, setEditProfile] = React.useState(false);
 
+  
   React.useEffect(() => {
     console.log("location changed");
+    currentUser = JSON.parse(localStorage.getItem('user'));
     Axios.get('http://localhost:3001/getProfile', {
       params: { name: window.location.href.split('/')[4] }
     }).then((response) => {
@@ -45,7 +47,7 @@ export default function Profile() {
         {/* toggle the pop up to edit, only allow edit if is the user */}
         {editProfile ? <ProfilePopUp username={username}
           birthday={birthday} email={email}
-          photo={profile_img} toggle={toggleProfile} /> : null}
+          photo={profile_img} toggle={toggleProfile} setUser={setUsername} /> : null}
 
         <Box className="content" >
           <Typography
