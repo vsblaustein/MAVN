@@ -20,7 +20,7 @@ render() {
     <>
     <div>
         <Box className="modal" class = "centered">
-            <Box className="mr-modal_content"  sx={{ width: 600,height: 400,}} >
+            <Box className="mr-modal_content"  sx={{zIndex:99, width: 600,height: 400,}} >
                 
                 
                 <JoinForm></JoinForm>

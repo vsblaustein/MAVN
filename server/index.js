@@ -193,6 +193,19 @@ app.get('/getMovieRooms', async (req, res) => {
   }
 });
 
+// GET: user's movie rooms
+app.get('/getMovieRoomName', async (req, res) => {
+  const code = req.query.code;
+  try {
+    const result = await db.query(
+      "SELECT * FROM movie_room WHERE code = ?",
+      [code]);
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
 // GET: check if movie room exists
 app.get('/checkMovieRoomCode', async (req, res) => {
   const c = req.query.c;

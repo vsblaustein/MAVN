@@ -20,7 +20,7 @@ export default class IconPopUp extends React.Component {
         return (
             <div style={{zIndex:999}}>
                 <Box className="modal" style={{zIndex:999}}class="centered">
-                    <Box className="mr-modal_content" sx={{ width: 700, height: 500, }} >
+                    <Box className="mr-modal_content" sx={{zIndex:99, width: 700, height: 500, }} >
                         {this.props.content}
                         <IconMetadata title={this.props.title}></IconMetadata>
 
