@@ -13,13 +13,11 @@ const currentUser = JSON.parse(localStorage.getItem('user'));
 
 export default function Profile() {
   const location = useLocation();
-  const [seen, setSeen] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const [birthday, setBirthday] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [profile_img, setProfileImg] = React.useState("");
   const [editProfile, setEditProfile] = React.useState(false);
-  const [url, setUrl] = React.useState("");
 
   React.useEffect(() => {
     console.log("loading this");
@@ -29,7 +27,7 @@ export default function Profile() {
       params: { name: window.location.href.split('/')[4] }
     }).then((response) => {
       console.log(response.data[0].username);
-      console.log(currentUser);
+      console.log("current user:" ,currentUser);
       setUsername(response.data[0].username);
       // make the birthday a prettier thing
       setBirthday(response.data[0].dob.substring(0, response.data[0].dob.toString().indexOf("T")));

@@ -70,33 +70,21 @@ function CreateForm() {
 
       e.preventDefault();
 
-      await insertToDB(newRoomId, datetime);
-      await addUser(newRoomId);
-
+      await Axios.post('http://localhost:3001/addMovieRoom', {
+        room_code: newRoomId,
+        room_name: name,
+        created: datetime,
+        pass: password,
+        master: currentUser,
+      }).then((response) => {
+        // gives a list of json objects
+        console.log(response);
+        console.log("Movie Room successfully created");
+      }).catch(err => {
+        console.log(err);
+      });
       
-      navigate(`/movie%20room/${newRoomId}`);
-    }
-  }
-
-  const insertToDB = async(newRoomId, datetime) => {
-    // insert into the database
-    Axios.post('http://localhost:3001/addMovieRoom', {
-      room_code: newRoomId,
-      room_name: name,
-      created: datetime,
-      pass: password,
-      master: currentUser,
-    }).then((response) => {
-      // gives a list of json objects
-      console.log(response);
-      console.log("Movie Room successfully created");
-    }).catch(err => {
-      console.log(err);
-    });
-  }
-
-  const addUser = async(newRoomId) =>{
-    Axios.post('http://localhost:3001/addPartOf', {
+      await Axios.post('http://localhost:3001/addPartOf', {
         user: currentUser,
         room_code: newRoomId,
         master: 1,
@@ -108,7 +96,14 @@ function CreateForm() {
       }).catch(err => {
         console.log(err);
       });
+
+      
+      navigate(`/movie%20room/${newRoomId}`);
+    }
   }
+
+
+
 
   return (
     <div className="App">
