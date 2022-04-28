@@ -44,11 +44,10 @@ function CreateForm() {
   }
   // below function will be called when user
   // click on submit button .
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
-    if (password != confPassword) {
+    if (password !== confPassword) {
       // if 'password' and 'confirm password'
-      // does not match.
       alert("Passwords Don't Match");
     }
     else {
@@ -71,22 +70,33 @@ function CreateForm() {
 
       e.preventDefault();
 
-      // insert into the database
-      Axios.post('http://localhost:3001/addMovieRoom', {
-        room_code: newRoomId,
-        room_name: name,
-        created: datetime,
-        pass: password,
-        master: currentUser,
-      }).then((response) => {
-        // gives a list of json objects
-        console.log(response);
-        console.log("Movie Room successfully created");
-      }).catch(err => {
-        console.log(err);
-      }).finally(() => {
+      await insertToDB(newRoomId, datetime);
+      await addUser(newRoomId);
 
-       Axios.post('http://localhost:3001/addPartOf', {
+      
+      navigate(`/movie%20room/${newRoomId}`);
+    }
+  }
+
+  const insertToDB = async(newRoomId, datetime) => {
+    // insert into the database
+    Axios.post('http://localhost:3001/addMovieRoom', {
+      room_code: newRoomId,
+      room_name: name,
+      created: datetime,
+      pass: password,
+      master: currentUser,
+    }).then((response) => {
+      // gives a list of json objects
+      console.log(response);
+      console.log("Movie Room successfully created");
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  const addUser = async(newRoomId) =>{
+    Axios.post('http://localhost:3001/addPartOf', {
         user: currentUser,
         room_code: newRoomId,
         master: 1,
@@ -98,10 +108,6 @@ function CreateForm() {
       }).catch(err => {
         console.log(err);
       });
-    });
-
-      navigate(`/movie%20room/${newRoomId}`);
-    }
   }
 
   return (

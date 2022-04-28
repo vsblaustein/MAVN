@@ -1,12 +1,8 @@
 import * as React from 'react';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-import { useHistory, useNavigation } from 'react-router-dom';
 import Axios from 'axios';
-import List from '@mui/material/List';
-import { ListItemButton, ListItemText } from '@mui/material';
+import { ListItemButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 // this document will generate the charts from the db and display them
@@ -37,8 +33,6 @@ export default class MovieRoomSlider extends React.Component {
   }
 
   render() {
-    const { navigation } = this.props;
-
     return (
       <>
         <div>

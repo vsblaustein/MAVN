@@ -51,12 +51,14 @@ export default function SignUpPage() {
     const name = data.get('firstName') + ' ' + data.get('lastName');
     const email = data.get('email');
     const password =  data.get('password');
+    const image = itemData[Math.floor(Math.random() * itemData.length)].img;
     Axios.post('http://localhost:3001/register', {
       username: username,
       password: password,
       full_name: name,
       email: email,
-      dob: dob
+      dob: dob,
+      img: image
     }).then((response)=> {
       //console.log(response);
       navigate("/", { replace: true });
@@ -190,3 +192,27 @@ export default function SignUpPage() {
     </ThemeProvider>
   );
 }
+
+const itemData = [
+  {
+    img: 'https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Dog-512.png',
+  },
+  {
+    img: 'https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Rabbit-512.png',
+  },
+  {
+    img: 'https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Penguin-512.png',
+  },
+  {
+    img: 'https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Panda-512.png',
+  },
+  {
+    img: 'https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Cat-512.png',
+  },
+  {
+    img: 'https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Pig-512.png',
+  },
+  {
+    img: 'https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Frog-512.png'
+  }
+];

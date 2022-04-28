@@ -5,22 +5,18 @@ import CreatePopUp from './CreatePopUp';
 import './CreatePopUp.css';
 import Button from '@mui/material/Button';
 
-
-
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from "react-router-dom";
   
 export default class create extends React.Component {
   state = {
    seen: false
    };
+
+  // toggles so the pop up is visible and opposite button is not
   togglePop = () => {
    this.setState({
     seen: !this.state.seen
    });
+   this.props.setBtn(this.state.seen);
   };
 render() {
   return (

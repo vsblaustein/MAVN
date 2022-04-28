@@ -30,15 +30,15 @@ import './SearchMoviesPage.css';
 import GenreDropdown from './GenreDropdown';
 import { genres } from './GenreDropdown';
 import IconPopUp from './IconPopUp';
+import { LoadingButton } from '@mui/lab';
 
 const api_key = "76e275f04f332f92388a49a0a1ad92ee";
 const base_image_url = "https://image.tmdb.org/t/p/w500";
 
 const theme = createTheme();
 
-
-
 export default function SearchMoviesPage() {
+    const curr_user = JSON.parse(localStorage.getItem('user'));
     //iconpopup
     const [isOpen, setIsOpen] = React.useState(false);
 
@@ -46,7 +46,10 @@ export default function SearchMoviesPage() {
     const [filteredResults, setFilteredResults] = React.useState([]);
     const [genres, setGenres] = React.useState([]);
 
-    const [title, setTitle] = React.useState('')
+    const [title, setTitle] = React.useState('');
+
+    //used for loading animation
+    const [loading, setLoading] = React.useState(false);
 
 
     const setValue = (g) => {
@@ -192,8 +195,11 @@ export default function SearchMoviesPage() {
         }
         //console.log("data.genres: ", data.genres);
         const movie_cast = res_json.credits.cast;
-        //var actor_ct = 0;
+        var actor_limit = 0;
         for (var actor of movie_cast) {
+            if (actor_limit > 10) {
+                break;
+            }
             var actor_id = actor.id;
             data.actors.push(actor);
             //get actor DOB using actor id
@@ -201,7 +207,7 @@ export default function SearchMoviesPage() {
             var actor_json = await axiosCall(actor_id_json_url);
             //console.log("actor info: ", actor_json);
             data.actor_dobs.push(actor_json.birthday);
-            //actor_ct += 1;
+            actor_limit++;
         }
         //console.log("movie_data: ", data);
 
@@ -341,11 +347,16 @@ export default function SearchMoviesPage() {
     }
 
     const handleTitleSubmit = async (event) => {
+        setLoading(true);
 
         event.preventDefault();
 
         const data = new FormData(event.currentTarget);
         const title_search = data.get('title_search');
+        if (title_search === "") {
+            setLoading(false);
+            return;
+        }
         //console.log("title button pressed...");
         //console.log("title: ", title_search);
         /*
@@ -376,10 +387,8 @@ export default function SearchMoviesPage() {
             //iterate over movie ids. for each movie id, we need to query and receive:
             //title, year, length, image, rating, plot, genre(s), all actors' names, all actor dobs
             // results will hold the title/year pair of a movie for display purposes
-
             for (var id of movie_ids) {
                 var res = await getAndSetMovieData(id);
-                //console.log("res: ", res);
                 results.push(res);
             }
         }
@@ -387,12 +396,18 @@ export default function SearchMoviesPage() {
 
         //after everything, set searchResults to results.
         setSearchResults(results);
+        setLoading(false);
     };
 
     const handleActorSubmit = async (event) => {
+        setLoading(true);
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const actor_search = data.get('actor_search');
+        if (actor_search === "") {
+            setLoading(false);
+            return;
+        }
         //console.log("actor button pressed...");
         //console.log("actor: ", actor_search);
         var results = [];
@@ -423,17 +438,17 @@ export default function SearchMoviesPage() {
             //iterate over IDs and push to results
             for (var id of movie_ids) {
                 var res = await getAndSetMovieData(id);
-                //console.log("res: ", res);
                 results.push(res);
             }
         }
         //console.log("final results: ", results);
         setSearchResults(results);
+        setLoading(false);
     };
 
     return (
         <React.Fragment>
-            <ResponsiveAppBar />
+            <ResponsiveAppBar currentUser={curr_user} />
 
             <ThemeProvider theme={theme}>
                 <Container component="main" maxWidth="xl">
@@ -466,14 +481,15 @@ export default function SearchMoviesPage() {
                                         />
                                     </Grid>
                                 </Grid>
-                                <Button
+                                <LoadingButton
                                     type="submit"
+                                    loading={loading}
                                     fullWidth
                                     variant="contained"
                                     sx={{ mt: 2, mb: 2 }}
                                 >
                                     Search Titles
-                                </Button>
+                                </LoadingButton>
                             </Box>
                         </Grid>
                         <Grid item xs={3} sm={6}>
@@ -490,34 +506,28 @@ export default function SearchMoviesPage() {
                                         />
                                     </Grid>
                                 </Grid>
-                                <Button
+                                <LoadingButton
                                     type="submit"
+                                    loading={loading}
                                     fullWidth
                                     variant="contained"
                                     sx={{ mt: 2, mb: 2 }}
                                 >
-                                    Search Titles for Actor
-                                </Button>
+                                    Search Titles With Actor
+                                </LoadingButton>
                             </Box>
+                        </Grid>
+                        <Typography component="h1" variant="h5">
+                            Filter Results
+                        </Typography>
+                        <Grid item xs={3} sm = {6}>
+                            <div>
+                                <GenreDropdown action={setValue} />
+                            </div>
                         </Grid>
                     </Box>
                 </Container>
 
-                <div class="box">
-                    <div>
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <SearchIcon />
-                        </Avatar>
-                    </div>
-                    <div>
-                        <Typography component="h1" variant="h5">
-                            Filter Results
-                        </Typography>
-                    </div>
-                    <div>
-                        <GenreDropdown action={setValue} />
-                    </div>
-                </div>
 
 
 
@@ -548,26 +558,26 @@ export default function SearchMoviesPage() {
                                         subtitle={item.year}
                                         actionIcon={
                                             <IconButton
-                                                onClick={()=>togglePopup(item)}
+                                                onClick={() => togglePopup(item)}
                                                 sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
                                                 aria-label={`info about ${item.title}`}
                                             >
                                                 <InfoIcon />
-                                                
+
 
                                             </IconButton>
-                                            
+
 
                                         }
                                     />
-                                
+
                                 </ImageListItem>
                             ))}
 
                         </ImageList>
-                        
+
                     }
-                    {isOpen && <IconPopUp title={title} toggle={()=> togglePopup()}/>}
+                    {isOpen && <IconPopUp title={title} toggle={() => togglePopup()} />}
                     {genres.length > 0 &&
                         <ImageList sx={{ width: 1135, height: 450 }} cols={5} rowHeight={'auto'} gap={8}>
                             {filteredResults.map((item, idx) => (
