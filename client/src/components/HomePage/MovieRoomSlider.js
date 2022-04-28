@@ -1,12 +1,8 @@
 import * as React from 'react';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-import { useHistory, useNavigation } from 'react-router-dom';
 import Axios from 'axios';
-import List from '@mui/material/List';
-import { ListItemButton, ListItemText } from '@mui/material';
+import { ListItemButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 // this document will generate the charts from the db and display them
@@ -37,18 +33,16 @@ export default class MovieRoomSlider extends React.Component {
   }
 
   render() {
-    const { navigation } = this.props;
-
     return (
       <>
         <div>
 
           <Box sx={{
-                            marginTop: 1,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}>
+            marginTop: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}>
             <>
               <Typography component="h1" variant="h3">Movie Rooms</Typography>
               <ul>
@@ -58,8 +52,8 @@ export default class MovieRoomSlider extends React.Component {
                       <ListItemButton key={room.id}>
                         <Link to={`/movie%20room/${room}`}>{room}
                         </Link>
-                        
-                        </ListItemButton>
+
+                      </ListItemButton>
                     )
                 }
               </ul>
